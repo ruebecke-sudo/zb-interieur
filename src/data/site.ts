@@ -26,7 +26,8 @@ export const site = {
     place:
       'https://www.google.com/maps/search/?api=1&query=Mainzerstra%C3%9Fe+77%2C+66424+Homburg',
   },
-  booking: 'https://zenz-ben.de/funnel-terminplanung',
+  booking: '/termin',
+  bookingExternal: 'https://zenz-ben.de/funnel-terminplanung',
 } as const
 
 export const whatsappHref = `https://wa.me/${site.whatsapp}?text=${encodeURIComponent(

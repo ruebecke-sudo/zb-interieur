@@ -3,7 +3,7 @@ import { FaqSection } from '../components/FaqSection'
 import { HomeHero } from '../components/HomeHero'
 import { TestimonialsSection } from '../components/TestimonialsSection'
 import { WhatsAppIcon } from '../components/WhatsAppButton'
-import { services, showroomImages, site, whatsappHref } from '../data/site'
+import { services, showroomImages, whatsappHref } from '../data/site'
 
 export function HomePage() {
   return (
@@ -24,14 +24,12 @@ export function HomePage() {
               wir melden uns gerne.
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
-              <a
-                href={site.booking}
-                target="_blank"
-                rel="noreferrer"
+              <Link
+                to="/termin"
                 className="inline-flex rounded-full bg-accent px-6 py-3 text-sm font-bold tracking-[0.06em] text-white uppercase hover:brightness-95"
               >
-                Online Termin
-              </a>
+                Termin buchen
+              </Link>
               <a
                 href={whatsappHref}
                 target="_blank"
@@ -124,14 +122,12 @@ export function HomePage() {
                 Designmöbel und Raumstimmungen – am besten live im Showroom erleben.
               </p>
             </div>
-            <a
-              href={site.booking}
-              target="_blank"
-              rel="noreferrer"
+            <Link
+              to="/termin"
               className="text-sm font-semibold tracking-wide text-accent uppercase"
             >
               Besuchstermin →
-            </a>
+            </Link>
           </div>
           <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
             {showroomImages.map((src) => (

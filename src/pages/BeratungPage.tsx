@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { FaqSection } from '../components/FaqSection'
 import { WhatsAppIcon } from '../components/WhatsAppButton'
-import { site, whatsappHref } from '../data/site'
+import { whatsappHref } from '../data/site'
 
 const benefits = [
   'Individuelle Beratung – maßgeschneiderte Lösungen für Ihre Bedürfnisse',
@@ -49,14 +49,12 @@ export function BeratungPage() {
             Und legen Sie Wert auf modernes, zeitloses Design? Dann sind wir Ihr Ansprechpartner.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <a
-              href={site.booking}
-              target="_blank"
-              rel="noreferrer"
+            <Link
+              to="/termin"
               className="bg-brand px-5 py-3 text-sm font-semibold uppercase tracking-[0.1em] text-white hover:bg-brand-dark"
             >
               Termin buchen
-            </a>
+            </Link>
             <a
               href={whatsappHref}
               target="_blank"

@@ -7,6 +7,7 @@ import { KontaktPage } from './pages/KontaktPage'
 import { OutdoorPage } from './pages/OutdoorPage'
 import { PlanungPage } from './pages/PlanungPage'
 import { ServicePage } from './pages/ServicePage'
+import { TerminPage } from './pages/TerminPage'
 
 const router = createBrowserRouter([
   {
@@ -18,11 +19,11 @@ const router = createBrowserRouter([
       { path: 'planung', element: <PlanungPage /> },
       { path: 'outdoor', element: <OutdoorPage /> },
       { path: 'service', element: <ServicePage /> },
+      { path: 'termin', element: <TerminPage /> },
       { path: 'kontakt', element: <KontaktPage /> },
       { path: 'impressum', element: <ImpressumPage /> },
       { path: 'datenschutz', element: <DatenschutzPage /> },
       { path: 'agb', element: <AgbPage /> },
-      // Alte Galerie-/Blog-URLs → sinnvolle Ziele
       { path: 'galerien', element: <Navigate to="/planung" replace /> },
       { path: 'galerie', element: <Navigate to="/planung" replace /> },
       { path: 'blog', element: <Navigate to="/" replace /> },

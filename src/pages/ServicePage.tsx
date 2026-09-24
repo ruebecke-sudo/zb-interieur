@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom'
-import { site } from '../data/site'
 
 export function ServicePage() {
   return (
@@ -54,14 +53,12 @@ export function ServicePage() {
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
-            <a
-              href={site.booking}
-              target="_blank"
-              rel="noreferrer"
+            <Link
+              to="/termin"
               className="rounded-full bg-accent px-5 py-3 text-sm font-bold tracking-[0.06em] text-white uppercase"
             >
               Termin buchen
-            </a>
+            </Link>
             <Link
               to="/kontakt"
               className="border border-brand px-5 py-3 text-sm font-semibold uppercase tracking-[0.08em] text-brand"
