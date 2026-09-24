@@ -66,7 +66,7 @@ export const services = [
   {
     title: 'Terrassen & Outdoor',
     href: '/outdoor',
-    image: '/images/giellesse.jpg',
+    image: '/images/terrasse-1.jpg',
     blurb: 'Premium-Outdoor für Terrasse und Garten – abgestimmt auf Ihr Zuhause.',
   },
 ] as const

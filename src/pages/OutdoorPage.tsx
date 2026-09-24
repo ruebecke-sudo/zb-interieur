@@ -1,33 +1,15 @@
 import { Link } from 'react-router-dom'
 
-const terraceVideos = [
-  {
-    src: '/videos/terrasse-abends.mp4',
-    title: 'Terrasse abends',
-    className: 'aspect-[3/4] w-full object-cover',
-  },
-  {
-    src: '/videos/terrasse-meer.mp4',
-    title: 'Terrasse Meer',
-    className: 'mt-8 aspect-[3/4] w-full object-cover',
-  },
-] as const
-
 export function OutdoorPage() {
   return (
     <>
       <section className="relative overflow-hidden bg-ink text-white">
-        <video
-          className="absolute inset-0 h-full w-full object-cover opacity-60"
-          autoPlay
-          muted
-          loop
-          playsInline
-          poster="/images/giellesse.jpg"
-        >
-          <source src="/videos/terrasse-abends.mp4" type="video/mp4" />
-        </video>
-        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/45 to-black/25" />
+        <img
+          src="/images/terrasse-1.jpg"
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover opacity-70"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/45 to-black/20" />
         <div className="relative mx-auto max-w-6xl px-4 py-24">
           <p className="text-xs font-semibold tracking-[0.16em] text-white/70 uppercase">Outdoor</p>
           <h1 className="mt-3 max-w-3xl text-4xl font-bold md:text-5xl">
@@ -58,21 +40,47 @@ export function OutdoorPage() {
             Beratung Outdoor
           </Link>
         </div>
-        <div className="grid grid-cols-2 gap-3">
-          {terraceVideos.map((v) => (
+        <div className="overflow-hidden">
+          <img
+            src="/images/terrasse-1.jpg"
+            alt="Terrassenplanung mit Outdoor-Möbeln"
+            className="aspect-[4/3] w-full object-cover"
+          />
+        </div>
+      </section>
+
+      <section className="border-t border-line bg-fog">
+        <div className="mx-auto max-w-6xl px-4 py-14">
+          <h2 className="text-2xl font-bold">Terrasse in Bewegung</h2>
+          <p className="mt-2 max-w-2xl text-muted">
+            Eindrücke aus der Terrassenplanung – Abendstimmung und Meerblick.
+          </p>
+          <div className="mt-8 grid gap-4 md:grid-cols-2">
             <video
-              key={v.src}
-              className={v.className}
+              className="aspect-video w-full bg-ink object-cover"
               controls
               playsInline
               muted
               loop
               preload="metadata"
-              title={v.title}
+              poster="/images/terrasse-1.jpg"
+              title="Terrasse abends"
             >
-              <source src={v.src} type="video/mp4" />
+              <source src="/videos/terrasse-abends.mp4" type="video/mp4" />
             </video>
-          ))}
+            <video
+              className="aspect-video w-full bg-ink object-cover"
+              controls
+              playsInline
+              muted
+              loop
+              preload="metadata"
+              poster="/images/terrasse-1.jpg"
+              title="Terrasse Meer"
+            >
+              <source src="/videos/terrasse-meer.mp4" type="video/mp4" />
+            </video>
+          </div>
         </div>
       </section>
     </>
