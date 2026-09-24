@@ -228,9 +228,9 @@ export function HomePage() {
               Jetzt anfragen
             </Link>
           </div>
-          <div className="relative overflow-hidden bg-ink">
+          <div className="relative mx-auto max-w-sm overflow-hidden bg-ink md:mx-0 md:justify-self-end">
             <video
-              className="aspect-video w-full object-cover"
+              className="aspect-[9/16] w-full object-cover"
               controls
               playsInline
               poster="/images/kueche-render-1.jpg"
