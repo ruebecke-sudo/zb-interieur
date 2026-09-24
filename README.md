@@ -8,9 +8,9 @@ Blog und Galerie-Kategorien entfallen bewusst – Fokus auf Beratung, Planung un
 
 Aktueller Deploy (anonym / Drop – bitte innerhalb von 60 Min. in dein Netlify-Konto übernehmen):
 
-- **URL:** https://rococo-dolphin-d8cd90.netlify.app  
+- **URL:** https://chipper-tartufo-7e1ce6.netlify.app  
 - **Zugangspasswort (Drop):** `My-Drop-Site`  
-- **Site beanspruchen:** [Claim-Link](https://app.netlify.com/drop/rococo-dolphin-d8cd90) (im Agent-Chat bzw. CLI-Ausgabe)
+- **Site beanspruchen:** [Claim-Link](https://app.netlify.com/drop/chipper-tartufo-7e1ce6) (im Agent-Chat bzw. CLI-Ausgabe)
 
 Nach dem Claim kannst du die Domain `zb-interieur.de` unter Domain management zuweisen und das Drop-Passwort entfernen.
 
