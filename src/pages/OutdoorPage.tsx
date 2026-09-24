@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 
 export function OutdoorPage() {
   return (
-    <div className="pt-[88px] md:pt-[108px]">
+    <>
       <section className="relative overflow-hidden bg-ink text-white">
         <img
           src="/images/giellesse.jpg"
@@ -44,6 +44,6 @@ export function OutdoorPage() {
           <img src="/images/hero-2.jpg" alt="" className="mt-8 aspect-[3/4] object-cover" />
         </div>
       </section>
-    </div>
+    </>
   )
 }

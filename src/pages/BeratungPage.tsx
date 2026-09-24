@@ -10,7 +10,7 @@ const benefits = [
 
 export function BeratungPage() {
   return (
-    <div className="pt-[88px] md:pt-[108px]">
+    <>
       <section className="relative overflow-hidden bg-ink text-white">
         <img
           src="/images/planen.jpg"
@@ -65,6 +65,6 @@ export function BeratungPage() {
         </div>
         <img src="/images/planung-3d.jpg" alt="3D-Einrichtungsplanung" className="w-full object-cover" />
       </section>
-    </div>
+    </>
   )
 }

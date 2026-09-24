@@ -4,14 +4,6 @@ import { nav, site } from '../data/site'
 
 export function Header() {
   const [open, setOpen] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24)
-    onScroll()
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
 
   useEffect(() => {
     document.body.style.overflow = open ? 'hidden' : ''
@@ -21,129 +13,144 @@ export function Header() {
   }, [open])
 
   return (
-    <header
-      className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
-        scrolled || open
-          ? 'bg-white/95 shadow-[0_1px_0_rgba(0,0,0,0.06)] backdrop-blur-md'
-          : 'bg-gradient-to-b from-black/45 to-transparent'
-      }`}
-    >
-      <div
-        className={`hidden border-b text-center text-[12px] tracking-wide md:block ${
-          scrolled || open
-            ? 'border-line bg-fog text-muted'
-            : 'border-white/10 bg-black/25 text-white/90'
-        }`}
-      >
-        <div className="mx-auto flex max-w-6xl items-center justify-center gap-3 px-4 py-1.5">
-          <span>
-            {site.zipCity} | {site.street}
-          </span>
-          <span aria-hidden>|</span>
-          <a href={site.phoneHref} className="hover:text-accent">
-            Tel. {site.phone}
-          </a>
+    <header className="sticky top-0 z-50 bg-white shadow-[0_1px_0_rgba(0,0,0,0.06)]">
+      {/* Tier 1 – Kontaktleiste */}
+      <div className="hidden border-b border-line bg-white text-[12px] text-muted md:block">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-2">
+          <span className="font-medium text-ink">{site.name}</span>
+          <div className="flex flex-wrap items-center justify-center gap-2 text-center">
+            <span>
+              {site.zipCity} | {site.street}
+            </span>
+            <span aria-hidden>|</span>
+            <a href={site.phoneHref} className="hover:text-accent">
+              Tel. {site.phone}
+            </a>
+          </div>
+          <div className="flex items-center gap-2">
+            <a
+              href={site.social.facebook}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex h-7 w-7 items-center justify-center bg-[#e8e8e8] text-[10px] font-bold text-muted hover:bg-brand hover:text-white"
+              aria-label="Facebook"
+            >
+              f
+            </a>
+            <a
+              href={site.social.linkedin}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex h-7 w-7 items-center justify-center bg-[#e8e8e8] text-[10px] font-bold text-muted hover:bg-brand hover:text-white"
+              aria-label="LinkedIn"
+            >
+              in
+            </a>
+          </div>
         </div>
       </div>
 
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 md:py-4">
-        <NavLink to="/" className="relative z-10 shrink-0" onClick={() => setOpen(false)}>
-          <img
-            src="/images/logo.jpg"
-            alt="ZB Interieur"
-            className="h-12 w-auto object-contain md:h-14"
-          />
-        </NavLink>
-
-        <nav className="hidden items-center gap-1 lg:flex">
-          {nav.map((item) => (
-            <div key={item.label} className="group relative">
-              <NavLink
-                to={item.href}
-                className={({ isActive }) =>
-                  `px-3 py-2 text-[13px] font-medium uppercase tracking-[0.08em] transition ${
-                    scrolled
-                      ? isActive
-                        ? 'text-brand'
-                        : 'text-ink/80 hover:text-brand'
-                      : isActive
-                        ? 'text-white'
-                        : 'text-white/85 hover:text-white'
-                  }`
-                }
-              >
-                {item.label}
-              </NavLink>
-              {'children' in item && item.children ? (
-                <div className="invisible absolute left-0 top-full min-w-[220px] translate-y-1 bg-white py-2 opacity-0 shadow-lg transition group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
-                  {item.children.map((child) =>
-                    child.href.endsWith('.pdf') ? (
-                      <a
-                        key={child.href}
-                        href={child.href}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="block px-4 py-2 text-sm text-ink/80 hover:bg-fog hover:text-brand"
-                      >
-                        {child.label}
-                      </a>
-                    ) : (
-                      <NavLink
-                        key={child.href}
-                        to={child.href}
-                        className="block px-4 py-2 text-sm text-ink/80 hover:bg-fog hover:text-brand"
-                      >
-                        {child.label}
-                      </NavLink>
-                    ),
-                  )}
-                </div>
-              ) : null}
-            </div>
-          ))}
-        </nav>
-
-        <div className="flex items-center gap-2">
+      {/* Tier 2 – Branding */}
+      <div className="bg-brand">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
+          <NavLink to="/" className="shrink-0" onClick={() => setOpen(false)}>
+            <img src="/images/logo.jpg" alt="ZB Interieur" className="h-14 w-auto object-contain md:h-16" />
+          </NavLink>
           <a
-            href={site.booking}
-            target="_blank"
-            rel="noreferrer"
-            className="hidden rounded-sm bg-brand px-4 py-2 text-[12px] font-semibold uppercase tracking-[0.08em] text-white transition hover:bg-brand-dark sm:inline-flex"
+            href="/#oeffnungszeiten"
+            className="hidden text-sm font-medium text-white/90 hover:text-white md:inline"
           >
-            Termin
+            Öffnungszeiten ▾
           </a>
           <button
             type="button"
-            className={`relative z-10 inline-flex h-10 w-10 items-center justify-center lg:hidden ${
-              scrolled || open ? 'text-ink' : 'text-white'
-            }`}
+            className="inline-flex h-10 w-10 items-center justify-center text-white lg:hidden"
             aria-label={open ? 'Menü schließen' : 'Menü öffnen'}
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
           >
-            <span className="sr-only">Menü</span>
             <div className="flex w-5 flex-col gap-1.5">
-              <span
-                className={`h-0.5 w-full bg-current transition ${open ? 'translate-y-2 rotate-45' : ''}`}
-              />
+              <span className={`h-0.5 w-full bg-current transition ${open ? 'translate-y-2 rotate-45' : ''}`} />
               <span className={`h-0.5 w-full bg-current transition ${open ? 'opacity-0' : ''}`} />
-              <span
-                className={`h-0.5 w-full bg-current transition ${open ? '-translate-y-2 -rotate-45' : ''}`}
-              />
+              <span className={`h-0.5 w-full bg-current transition ${open ? '-translate-y-2 -rotate-45' : ''}`} />
             </div>
           </button>
         </div>
       </div>
 
+      {/* Tier 3 – Navigation */}
+      <div className="hidden border-b border-line bg-white lg:block">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4">
+          <nav className="flex items-center">
+            {nav.map((item) => (
+              <div key={item.label} className="group relative">
+                <NavLink
+                  to={item.href}
+                  className={({ isActive }) =>
+                    `inline-block px-3 py-3.5 text-[13px] font-medium tracking-[0.04em] transition ${
+                      isActive ? 'text-brand' : 'text-ink/80 hover:text-brand'
+                    }`
+                  }
+                >
+                  {item.label}
+                  {'children' in item && item.children ? ' ▾' : ''}
+                </NavLink>
+                {'children' in item && item.children ? (
+                  <div className="invisible absolute left-0 top-full z-20 min-w-[220px] bg-white py-2 opacity-0 shadow-lg transition group-hover:visible group-hover:opacity-100">
+                    {item.children.map((child) =>
+                      child.href.endsWith('.pdf') ? (
+                        <a
+                          key={child.href}
+                          href={child.href}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="block px-4 py-2 text-sm text-ink/80 hover:bg-fog hover:text-brand"
+                        >
+                          {child.label}
+                        </a>
+                      ) : (
+                        <NavLink
+                          key={child.href}
+                          to={child.href}
+                          className="block px-4 py-2 text-sm text-ink/80 hover:bg-fog hover:text-brand"
+                        >
+                          {child.label}
+                        </NavLink>
+                      ),
+                    )}
+                  </div>
+                ) : null}
+              </div>
+            ))}
+          </nav>
+          <div className="flex items-center gap-3">
+            <NavLink
+              to="/service"
+              className="rounded-full bg-accent px-4 py-1.5 text-[12px] font-bold tracking-[0.06em] text-white uppercase hover:brightness-95"
+            >
+              News & Info
+            </NavLink>
+            <a
+              href={site.booking}
+              target="_blank"
+              rel="noreferrer"
+              className="text-[13px] font-medium text-ink/80 hover:text-brand"
+            >
+              Termin
+            </a>
+          </div>
+        </div>
+      </div>
+
       {open ? (
-        <div className="fixed inset-0 top-[72px] z-40 overflow-y-auto bg-white lg:hidden">
-          <div className="space-y-1 px-4 py-6">
+        <div className="max-h-[70vh] overflow-y-auto border-t border-line bg-white lg:hidden">
+          <div className="space-y-1 px-4 py-4">
             {nav.map((item) => (
               <div key={item.label} className="border-b border-line py-3">
                 <NavLink
                   to={item.href}
                   onClick={() => setOpen(false)}
-                  className="block text-base font-semibold uppercase tracking-[0.06em] text-ink"
+                  className="block text-base font-semibold text-ink"
                 >
                   {item.label}
                 </NavLink>
@@ -176,14 +183,13 @@ export function Header() {
                 ) : null}
               </div>
             ))}
-            <a
-              href={site.booking}
-              target="_blank"
-              rel="noreferrer"
-              className="mt-4 inline-flex w-full items-center justify-center rounded-sm bg-brand px-4 py-3 text-sm font-semibold uppercase tracking-[0.08em] text-white"
+            <NavLink
+              to="/service"
+              onClick={() => setOpen(false)}
+              className="mt-3 inline-flex w-full items-center justify-center rounded-full bg-accent px-4 py-3 text-sm font-bold text-white uppercase"
             >
-              Beratungstermin anfragen
-            </a>
+              News & Info
+            </NavLink>
           </div>
         </div>
       ) : null}

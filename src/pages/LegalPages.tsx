@@ -156,7 +156,7 @@ export function AgbPage() {
 
 function LegalLayout({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <div className="pt-[88px] md:pt-[108px]">
+    <>
       <section className="bg-fog">
         <div className="mx-auto max-w-3xl px-4 py-14">
           <h1 className="font-serif text-4xl font-bold">{title}</h1>
@@ -165,6 +165,6 @@ function LegalLayout({ title, children }: { title: string; children: ReactNode }
       <article className="legal mx-auto max-w-3xl space-y-4 px-4 py-12 text-[15px] leading-relaxed text-ink [&_h2]:mt-8 [&_h2]:font-serif [&_h2]:text-2xl [&_h2]:font-bold [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-5 [&_ul]:text-muted [&_p]:text-muted">
         {children}
       </article>
-    </div>
+    </>
   )
 }

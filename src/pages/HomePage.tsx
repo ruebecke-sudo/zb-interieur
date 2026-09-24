@@ -1,61 +1,11 @@
 import { Link } from 'react-router-dom'
-import { HeroSlider } from '../components/HeroSlider'
-import { galleries, reasons, site } from '../data/site'
+import { HomeHero } from '../components/HomeHero'
+import { galleries, site } from '../data/site'
 
 export function HomePage() {
   return (
     <>
-      <HeroSlider
-        title="Wir planen Küchen | Bäder | Büros | Terrassen und Ihre komplette Einrichtung"
-        subtitle="Eine durchdachte Einrichtungsplanung ist der Schlüssel zu Räumen, die nicht nur schön aussehen, sondern auch funktional sind und Ihr Wohlbefinden steigern."
-        ctaHref="/kontakt"
-        ctaLabel="Beratungstermin"
-      />
-
-      <section className="relative overflow-hidden bg-fog">
-        <div
-          className="absolute inset-0 opacity-[0.12]"
-          style={{
-            backgroundImage: "url('/images/blumen.jpg')",
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-          }}
-        />
-        <div className="relative mx-auto grid max-w-6xl gap-10 px-4 py-20 md:grid-cols-2 md:items-center">
-          <div className="animate-fade-up">
-            <p className="mb-3 text-xs font-semibold tracking-[0.16em] text-brand uppercase">
-              Einrichtung & Planung
-            </p>
-            <h2 className="font-serif text-3xl leading-tight font-bold md:text-4xl">
-              Warum professionelle Einrichtungsplanung
-            </h2>
-            <p className="mt-4 text-muted leading-relaxed">
-              Bei ZB Interieur in Homburg verstehen wir, dass jeder Raum einzigartig ist – genau wie
-              Sie. Hier erhalten Sie alles Wissenswerte zu den Themen Einrichtung & Planung.
-            </p>
-            <div className="mt-8 grid gap-4 sm:grid-cols-2">
-              {reasons.map((r) => (
-                <div key={r.title} className="border-l-2 border-brand pl-4">
-                  <h3 className="font-semibold text-ink">{r.title}</h3>
-                  <p className="mt-1 text-sm text-muted">{r.text}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="relative">
-            <img
-              src="/images/planung-side.jpg"
-              alt="Raumplanung bei ZB Interieur"
-              className="aspect-[4/5] w-full object-cover"
-            />
-            <img
-              src="/images/planung-3d.jpg"
-              alt="3D-Planung"
-              className="absolute -bottom-6 -left-4 hidden w-2/5 border-4 border-white shadow-xl md:block"
-            />
-          </div>
-        </div>
-      </section>
+      <HomeHero />
 
       <section className="bg-white">
         <div className="mx-auto max-w-6xl px-4 py-20">

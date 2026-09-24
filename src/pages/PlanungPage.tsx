@@ -26,7 +26,7 @@ const areas = [
 
 export function PlanungPage() {
   return (
-    <div className="pt-[88px] md:pt-[108px]">
+    <>
       <section className="relative overflow-hidden bg-ink text-white">
         <img
           src="/images/hero-4.jpg"
@@ -74,6 +74,6 @@ export function PlanungPage() {
           </Link>
         </div>
       </section>
-    </div>
+    </>
   )
 }

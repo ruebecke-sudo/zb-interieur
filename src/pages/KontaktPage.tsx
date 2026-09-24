@@ -26,7 +26,7 @@ export function KontaktPage() {
   }
 
   return (
-    <div className="pt-[88px] md:pt-[108px]">
+    <>
       <section className="bg-fog">
         <div className="mx-auto max-w-6xl px-4 py-16">
           <p className="text-xs font-semibold tracking-[0.16em] text-brand uppercase">Kontakt</p>
@@ -185,6 +185,6 @@ export function KontaktPage() {
           </form>
         </div>
       </section>
-    </div>
+    </>
   )
 }
