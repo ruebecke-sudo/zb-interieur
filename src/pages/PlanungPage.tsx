@@ -4,7 +4,7 @@ const areas = [
   {
     title: 'Küchenplanung',
     text: 'Funktionale Abläufe, hochwertige Materialien und eine klare Formensprache – von der ersten Skizze bis zur Umsetzung.',
-    image: '/images/planen.jpg',
+    image: '/images/kueche-render-1.jpg',
   },
   {
     title: 'Bäder',
@@ -29,7 +29,7 @@ export function PlanungPage() {
     <>
       <section className="relative overflow-hidden bg-ink text-white">
         <img
-          src="/images/hero-4.jpg"
+          src="/images/kueche-render-2.jpg"
           alt=""
           className="absolute inset-0 h-full w-full object-cover opacity-45"
         />
@@ -54,11 +54,36 @@ export function PlanungPage() {
           >
             <img src={a.image} alt={a.title} className="aspect-[4/3] w-full object-cover" />
             <div>
-              <h2 className="font-serif text-3xl font-bold">{a.title}</h2>
+              <h2 className="text-3xl font-bold">{a.title}</h2>
               <p className="mt-3 leading-relaxed text-muted">{a.text}</p>
             </div>
           </article>
         ))}
+
+        <div>
+          <h2 className="text-2xl font-bold">Küchenplanung in 3D</h2>
+          <p className="mt-2 max-w-2xl text-muted">
+            Visualisierungen aus aktuellen Projekten – so sehen geplante Küchen vor der Umsetzung aus.
+          </p>
+          <div className="mt-6 grid gap-3 sm:grid-cols-3">
+            <img
+              src="/images/kueche-render-1.jpg"
+              alt="Küchenplanung mit Insel"
+              className="aspect-[4/3] w-full object-cover"
+            />
+            <img
+              src="/images/kueche-render-2.jpg"
+              alt="Kücheninsel mit Barhockern"
+              className="aspect-[4/3] w-full object-cover"
+            />
+            <img
+              src="/images/kueche-render-3.jpg"
+              alt="Offene Küche mit Kochinsel"
+              className="aspect-[4/3] w-full object-cover"
+            />
+          </div>
+        </div>
+
         <div className="flex flex-wrap gap-3 border-t border-line pt-10">
           <Link
             to="/beratung"
@@ -71,6 +96,12 @@ export function PlanungPage() {
             className="border border-brand px-5 py-3 text-sm font-semibold uppercase tracking-[0.1em] text-brand"
           >
             Outdoor & Terrasse
+          </Link>
+          <Link
+            to="/termin"
+            className="border border-accent px-5 py-3 text-sm font-semibold uppercase tracking-[0.1em] text-accent"
+          >
+            Termin buchen
           </Link>
         </div>
       </section>

@@ -60,7 +60,7 @@ export const services = [
   {
     title: 'Küchen · Bäder · Büros',
     href: '/planung',
-    image: '/images/planen.jpg',
+    image: '/images/kueche-render-3.jpg',
     blurb: 'Funktionale Planung mit hochwertigen Materialien und klarer Formensprache.',
   },
   {
@@ -72,12 +72,12 @@ export const services = [
 ] as const
 
 export const showroomImages = [
+  '/images/kueche-render-1.jpg',
+  '/images/kueche-render-2.jpg',
+  '/images/kueche-render-3.jpg',
   '/images/hero-1.jpg',
-  '/images/hero-2.jpg',
   '/images/ledersofa.jpg',
   '/images/showroom-1.jpg',
-  '/images/showroom-2.jpg',
-  '/images/sofa-aria.jpg',
 ] as const
 
 export const reasons = [

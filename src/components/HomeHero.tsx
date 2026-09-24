@@ -56,19 +56,19 @@ export function HomeHero() {
         <div className="animate-fade-up relative" style={{ animationDelay: '120ms' }}>
           <div className="overflow-hidden rounded-md shadow-[0_12px_40px_rgba(0,0,0,0.12)]">
             <img
-              src="/images/planung-3d.jpg"
-              alt="3D-Planung und fertige Inneneinrichtung"
+              src="/images/kueche-render-1.jpg"
+              alt="3D-Küchenplanung von ZB Interieur"
               className="aspect-[4/3] w-full object-cover"
             />
           </div>
           <img
-            src="/images/planen.jpg"
-            alt="Moderne Küchenplanung"
+            src="/images/kueche-render-2.jpg"
+            alt="Moderne Kücheninsel"
             className="absolute -bottom-6 -left-4 hidden w-[42%] rounded-md border-4 border-white shadow-xl md:block"
           />
           <img
-            src="/images/sofa-edited.jpg"
-            alt="Wohnraum nach Planung"
+            src="/images/kueche-render-3.jpg"
+            alt="Offene Küchenplanung"
             className="absolute -right-3 -bottom-8 hidden w-[38%] rounded-md border-4 border-white shadow-xl lg:block"
           />
         </div>
