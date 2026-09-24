@@ -48,32 +48,32 @@ export function HeroSlider({ title, subtitle, ctaHref, ctaLabel }: HeroSliderPro
         </div>
       ))}
 
-      <div className="relative z-10 mx-auto flex min-h-[100svh] max-w-6xl flex-col justify-end px-4 pb-20 pt-36 md:justify-center md:pb-24 md:pt-28">
-        <p className="animate-fade-up mb-4 font-serif text-sm tracking-[0.2em] text-white/80 uppercase md:text-base">
+      <div className="relative z-10 mx-auto flex min-h-[100svh] max-w-6xl flex-col justify-center px-4 pb-16 pt-32 md:pb-24 md:pt-36">
+        <p className="animate-fade-up mb-3 font-serif text-xs tracking-[0.2em] text-white/80 uppercase sm:mb-4 sm:text-sm md:text-base">
           ZB Interieur · Homburg
         </p>
         <h1
-          className="animate-fade-up max-w-3xl font-serif text-4xl leading-[1.1] font-bold tracking-tight md:text-6xl lg:text-7xl"
+          className="animate-fade-up max-w-3xl font-serif text-[1.75rem] leading-[1.15] font-bold tracking-tight sm:text-4xl md:text-6xl lg:text-7xl"
           style={{ animationDelay: '120ms' }}
         >
           {title}
         </h1>
         <p
-          className="animate-fade-up mt-5 max-w-xl text-base leading-relaxed text-white/85 md:text-lg"
+          className="animate-fade-up mt-4 max-w-xl text-sm leading-relaxed text-white/85 sm:mt-5 sm:text-base md:text-lg"
           style={{ animationDelay: '220ms' }}
         >
           {subtitle}
         </p>
-        <div className="animate-fade-up mt-8 flex flex-wrap gap-3" style={{ animationDelay: '320ms' }}>
+        <div className="animate-fade-up mt-6 flex flex-wrap gap-3 sm:mt-8" style={{ animationDelay: '320ms' }}>
           <a
             href={ctaHref}
-            className="inline-flex items-center rounded-sm bg-brand px-6 py-3 text-sm font-semibold uppercase tracking-[0.1em] text-white transition hover:bg-brand-dark"
+            className="inline-flex items-center rounded-sm bg-brand px-5 py-3 text-xs font-semibold uppercase tracking-[0.1em] text-white transition hover:bg-brand-dark sm:px-6 sm:text-sm"
           >
             {ctaLabel}
           </a>
           <a
             href="tel:+4968419597223"
-            className="inline-flex items-center rounded-sm border border-white/40 px-6 py-3 text-sm font-semibold uppercase tracking-[0.1em] text-white transition hover:bg-white/10"
+            className="inline-flex items-center rounded-sm border border-white/40 px-5 py-3 text-xs font-semibold uppercase tracking-[0.1em] text-white transition hover:bg-white/10 sm:px-6 sm:text-sm"
           >
             Anrufen
           </a>
