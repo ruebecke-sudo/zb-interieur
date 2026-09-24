@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { HomeHero } from '../components/HomeHero'
-import { galleries, site } from '../data/site'
+import { services, showroomImages, site } from '../data/site'
 
 export function HomePage() {
   return (
@@ -8,31 +8,75 @@ export function HomePage() {
       <HomeHero />
 
       <section className="bg-white">
-        <div className="mx-auto max-w-6xl px-4 py-20">
+        <div className="mx-auto max-w-6xl px-4 py-16 md:py-20">
           <div className="mx-auto max-w-2xl text-center">
-            <h2 className="font-serif text-3xl font-bold md:text-4xl">
-              Hier gibt’s die besten Antworten zu Ihren Fragen
+            <p className="text-xs font-semibold tracking-[0.16em] text-brand uppercase">
+              Unverbindlich & persönlich
+            </p>
+            <h2 className="mt-2 font-serif text-3xl font-bold md:text-4xl">
+              Beratungstermin in Homburg
             </h2>
             <p className="mt-4 text-muted">
-              Vereinbaren Sie einen unverbindlichen Beratungstermin bei ZB Interieur oder hinterlassen
-              Sie Ihre Telefonnummer. Wir rufen gerne zurück.
+              Vereinbaren Sie einen Termin im Showroom oder hinterlassen Sie Ihre Nummer – wir rufen
+              gerne zurück.
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
-              <Link
-                to="/kontakt"
-                className="inline-flex bg-brand px-6 py-3 text-sm font-semibold uppercase tracking-[0.1em] text-white hover:bg-brand-dark"
-              >
-                Rückruf anfordern
-              </Link>
               <a
                 href={site.booking}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex border border-brand px-6 py-3 text-sm font-semibold uppercase tracking-[0.1em] text-brand hover:bg-fog"
+                className="inline-flex rounded-full bg-accent px-6 py-3 text-sm font-bold tracking-[0.06em] text-white uppercase hover:brightness-95"
               >
                 Online Termin
               </a>
+              <Link
+                to="/kontakt"
+                className="inline-flex border border-brand px-6 py-3 text-sm font-semibold uppercase tracking-[0.1em] text-brand hover:bg-fog"
+              >
+                Rückruf anfordern
+              </Link>
+              <a
+                href={site.phoneHref}
+                className="inline-flex items-center px-2 text-sm font-medium text-muted hover:text-brand"
+              >
+                {site.phone}
+              </a>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-fog">
+        <div className="mx-auto max-w-6xl px-4 py-16 md:py-20">
+          <div className="mb-10 max-w-2xl">
+            <p className="text-xs font-semibold tracking-[0.16em] text-brand uppercase">Leistungen</p>
+            <h2 className="mt-2 font-serif text-3xl font-bold md:text-4xl">
+              Wir planen und richten ein
+            </h2>
+            <p className="mt-3 text-muted">
+              Von der Einrichtungsberatung bis zur Terrasse – ein Ansprechpartner für Ihr gesamtes
+              Wohnkonzept.
+            </p>
+          </div>
+          <div className="grid gap-6 md:grid-cols-3">
+            {services.map((s) => (
+              <Link key={s.href} to={s.href} className="group block bg-white">
+                <div className="overflow-hidden">
+                  <img
+                    src={s.image}
+                    alt={s.title}
+                    className="aspect-[4/3] w-full object-cover transition duration-700 group-hover:scale-105"
+                  />
+                </div>
+                <div className="p-5">
+                  <h3 className="font-serif text-xl font-bold group-hover:text-brand">{s.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-muted">{s.blurb}</p>
+                  <span className="mt-4 inline-block text-sm font-semibold text-accent">
+                    Mehr erfahren →
+                  </span>
+                </div>
+              </Link>
+            ))}
           </div>
         </div>
       </section>
@@ -44,13 +88,12 @@ export function HomePage() {
               Award 2025/2026
             </p>
             <h2 className="mt-3 font-serif text-3xl font-bold md:text-4xl">
-              Eine der besten Adressen für Interieur & Design in Deutschland, Österreich und der
-              Schweiz
+              Ausgezeichnete Adresse für Interieur & Design
             </h2>
             <p className="mt-4 leading-relaxed text-white/85">
               Die stetige Suche nach Qualität, gepaart mit außergewöhnlichem Design, wurde durch die
-              Verleihung des STILPUNKTE Award 25/26 gewürdigt. ZB Interieur in Homburg gehört nun zu
-              den besten Adressen im Bereich Interieur & Design im Saarland und im DACH-Raum.
+              Verleihung des STILPUNKTE Award 25/26 gewürdigt. ZB Interieur in Homburg gehört zu den
+              besten Adressen im Saarland und im DACH-Raum.
             </p>
           </div>
           <img
@@ -62,43 +105,34 @@ export function HomePage() {
       </section>
 
       <section className="bg-white">
-        <div className="mx-auto max-w-6xl px-4 py-20">
-          <div className="mb-10 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+        <div className="mx-auto max-w-6xl px-4 py-16 md:py-20">
+          <div className="mb-8 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <div>
-              <p className="text-xs font-semibold tracking-[0.16em] text-brand uppercase">
-                Wir planen und richten ein
-              </p>
+              <p className="text-xs font-semibold tracking-[0.16em] text-brand uppercase">Showroom</p>
               <h2 className="mt-2 font-serif text-3xl font-bold md:text-4xl">
-                Exklusives Interieur
+                Einblicke aus Homburg
               </h2>
               <p className="mt-3 max-w-xl text-muted">
-                Designer-Möbel, einzigartig und außergewöhnlich – ausgewählt und geplant von ZB
-                Interieur.
+                Designmöbel und Raumstimmungen – am besten live im Showroom erleben.
               </p>
             </div>
-            <Link to="/galerien" className="text-sm font-semibold tracking-wide text-brand uppercase">
-              Alle Galerien →
-            </Link>
+            <a
+              href={site.booking}
+              target="_blank"
+              rel="noreferrer"
+              className="text-sm font-semibold tracking-wide text-accent uppercase"
+            >
+              Besuchstermin →
+            </a>
           </div>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {galleries.slice(0, 6).map((g, i) => (
-              <Link
-                key={g.id}
-                to={`/galerien#${g.id}`}
-                className="group relative aspect-[4/3] overflow-hidden"
-                style={{ animationDelay: `${i * 60}ms` }}
-              >
-                <img
-                  src={g.image}
-                  alt={g.title}
-                  className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-                <div className="absolute inset-x-0 bottom-0 p-5 text-white">
-                  <h3 className="font-serif text-xl font-bold">{g.title}</h3>
-                  <p className="mt-1 text-sm text-white/80">{g.blurb}</p>
-                </div>
-              </Link>
+          <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
+            {showroomImages.map((src) => (
+              <img
+                key={src}
+                src={src}
+                alt=""
+                className="aspect-square w-full object-cover"
+              />
             ))}
           </div>
         </div>
@@ -122,10 +156,8 @@ export function HomePage() {
               Ausdruck der Persönlichkeit.“
             </h2>
             <p className="mt-5 leading-relaxed text-muted">
-              Damit ist der Anspruch an die Ausstattung der eigenen Wohnung oder des Hauses klar
-              definiert: Es muss individuell sein. Anspruchsvolle Konzepte für individuelle
-              Einrichtungen schaffen Wohnwelten, die einen hohen Wohlfühlfaktor mit repräsentativer
-              Gestaltung verbinden.
+              Anspruchsvolle Konzepte für individuelle Einrichtungen schaffen Wohnwelten, die einen
+              hohen Wohlfühlfaktor mit repräsentativer Gestaltung verbinden.
             </p>
           </div>
           <div className="grid grid-cols-2 gap-3">
@@ -154,11 +186,9 @@ export function HomePage() {
               Lebensträume individuell gestalten
             </h2>
             <p className="mt-4 leading-relaxed text-muted">
-              In dieser Suche nach Individualität und Stil spielt die Einrichtungsberatung eine
-              entscheidende Rolle. Eine professionelle Einrichtungsberatung geht über das bloße
-              Anordnen von Möbeln hinaus. Sie ist eine Kunst, die die persönlichen Vorlieben, den
-              Lebensstil und die Funktionalität des Raumes berücksichtigt, um eine harmonische und
-              ansprechende Atmosphäre zu schaffen.
+              Professionelle Einrichtungsberatung geht über das Anordnen von Möbeln hinaus: Sie
+              berücksichtigt Vorlieben, Lebensstil und Funktionalität – für eine harmonische
+              Atmosphäre.
             </p>
             <p className="mt-4 font-serif text-xl text-brand">Joerg Zenz</p>
             <Link
@@ -181,15 +211,16 @@ export function HomePage() {
               Wir planen Ihr perfektes Zuhause
             </h2>
             <p className="mt-4 leading-relaxed text-muted">
-              Ein exklusives Wohnkonzept zu entwickeln bedeutet nicht, eine Kulisse zu erschaffen.
               Die perfekte Raumgestaltung wird zum Teil des Lebens und spiegelt die Persönlichkeit
-              des Bewohners wider.
+              der Bewohner wider. Möbeldesigner und Innenarchitekt Joerg Zenz setzt Ihre Ideen mit
+              Leidenschaft und Kompetenz um.
             </p>
-            <p className="mt-4 leading-relaxed text-muted">
-              Wir verwirklichen Wohnwelten, in denen sich alle Bewohner mit ihren unterschiedlichen
-              Bedürfnissen, Ansprüchen und Vorlieben wohlfühlen. Möbeldesigner und Innenarchitekt
-              Joerg Zenz setzt auch Ihre Ideen mit viel Leidenschaft und Kompetenz um.
-            </p>
+            <Link
+              to="/kontakt"
+              className="mt-6 inline-flex rounded-full bg-accent px-6 py-3 text-sm font-bold tracking-[0.06em] text-white uppercase"
+            >
+              Jetzt anfragen
+            </Link>
           </div>
           <div className="relative overflow-hidden bg-ink">
             <video

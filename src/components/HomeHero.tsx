@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { reasons } from '../data/site'
+import { reasons, showroomImages } from '../data/site'
 
 export function HomeHero() {
   return (
@@ -77,14 +77,7 @@ export function HomeHero() {
       {/* Showroom-Streifen wie Galerie-Slider auf der Originalseite */}
       <div className="border-t border-line bg-fog">
         <div className="mx-auto flex max-w-6xl gap-3 overflow-x-auto px-4 py-5 [scrollbar-width:none]">
-          {[
-            '/images/hero-1.jpg',
-            '/images/hero-2.jpg',
-            '/images/ledersofa.jpg',
-            '/images/showroom-1.jpg',
-            '/images/showroom-2.jpg',
-            '/images/giellesse.jpg',
-          ].map((src) => (
+          {showroomImages.map((src) => (
             <img
               key={src}
               src={src}

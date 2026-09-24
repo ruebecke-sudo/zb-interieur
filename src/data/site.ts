@@ -19,115 +19,50 @@ export const site = {
   booking: 'https://zenz-ben.de/funnel-terminplanung',
 } as const
 
+/** Schlanke Navigation – Fokus auf Beratung & Planung (ohne Blog/Galerien) */
 export const nav = [
-  {
-    label: 'Öffnungszeiten',
-    href: '/#oeffnungszeiten',
-  },
-  {
-    label: 'Möbel',
-    href: '/galerien',
-    children: [
-      { label: 'Neuheiten im Showroom', href: '/galerien#neuheiten' },
-      { label: 'Sofas & Couches', href: '/galerien#sofas' },
-      { label: 'Tische', href: '/galerien#tische' },
-      { label: 'Betten', href: '/galerien#betten' },
-      { label: 'Lampen', href: '/galerien#lampen' },
-      { label: 'Küchen', href: '/galerien#kuechen' },
-      { label: 'Tapeten & Stoffe', href: '/galerien#tapeten' },
-      { label: 'Accessoires', href: '/galerien#accessoires' },
-    ],
-  },
+  { label: 'Beratung', href: '/beratung' },
   {
     label: 'Planung',
     href: '/planung',
     children: [
-      { label: 'Einrichtungsberatung', href: '/beratung' },
       { label: 'Küchen · Bäder · Büros', href: '/planung' },
-      { label: 'Terrassen & Outdoor', href: '/outdoor' },
       { label: 'Raumgestaltung', href: '/planung#raumgestaltung' },
+      { label: 'Terrassen & Outdoor', href: '/outdoor' },
     ],
   },
+  { label: 'Service', href: '/service' },
+  { label: 'Kontakt', href: '/kontakt' },
+] as const
+
+export const services = [
   {
-    label: 'Service',
-    href: '/service',
-    children: [
-      { label: 'Einrichtungstipps (PDF)', href: '/docs/40-profitipps.pdf' },
-      { label: 'Pflegetipps (PDF)', href: '/docs/pflege-tipps.pdf' },
-      { label: 'News & Info', href: '/service' },
-    ],
+    title: 'Einrichtungsberatung',
+    href: '/beratung',
+    image: '/images/joerg-zenz.jpg',
+    blurb: 'Individuelle Wohnkonzepte – von der ersten Idee bis zur fertigen Atmosphäre.',
   },
   {
-    label: 'Galerien',
-    href: '/galerien',
+    title: 'Küchen · Bäder · Büros',
+    href: '/planung',
+    image: '/images/planen.jpg',
+    blurb: 'Funktionale Planung mit hochwertigen Materialien und klarer Formensprache.',
   },
   {
-    label: 'Kontakt',
-    href: '/kontakt',
+    title: 'Terrassen & Outdoor',
+    href: '/outdoor',
+    image: '/images/giellesse.jpg',
+    blurb: 'Premium-Outdoor für Terrasse und Garten – abgestimmt auf Ihr Zuhause.',
   },
 ] as const
 
-export const galleries = [
-  {
-    id: 'neuheiten',
-    title: 'Neuheiten im Showroom',
-    image: '/images/showroom-1.jpg',
-    blurb: 'Aktuelle Highlights direkt aus unserem Showroom in Homburg.',
-  },
-  {
-    id: 'sofas',
-    title: 'Sofas & Couches',
-    image: '/images/sofa-aria.jpg',
-    blurb: 'Designer-Sofas von Papadatos, Aria und weiteren Premium-Marken.',
-  },
-  {
-    id: 'tische',
-    title: 'Tische',
-    image: '/images/tisch.jpg',
-    blurb: 'Ess- und Beistelltische mit klarer Formensprache.',
-  },
-  {
-    id: 'betten',
-    title: 'Betten',
-    image: '/images/ledersofa.jpg',
-    blurb: 'Rückzugsorte mit hochwertigen Materialien und ruhigem Design.',
-  },
-  {
-    id: 'lampen',
-    title: 'Lampen',
-    image: '/images/showroom-2.jpg',
-    blurb: 'Lichtdesign, das Räume strukturiert und Atmosphäre schafft.',
-  },
-  {
-    id: 'kuechen',
-    title: 'Küchen',
-    image: '/images/planen.jpg',
-    blurb: 'Individuelle Küchenplanung – funktional, elegant, maßgeschneidert.',
-  },
-  {
-    id: 'tapeten',
-    title: 'Tapeten & Stoffe',
-    image: '/images/blumen.jpg',
-    blurb: 'Harlequin und weitere Textilmarken für Wand und Fläche.',
-  },
-  {
-    id: 'accessoires',
-    title: 'Accessoires',
-    image: '/images/blumen-ausschnitt.jpg',
-    blurb: 'Deko, Kuscheldecken und Details, die Räume fertigstellen.',
-  },
-  {
-    id: 'outdoor',
-    title: 'Outdoor · Varaschin & Sifas',
-    image: '/images/giellesse.jpg',
-    blurb: 'Premium-Outdoor für Terrasse und Garten.',
-  },
-  {
-    id: 'marken',
-    title: 'Papadatos · AL2 · Moeller · Giellesse · Fine · Piure',
-    image: '/images/sofa-papadatos.jpg',
-    blurb: 'Ausgewählte Designermarken – einzigartig und außergewöhnlich.',
-  },
+export const showroomImages = [
+  '/images/hero-1.jpg',
+  '/images/hero-2.jpg',
+  '/images/ledersofa.jpg',
+  '/images/showroom-1.jpg',
+  '/images/showroom-2.jpg',
+  '/images/sofa-aria.jpg',
 ] as const
 
 export const reasons = [

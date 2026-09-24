@@ -1,6 +1,8 @@
 # ZB Interieur – Website (Netlify)
 
-Statische Neuauflage der Website [zb-interieur.de](https://zb-interieur.de/) für den Betrieb auf **Netlify**: Startseite, Planung, Beratung, Galerien, Outdoor, Service, Kontakt (Netlify Forms) sowie Impressum, Datenschutz und AGB.
+Statische Neuauflage der Website [zb-interieur.de](https://zb-interieur.de/) für den Betrieb auf **Netlify**: Startseite, Planung, Beratung, Outdoor, Service, Kontakt (Netlify Forms) sowie Impressum, Datenschutz und AGB.
+
+Blog und Galerie-Kategorien entfallen bewusst – Fokus auf Beratung, Planung und Terminbuchung.
 
 ## Lokal starten
 

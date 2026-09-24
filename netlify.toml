@@ -5,6 +5,22 @@
 [build.environment]
   NODE_VERSION = "22"
 
+# Alte Galerie-/Blog-Pfade
+[[redirects]]
+  from = "/galerien/*"
+  to = "/planung"
+  status = 301
+
+[[redirects]]
+  from = "/galerie/*"
+  to = "/planung"
+  status = 301
+
+[[redirects]]
+  from = "/blog/*"
+  to = "/"
+  status = 301
+
 # SPA routing
 [[redirects]]
   from = "/*"

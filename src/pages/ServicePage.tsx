@@ -1,3 +1,6 @@
+import { Link } from 'react-router-dom'
+import { site } from '../data/site'
+
 export function ServicePage() {
   return (
     <>
@@ -38,10 +41,35 @@ export function ServicePage() {
           <h2 className="mt-2 font-serif text-2xl font-bold group-hover:text-brand">
             Professionelle Pflegetipps für Möbel
           </h2>
-          <p className="mt-3 text-muted">
-            Damit hochwertige Materialien lange schön bleiben.
-          </p>
+          <p className="mt-3 text-muted">Damit hochwertige Materialien lange schön bleiben.</p>
         </a>
+      </section>
+
+      <section className="border-t border-line bg-white">
+        <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 px-4 py-12 md:flex-row md:items-center">
+          <div>
+            <h2 className="font-serif text-2xl font-bold">Persönliche Beratung statt Katalog</h2>
+            <p className="mt-2 max-w-xl text-muted">
+              Die besten Lösungen entstehen im Gespräch – im Showroom oder online.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <a
+              href={site.booking}
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-full bg-accent px-5 py-3 text-sm font-bold tracking-[0.06em] text-white uppercase"
+            >
+              Termin buchen
+            </a>
+            <Link
+              to="/kontakt"
+              className="border border-brand px-5 py-3 text-sm font-semibold uppercase tracking-[0.08em] text-brand"
+            >
+              Kontakt
+            </Link>
+          </div>
+        </div>
       </section>
     </>
   )

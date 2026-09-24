@@ -14,10 +14,11 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 bg-white shadow-[0_1px_0_rgba(0,0,0,0.06)]">
-      {/* Tier 1 – Kontaktleiste */}
       <div className="hidden border-b border-line bg-white text-[12px] text-muted md:block">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-2">
-          <span className="font-medium text-ink">{site.name}</span>
+          <NavLink to="/" className="font-medium text-ink hover:text-brand">
+            {site.name}
+          </NavLink>
           <div className="flex flex-wrap items-center justify-center gap-2 text-center">
             <span>
               {site.zipCity} | {site.street}
@@ -50,7 +51,6 @@ export function Header() {
         </div>
       </div>
 
-      {/* Tier 2 – Branding */}
       <div className="bg-brand">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
           <NavLink to="/" className="shrink-0" onClick={() => setOpen(false)}>
@@ -78,10 +78,20 @@ export function Header() {
         </div>
       </div>
 
-      {/* Tier 3 – Navigation */}
       <div className="hidden border-b border-line bg-white lg:block">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4">
           <nav className="flex items-center">
+            <NavLink
+              to="/"
+              end
+              className={({ isActive }) =>
+                `inline-block px-3 py-3.5 text-[13px] font-medium tracking-[0.04em] transition ${
+                  isActive ? 'text-brand' : 'text-ink/80 hover:text-brand'
+                }`
+              }
+            >
+              Start
+            </NavLink>
             {nav.map((item) => (
               <div key={item.label} className="group relative">
                 <NavLink
@@ -97,54 +107,42 @@ export function Header() {
                 </NavLink>
                 {'children' in item && item.children ? (
                   <div className="invisible absolute left-0 top-full z-20 min-w-[220px] bg-white py-2 opacity-0 shadow-lg transition group-hover:visible group-hover:opacity-100">
-                    {item.children.map((child) =>
-                      child.href.endsWith('.pdf') ? (
-                        <a
-                          key={child.href}
-                          href={child.href}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="block px-4 py-2 text-sm text-ink/80 hover:bg-fog hover:text-brand"
-                        >
-                          {child.label}
-                        </a>
-                      ) : (
-                        <NavLink
-                          key={child.href}
-                          to={child.href}
-                          className="block px-4 py-2 text-sm text-ink/80 hover:bg-fog hover:text-brand"
-                        >
-                          {child.label}
-                        </NavLink>
-                      ),
-                    )}
+                    {item.children.map((child) => (
+                      <NavLink
+                        key={child.href}
+                        to={child.href}
+                        className="block px-4 py-2 text-sm text-ink/80 hover:bg-fog hover:text-brand"
+                      >
+                        {child.label}
+                      </NavLink>
+                    ))}
                   </div>
                 ) : null}
               </div>
             ))}
           </nav>
-          <div className="flex items-center gap-3">
-            <NavLink
-              to="/service"
-              className="rounded-full bg-accent px-4 py-1.5 text-[12px] font-bold tracking-[0.06em] text-white uppercase hover:brightness-95"
-            >
-              News & Info
-            </NavLink>
-            <a
-              href={site.booking}
-              target="_blank"
-              rel="noreferrer"
-              className="text-[13px] font-medium text-ink/80 hover:text-brand"
-            >
-              Termin
-            </a>
-          </div>
+          <a
+            href={site.booking}
+            target="_blank"
+            rel="noreferrer"
+            className="rounded-full bg-accent px-4 py-1.5 text-[12px] font-bold tracking-[0.06em] text-white uppercase hover:brightness-95"
+          >
+            Termin buchen
+          </a>
         </div>
       </div>
 
       {open ? (
         <div className="max-h-[70vh] overflow-y-auto border-t border-line bg-white lg:hidden">
           <div className="space-y-1 px-4 py-4">
+            <NavLink
+              to="/"
+              end
+              onClick={() => setOpen(false)}
+              className="block border-b border-line py-3 text-base font-semibold text-ink"
+            >
+              Start
+            </NavLink>
             {nav.map((item) => (
               <div key={item.label} className="border-b border-line py-3">
                 <NavLink
@@ -156,40 +154,28 @@ export function Header() {
                 </NavLink>
                 {'children' in item && item.children ? (
                   <div className="mt-2 space-y-1 pl-2">
-                    {item.children.map((child) =>
-                      child.href.endsWith('.pdf') ? (
-                        <a
-                          key={child.href}
-                          href={child.href}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="block py-1 text-sm text-muted"
-                          onClick={() => setOpen(false)}
-                        >
-                          {child.label}
-                        </a>
-                      ) : (
-                        <NavLink
-                          key={child.href}
-                          to={child.href}
-                          onClick={() => setOpen(false)}
-                          className="block py-1 text-sm text-muted"
-                        >
-                          {child.label}
-                        </NavLink>
-                      ),
-                    )}
+                    {item.children.map((child) => (
+                      <NavLink
+                        key={child.href}
+                        to={child.href}
+                        onClick={() => setOpen(false)}
+                        className="block py-1 text-sm text-muted"
+                      >
+                        {child.label}
+                      </NavLink>
+                    ))}
                   </div>
                 ) : null}
               </div>
             ))}
-            <NavLink
-              to="/service"
-              onClick={() => setOpen(false)}
+            <a
+              href={site.booking}
+              target="_blank"
+              rel="noreferrer"
               className="mt-3 inline-flex w-full items-center justify-center rounded-full bg-accent px-4 py-3 text-sm font-bold text-white uppercase"
             >
-              News & Info
-            </NavLink>
+              Termin buchen
+            </a>
           </div>
         </div>
       ) : null}

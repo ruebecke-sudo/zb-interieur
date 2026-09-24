@@ -1,7 +1,6 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 import { Layout } from './components/Layout'
 import { BeratungPage } from './pages/BeratungPage'
-import { GalerienPage } from './pages/GalerienPage'
 import { HomePage } from './pages/HomePage'
 import { AgbPage, DatenschutzPage, ImpressumPage } from './pages/LegalPages'
 import { KontaktPage } from './pages/KontaktPage'
@@ -18,12 +17,16 @@ const router = createBrowserRouter([
       { path: 'beratung', element: <BeratungPage /> },
       { path: 'planung', element: <PlanungPage /> },
       { path: 'outdoor', element: <OutdoorPage /> },
-      { path: 'galerien', element: <GalerienPage /> },
       { path: 'service', element: <ServicePage /> },
       { path: 'kontakt', element: <KontaktPage /> },
       { path: 'impressum', element: <ImpressumPage /> },
       { path: 'datenschutz', element: <DatenschutzPage /> },
       { path: 'agb', element: <AgbPage /> },
+      // Alte Galerie-/Blog-URLs → sinnvolle Ziele
+      { path: 'galerien', element: <Navigate to="/planung" replace /> },
+      { path: 'galerie', element: <Navigate to="/planung" replace /> },
+      { path: 'blog', element: <Navigate to="/" replace /> },
+      { path: 'blog/*', element: <Navigate to="/" replace /> },
     ],
   },
 ])
