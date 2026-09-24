@@ -41,7 +41,7 @@ export const nav = [
     label: 'Planung',
     href: '/planung',
     children: [
-      { label: 'Küchen · Bäder · Büros', href: '/planung' },
+      { label: 'Küchen · Schlafzimmer · Bäder', href: '/planung' },
       { label: 'Raumgestaltung', href: '/planung#raumgestaltung' },
       { label: 'Terrassen & Outdoor', href: '/outdoor' },
     ],
@@ -75,7 +75,7 @@ export const showroomImages = [
   '/images/kueche-render-1.jpg',
   '/images/kueche-render-2.jpg',
   '/images/kueche-render-3.jpg',
-  '/images/hero-1.jpg',
+  '/images/schlafzimmer-render-1.jpg',
   '/images/ledersofa.jpg',
   '/images/showroom-1.jpg',
 ] as const

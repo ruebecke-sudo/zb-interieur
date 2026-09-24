@@ -67,11 +67,11 @@ export function PlanungPage() {
         ))}
 
         <div>
-          <h2 className="text-2xl font-bold">Küchenplanung in 3D</h2>
+          <h2 className="text-2xl font-bold">Planung in 3D</h2>
           <p className="mt-2 max-w-2xl text-muted">
-            Visualisierungen aus aktuellen Projekten – so sehen geplante Küchen vor der Umsetzung aus.
+            Visualisierungen aus aktuellen Projekten – so sehen geplante Räume vor der Umsetzung aus.
           </p>
-          <div className="mt-6 grid gap-3 sm:grid-cols-3">
+          <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <img
               src="/images/kueche-render-1.jpg"
               alt="Küchenplanung mit Insel"
@@ -85,6 +85,11 @@ export function PlanungPage() {
             <img
               src="/images/kueche-render-3.jpg"
               alt="Offene Küche mit Kochinsel"
+              className="aspect-[4/3] w-full object-cover"
+            />
+            <img
+              src="/images/schlafzimmer-render-1.jpg"
+              alt="Schlafzimmerplanung"
               className="aspect-[4/3] w-full object-cover"
             />
           </div>
