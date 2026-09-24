@@ -54,13 +54,13 @@ export const services = [
   {
     title: 'Einrichtungsberatung',
     href: '/beratung',
-    image: '/images/joerg-zenz.jpg',
+    image: '/images/kueche-render-1.jpg',
     blurb: 'Individuelle Wohnkonzepte – von der ersten Idee bis zur fertigen Atmosphäre.',
   },
   {
     title: 'Küchen · Bäder · Büros',
     href: '/planung',
-    image: '/images/kueche-render-3.jpg',
+    image: '/images/kueche-render-2.jpg',
     blurb: 'Funktionale Planung mit hochwertigen Materialien und klarer Formensprache.',
   },
   {
@@ -76,8 +76,6 @@ export const showroomImages = [
   '/images/kueche-render-2.jpg',
   '/images/kueche-render-3.jpg',
   '/images/schlafzimmer-render-1.jpg',
-  '/images/ledersofa.jpg',
-  '/images/showroom-1.jpg',
 ] as const
 
 export const reasons = [

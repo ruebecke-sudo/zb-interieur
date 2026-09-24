@@ -15,7 +15,7 @@ export function BeratungPage() {
     <>
       <section className="relative overflow-hidden bg-ink text-white">
         <img
-          src="/images/planen.jpg"
+          src="/images/kueche-render-1.jpg"
           alt=""
           className="absolute inset-0 h-full w-full object-cover opacity-50"
         />
@@ -23,7 +23,7 @@ export function BeratungPage() {
           <p className="text-xs font-semibold tracking-[0.16em] text-white/70 uppercase">
             Einrichtungsberatung Homburg
           </p>
-          <h1 className="mt-3 max-w-3xl font-serif text-4xl font-bold md:text-5xl">
+          <h1 className="mt-3 max-w-3xl text-4xl font-bold md:text-5xl">
             Küchenplanung, Büroplanung, Terrassenplanung, Badplanung
           </h1>
           <p className="mt-4 max-w-2xl text-white/85">
@@ -72,7 +72,7 @@ export function BeratungPage() {
             </Link>
           </div>
         </div>
-        <img src="/images/planung-3d.jpg" alt="3D-Einrichtungsplanung" className="w-full object-cover" />
+        <img src="/images/kueche-render-2.jpg" alt="3D-Einrichtungsplanung" className="w-full object-cover" />
       </section>
 
       <FaqSection />

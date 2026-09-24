@@ -142,7 +142,7 @@ export function HomePage() {
           className="absolute inset-0"
           style={{
             backgroundImage:
-              "linear-gradient(rgba(255,255,255,0.72),rgba(255,255,255,0.72)), url('/images/couch-titel.jpg')",
+              "linear-gradient(rgba(255,255,255,0.72),rgba(255,255,255,0.72)), url('/images/kueche-render-2.jpg')",
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}
@@ -160,9 +160,9 @@ export function HomePage() {
             </p>
           </div>
           <div className="grid grid-cols-2 gap-3">
-            <img src="/images/sofa-aria.jpg" alt="" className="aspect-[3/4] object-cover" />
+            <img src="/images/kueche-render-1.jpg" alt="" className="aspect-[3/4] object-cover" />
             <img
-              src="/images/sofa-papadatos.jpg"
+              src="/images/kueche-render-3.jpg"
               alt=""
               className="mt-8 aspect-[3/4] object-cover"
             />
@@ -226,7 +226,7 @@ export function HomePage() {
               className="aspect-video w-full object-cover"
               controls
               playsInline
-              poster="/images/hero-1.jpg"
+              poster="/images/kueche-render-1.jpg"
               preload="metadata"
             >
               <source src="/videos/einrichter.mp4" type="video/mp4" />
