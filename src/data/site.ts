@@ -72,10 +72,15 @@ export const services = [
 ] as const
 
 export const showroomImages = [
-  '/images/kueche-render-1.jpg',
-  '/images/kueche-render-2.jpg',
-  '/images/kueche-render-3.jpg',
-  '/images/schlafzimmer-render-1.jpg',
+  '/images/showroom-live-1.jpg',
+  '/images/showroom-live-2.jpg',
+  '/images/showroom-live-3.jpg',
+  '/images/showroom-live-4.jpg',
+  '/images/showroom-live-5.jpg',
+  '/images/showroom-live-6.jpg',
+  '/images/showroom-live-7.jpg',
+  '/images/showroom-live-8.jpg',
+  '/images/showroom-live-9.jpg',
 ] as const
 
 export const reasons = [

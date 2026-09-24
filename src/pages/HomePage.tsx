@@ -100,11 +100,18 @@ export function HomePage() {
               besten Adressen im Saarland und im DACH-Raum.
             </p>
           </div>
-          <img
-            src="/images/award.jpg"
-            alt="STILPUNKTE Award 2025/2026"
-            className="mx-auto max-h-56 w-auto bg-white object-contain p-4"
-          />
+          <div className="flex flex-wrap items-center justify-center gap-6">
+            <img
+              src="/images/stilpunkte-siegel.png"
+              alt="STILPUNKTE Lifestyle Guide Siegel"
+              className="h-28 w-28 bg-black object-contain p-2 md:h-32 md:w-32"
+            />
+            <img
+              src="/images/award.jpg"
+              alt="STILPUNKTE Award 2025/2026"
+              className="mx-auto max-h-56 w-auto bg-white object-contain p-4"
+            />
+          </div>
         </div>
       </section>
 
@@ -129,7 +136,7 @@ export function HomePage() {
               Besuchstermin →
             </Link>
           </div>
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
+          <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
             {showroomImages.map((src) => (
               <img key={src} src={src} alt="" className="aspect-square w-full object-cover" />
             ))}
