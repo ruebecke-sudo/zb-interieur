@@ -1,35 +1,32 @@
 import { Link } from 'react-router-dom'
 
-/**
- * Exklusiver Header für den Designmöbel-Bereich.
- * Bildflächen sind Platzhalter – später durch echte Fotos ersetzen
- * (data-image="designmoebel-hero" / "designmoebel-detail").
- */
+const images = {
+  lounge: '/images/designmoebel-1.jpg',
+  dining: '/images/designmoebel-2.jpg',
+  sofa: '/images/designmoebel-3.jpg',
+} as const
+
 export function DesignmoebelHeader() {
   return (
-    <section className="relative overflow-hidden bg-brand text-white">
-      {/* Atmosphäre: weiche Lichtverläufe in Markenfarben */}
+    <section className="relative overflow-hidden text-white">
+      {/* Vollflächiges Hintergrundmotiv */}
+      <img
+        src={images.lounge}
+        alt=""
+        className="animate-kenburns absolute inset-0 h-full w-full object-cover"
+      />
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0"
+        className="absolute inset-0"
         style={{
           background: `
-            radial-gradient(ellipse 80% 60% at 85% 20%, color-mix(in srgb, var(--color-brand-soft) 55%, transparent), transparent 55%),
-            radial-gradient(ellipse 50% 40% at 10% 90%, color-mix(in srgb, var(--color-accent) 18%, transparent), transparent 50%),
-            linear-gradient(160deg, var(--color-brand-dark) 0%, var(--color-brand) 48%, #2a0012 100%)
+            linear-gradient(105deg, rgba(66,0,27,0.94) 0%, rgba(88,0,36,0.88) 42%, rgba(88,0,36,0.55) 68%, rgba(26,0,12,0.35) 100%),
+            linear-gradient(to top, rgba(26,0,12,0.55) 0%, transparent 45%)
           `,
         }}
       />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-[0.07]"
-        style={{
-          backgroundImage:
-            'repeating-linear-gradient(-12deg, transparent, transparent 22px, rgba(255,255,255,0.35) 22px, rgba(255,255,255,0.35) 23px)',
-        }}
-      />
 
-      <div className="relative mx-auto grid min-h-[78vh] max-w-6xl items-center gap-10 px-4 py-16 md:grid-cols-[1.05fr_0.95fr] md:gap-14 md:py-20 lg:min-h-[85vh]">
+      <div className="relative mx-auto grid min-h-[78vh] max-w-6xl items-center gap-10 px-4 py-16 md:grid-cols-[1fr_1fr] md:gap-12 md:py-20 lg:min-h-[88vh]">
         <div className="animate-fade-up max-w-xl">
           <p className="text-[11px] font-semibold tracking-[0.28em] text-white/55 uppercase">
             ZB Interieur · Homburg
@@ -38,7 +35,7 @@ export function DesignmoebelHeader() {
             Design
             <span className="block text-accent">möbel</span>
           </h2>
-          <p className="mt-6 max-w-md text-[15px] leading-relaxed text-white/78 md:text-base">
+          <p className="mt-6 max-w-md text-[15px] leading-relaxed text-white/80 md:text-base">
             Kuratierte Stücke, präzise ausgewählt – für Räume mit Haltung. Weniger Katalog, mehr
             Charakter: Interieur, das bleibt.
           </p>
@@ -67,34 +64,28 @@ export function DesignmoebelHeader() {
           </div>
         </div>
 
-        {/* Bildplatzhalter – später ersetzen (data-image="designmoebel-hero") */}
-        <div className="relative animate-slide-fade [animation-delay:120ms]">
-          <div
-            data-image="designmoebel-hero"
-            className="relative aspect-[4/5] w-full overflow-hidden md:aspect-[3/4]"
-            style={{
-              background:
-                'linear-gradient(155deg, color-mix(in srgb, var(--color-brand-soft) 45%, #1a000c) 0%, #1a000c 100%)',
-            }}
-          >
-            <div
-              aria-hidden
-              className="animate-kenburns absolute inset-0 opacity-50"
-              style={{
-                background:
-                  'radial-gradient(ellipse at 70% 30%, color-mix(in srgb, var(--color-accent) 22%, transparent), transparent 55%)',
-              }}
+        {/* Bildkomposition: Essbereich + Sofa */}
+        <div className="animate-slide-fade relative grid grid-cols-2 gap-2 [animation-delay:120ms] md:gap-3">
+          <div className="col-span-2 overflow-hidden md:col-span-1 md:row-span-2">
+            <img
+              src={images.dining}
+              alt="Designmöbel Essbereich im Showroom"
+              className="aspect-[3/4] h-full w-full object-cover transition duration-[1.2s] hover:scale-[1.03] md:min-h-[520px]"
             />
-            <div className="absolute inset-0 flex flex-col items-start justify-end gap-2 p-8 md:p-10">
-              <span className="text-[10px] font-semibold tracking-[0.24em] text-white/40 uppercase">
-                Bild folgt
-              </span>
-              <span className="max-w-[14rem] text-sm leading-snug text-white/70">
-                Hero-Motiv Designmöbel
-                <span className="mt-1 block text-white/40">(Hochformat · vollflächig)</span>
-              </span>
-            </div>
-            <div aria-hidden className="absolute inset-5 border border-white/12" />
+          </div>
+          <div className="overflow-hidden">
+            <img
+              src={images.sofa}
+              alt="Designer-Sofa im Showroom"
+              className="aspect-square w-full object-cover transition duration-[1.2s] hover:scale-[1.03] md:aspect-[4/5]"
+            />
+          </div>
+          <div className="overflow-hidden">
+            <img
+              src={images.lounge}
+              alt="Lounge-Bereich mit Designmöbeln"
+              className="aspect-square w-full object-cover transition duration-[1.2s] hover:scale-[1.03] md:aspect-[4/5]"
+            />
           </div>
         </div>
       </div>
