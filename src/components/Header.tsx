@@ -51,9 +51,7 @@ export function Header() {
           <img
             src="/images/logo.jpg"
             alt="ZB Interieur"
-            className={`h-12 w-auto object-contain transition md:h-14 ${
-              scrolled || open ? '' : 'brightness-0 invert'
-            }`}
+            className="h-12 w-auto object-contain md:h-14"
           />
         </NavLink>
 
