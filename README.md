@@ -8,9 +8,9 @@ Blog und Galerie-Kategorien entfallen bewusst – Fokus auf Beratung, Planung un
 
 Aktueller Deploy (anonym / Drop – bitte innerhalb von 60 Min. in dein Netlify-Konto übernehmen):
 
-- **URL:** https://poetic-licorice-b88ba6.netlify.app  
+- **URL:** https://cheerful-zabaione-af0f27.netlify.app  
 - **Zugangspasswort (Drop):** `My-Drop-Site`  
-- **Site beanspruchen:** [Claim-Link](https://app.netlify.com/drop/poetic-licorice-b88ba6) (im Agent-Chat bzw. CLI-Ausgabe)
+- **Site beanspruchen:** [Claim-Link](https://app.netlify.com/drop/cheerful-zabaione-af0f27) (im Agent-Chat bzw. CLI-Ausgabe)
 
 Nach dem Claim kannst du die Domain `zb-interieur.de` unter Domain management zuweisen und das Drop-Passwort entfernen.
 
