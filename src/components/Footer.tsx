@@ -9,7 +9,7 @@ export function Footer() {
           <img
             src="/images/logo.jpg"
             alt="ZB Interieur"
-            className="mb-4 h-12 w-auto brightness-0 invert"
+            className="mb-4 h-12 w-auto"
           />
           <p className="font-serif text-lg leading-snug">
             Exklusives Interieur · Designmöbel · Raumgestaltung in Homburg
