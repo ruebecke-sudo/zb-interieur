@@ -138,7 +138,7 @@ export const faqs = [
     a: 'Ja. Ob Wohnzimmer, Küche, Bad, Büro oder Terrasse – wir planen gezielt das, was Sie brauchen, und denken bei Bedarf später das Gesamtkonzept mit.',
   },
   {
-    q: 'Muss ich Möbel bei euch kaufen?',
-    a: 'Nein. Unsere Beratung steht für sich. Viele Kunden setzen die Planung mit Stücken aus unserem Sortiment um – andere kombinieren bestehende Möbel mit neuen Empfehlungen.',
+    q: 'Kaufe ich die Möbel bei euch?',
+    a: 'Ja – genau darauf sind wir ausgerichtet. Nach der Beratung und Planung beziehen Sie die Möbel und Einrichtungen über ZB Interieur: ausgewählte Designermarken, passend zu Ihrem Konzept, aus einer Hand inklusive Beratung und Umsetzung.',
   },
 ] as const
