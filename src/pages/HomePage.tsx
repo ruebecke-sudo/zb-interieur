@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { DesignmoebelHeader } from '../components/DesignmoebelHeader'
 import { FaqSection } from '../components/FaqSection'
 import { HomeHero } from '../components/HomeHero'
 import { TestimonialsSection } from '../components/TestimonialsSection'
@@ -9,6 +10,8 @@ export function HomePage() {
   return (
     <>
       <HomeHero />
+
+      <DesignmoebelHeader />
 
       <section className="bg-white">
         <div className="mx-auto max-w-6xl px-4 py-16 md:py-20">
