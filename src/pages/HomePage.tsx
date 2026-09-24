@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom'
+import { FaqSection } from '../components/FaqSection'
 import { HomeHero } from '../components/HomeHero'
-import { services, showroomImages, site } from '../data/site'
+import { TestimonialsSection } from '../components/TestimonialsSection'
+import { WhatsAppIcon } from '../components/WhatsAppButton'
+import { services, showroomImages, site, whatsappHref } from '../data/site'
 
 export function HomePage() {
   return (
@@ -17,8 +20,8 @@ export function HomePage() {
               Beratungstermin in Homburg
             </h2>
             <p className="mt-4 text-muted">
-              Vereinbaren Sie einen Termin im Showroom oder hinterlassen Sie Ihre Nummer – wir rufen
-              gerne zurück.
+              Vereinbaren Sie einen Termin im Showroom oder schreiben Sie uns kurz per WhatsApp –
+              wir melden uns gerne.
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               <a
@@ -29,18 +32,21 @@ export function HomePage() {
               >
                 Online Termin
               </a>
+              <a
+                href={whatsappHref}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 rounded-full bg-[#25D366] px-6 py-3 text-sm font-bold tracking-[0.06em] text-white uppercase hover:brightness-95"
+              >
+                <WhatsAppIcon className="h-4 w-4" />
+                WhatsApp
+              </a>
               <Link
                 to="/kontakt"
                 className="inline-flex border border-brand px-6 py-3 text-sm font-semibold uppercase tracking-[0.1em] text-brand hover:bg-fog"
               >
-                Rückruf anfordern
+                Rückruf
               </Link>
-              <a
-                href={site.phoneHref}
-                className="inline-flex items-center px-2 text-sm font-medium text-muted hover:text-brand"
-              >
-                {site.phone}
-              </a>
             </div>
           </div>
         </div>
@@ -104,6 +110,8 @@ export function HomePage() {
         </div>
       </section>
 
+      <TestimonialsSection />
+
       <section className="bg-white">
         <div className="mx-auto max-w-6xl px-4 py-16 md:py-20">
           <div className="mb-8 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
@@ -127,12 +135,7 @@ export function HomePage() {
           </div>
           <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
             {showroomImages.map((src) => (
-              <img
-                key={src}
-                src={src}
-                alt=""
-                className="aspect-square w-full object-cover"
-              />
+              <img key={src} src={src} alt="" className="aspect-square w-full object-cover" />
             ))}
           </div>
         </div>
@@ -235,6 +238,8 @@ export function HomePage() {
           </div>
         </div>
       </section>
+
+      <FaqSection />
 
       <section className="border-t border-line bg-fog">
         <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 px-4 py-12 md:flex-row md:items-center">

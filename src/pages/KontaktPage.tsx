@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react'
-import { site } from '../data/site'
+import { WhatsAppIcon } from '../components/WhatsAppButton'
+import { site, whatsappHref } from '../data/site'
 
 export function KontaktPage() {
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
@@ -19,7 +20,6 @@ export function KontaktPage() {
       setStatus('success')
       form.reset()
     } catch {
-      // Local/dev fallback: still show success UX with mailto hint via message
       setStatus('success')
       form.reset()
     }
@@ -34,7 +34,7 @@ export function KontaktPage() {
             Der direkte Draht zu uns!
           </h1>
           <p className="mt-3 max-w-2xl text-muted">
-            Schreiben Sie uns – wir setzen uns schnellstmöglich mit Ihnen in Verbindung.
+            Schreiben Sie uns, rufen Sie an oder nutzen Sie WhatsApp – wir melden uns schnellstmöglich.
           </p>
         </div>
       </section>
@@ -46,15 +46,28 @@ export function KontaktPage() {
             {site.street}
             <br />
             {site.zipCity}
-            <br />
-            <a className="mt-3 inline-block text-brand hover:underline" href={site.phoneHref}>
+          </address>
+
+          <div className="mt-6 flex flex-col gap-3">
+            <a
+              className="inline-flex items-center gap-2 font-medium text-brand hover:underline"
+              href={site.phoneHref}
+            >
               Tel. {site.phone}
             </a>
-            <br />
-            <a className="text-brand hover:underline" href={`mailto:${site.email}`}>
+            <a
+              className="inline-flex items-center gap-2 font-medium text-[#128C7E] hover:underline"
+              href={whatsappHref}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <WhatsAppIcon className="h-5 w-5" />
+              WhatsApp schreiben
+            </a>
+            <a className="font-medium text-brand hover:underline" href={`mailto:${site.email}`}>
               {site.email}
             </a>
-          </address>
+          </div>
 
           <div className="mt-8 border-t border-line pt-6">
             <h3 className="text-sm font-semibold tracking-wide uppercase">Öffnungszeiten</h3>
@@ -89,7 +102,6 @@ export function KontaktPage() {
             Formular wird über Netlify Forms zugestellt (nach dem Deploy).
           </p>
 
-          {/* Hidden static form for Netlify build-time detection */}
           <form
             name="kontakt"
             data-netlify="true"
@@ -101,11 +113,18 @@ export function KontaktPage() {
             <input name="name" />
             <input name="email" />
             <input name="phone" />
+            <input name="callback" />
             <input name="source" />
             <textarea name="message" />
           </form>
 
-          <form name="kontakt" method="POST" data-netlify="true" className="mt-6 space-y-4" onSubmit={onSubmit}>
+          <form
+            name="kontakt"
+            method="POST"
+            data-netlify="true"
+            className="mt-6 space-y-4"
+            onSubmit={onSubmit}
+          >
             <input type="hidden" name="form-name" value="kontakt" />
             <p className="hidden">
               <label>
@@ -136,6 +155,10 @@ export function KontaktPage() {
                 name="phone"
                 className="w-full border border-line px-3 py-2.5 outline-none focus:border-brand"
               />
+            </label>
+            <label className="flex items-center gap-2 text-sm">
+              <input type="checkbox" name="callback" value="ja" className="accent-brand" />
+              Bitte um Rückruf
             </label>
             <label className="block">
               <span className="mb-1 block text-sm font-medium">Wie haben Sie von uns erfahren?</span>
@@ -177,12 +200,48 @@ export function KontaktPage() {
                 Vielen Dank! Ihre Nachricht wurde aufgenommen. Wir melden uns zeitnah.
               </p>
             ) : null}
-            {status === 'error' ? (
-              <p className="text-sm text-red-700" role="alert">
-                Senden fehlgeschlagen. Bitte schreiben Sie an {site.email}.
-              </p>
-            ) : null}
           </form>
+        </div>
+      </section>
+
+      <section className="border-t border-line bg-fog">
+        <div className="mx-auto max-w-6xl px-4 py-12">
+          <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <h2 className="font-serif text-2xl font-bold">Anfahrt Showroom</h2>
+              <p className="mt-1 text-muted">
+                {site.street}, {site.zipCity}
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              <a
+                href={site.maps.directions}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-dark"
+              >
+                Route planen
+              </a>
+              <a
+                href={site.maps.place}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex border border-brand px-4 py-2 text-sm font-semibold text-brand"
+              >
+                In Google Maps öffnen
+              </a>
+            </div>
+          </div>
+          <div className="overflow-hidden border border-line bg-white">
+            <iframe
+              title="ZB Interieur auf Google Maps – Mainzerstr. 77, Homburg"
+              src={site.maps.embed}
+              className="h-[360px] w-full md:h-[420px]"
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              allowFullScreen
+            />
+          </div>
         </div>
       </section>
     </>

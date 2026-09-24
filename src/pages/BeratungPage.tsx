@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom'
-import { site } from '../data/site'
+import { FaqSection } from '../components/FaqSection'
+import { WhatsAppIcon } from '../components/WhatsAppButton'
+import { site, whatsappHref } from '../data/site'
 
 const benefits = [
   'Individuelle Beratung – maßgeschneiderte Lösungen für Ihre Bedürfnisse',
@@ -47,24 +49,35 @@ export function BeratungPage() {
             Und legen Sie Wert auf modernes, zeitloses Design? Dann sind wir Ihr Ansprechpartner.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <Link
-              to="/kontakt"
-              className="bg-brand px-5 py-3 text-sm font-semibold uppercase tracking-[0.1em] text-white hover:bg-brand-dark"
-            >
-              Sofortkontakt
-            </Link>
             <a
               href={site.booking}
               target="_blank"
               rel="noreferrer"
-              className="border border-brand px-5 py-3 text-sm font-semibold uppercase tracking-[0.1em] text-brand"
+              className="bg-brand px-5 py-3 text-sm font-semibold uppercase tracking-[0.1em] text-white hover:bg-brand-dark"
             >
               Termin buchen
             </a>
+            <a
+              href={whatsappHref}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 bg-[#25D366] px-5 py-3 text-sm font-semibold uppercase tracking-[0.1em] text-white"
+            >
+              <WhatsAppIcon className="h-4 w-4" />
+              WhatsApp
+            </a>
+            <Link
+              to="/kontakt"
+              className="border border-brand px-5 py-3 text-sm font-semibold uppercase tracking-[0.1em] text-brand"
+            >
+              Kontaktformular
+            </Link>
           </div>
         </div>
         <img src="/images/planung-3d.jpg" alt="3D-Einrichtungsplanung" className="w-full object-cover" />
       </section>
+
+      <FaqSection />
     </>
   )
 }

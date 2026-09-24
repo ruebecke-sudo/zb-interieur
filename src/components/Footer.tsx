@@ -1,16 +1,13 @@
 import { Link } from 'react-router-dom'
-import { site } from '../data/site'
+import { site, whatsappHref } from '../data/site'
+import { WhatsAppIcon } from './WhatsAppButton'
 
 export function Footer() {
   return (
     <footer className="bg-brand text-white">
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-14 md:grid-cols-3">
         <div>
-          <img
-            src="/images/logo.jpg"
-            alt="ZB Interieur"
-            className="mb-4 h-12 w-auto"
-          />
+          <img src="/images/logo.jpg" alt="ZB Interieur" className="mb-4 h-12 w-auto" />
           <p className="font-serif text-lg leading-snug">
             Exklusives Interieur · Designmöbel · Raumgestaltung in Homburg
           </p>
@@ -45,6 +42,16 @@ export function Footer() {
               Tel. {site.phone}
             </a>
             <br />
+            <a
+              className="mt-1 inline-flex items-center gap-1.5 hover:text-accent"
+              href={whatsappHref}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <WhatsAppIcon className="h-4 w-4" />
+              WhatsApp
+            </a>
+            <br />
             <a className="hover:text-accent" href={`mailto:${site.email}`}>
               {site.email}
             </a>
@@ -73,6 +80,14 @@ export function Footer() {
               className="underline-offset-2 hover:underline"
             >
               Google bewerten
+            </a>
+            <a
+              href={site.maps.directions}
+              target="_blank"
+              rel="noreferrer"
+              className="underline-offset-2 hover:underline"
+            >
+              Anfahrt
             </a>
           </div>
         </div>
