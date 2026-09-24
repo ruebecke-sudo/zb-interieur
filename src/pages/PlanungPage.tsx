@@ -7,6 +7,12 @@ const areas = [
     image: '/images/kueche-render-1.jpg',
   },
   {
+    id: 'schlafzimmer',
+    title: 'Schlafzimmer',
+    text: 'Ruhige Rückzugsorte mit klarer Linienführung, hochwertigen Materialien und stimmigem Licht.',
+    image: '/images/schlafzimmer-render-1.jpg',
+  },
+  {
     title: 'Bäder',
     text: 'Ruhe, Komfort und Präzision: Badkonzepte, die Alltag und Wellness verbinden.',
     image: '/images/showroom-3.jpg',
@@ -20,7 +26,7 @@ const areas = [
     id: 'raumgestaltung',
     title: 'Raumgestaltung',
     text: 'Farben, Stoffe, Licht und Möbel greifen ineinander – für Räume mit Charakter.',
-    image: '/images/blumen.jpg',
+    image: '/images/schlafzimmer-render-1.jpg',
   },
 ]
 
