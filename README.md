@@ -10,10 +10,10 @@ Die Seite **Marken** (`/marken`) zeigt Logos, Produktheadlines und Produktbilder
 
 Letzter anonymer Drop (Passwort-geschützt, zeitlich begrenzt):
 
-- **URL:** https://lively-monstera-e452d8.netlify.app  
+- **URL:** https://chic-banoffee-109107.netlify.app  
 - **Zugangspasswort (Drop):** `My-Drop-Site`  
 
-Für den dauerhaften Betrieb bitte **Variante A** nutzen (GitHub → Netlify). Drop-Deploys sind nur Zwischenstände. Claim innerhalb von 60 Min.: [Claim-Link](https://app.netlify.com/drop/lively-monstera-e452d8)
+Für den dauerhaften Betrieb bitte **Variante A** nutzen (GitHub → Netlify). Drop-Deploys sind nur Zwischenstände. Claim innerhalb von 60 Min.: [Claim-Link](https://app.netlify.com/drop/chic-banoffee-109107)
 
 ## Lokal starten
 
