@@ -17,6 +17,7 @@ export function BeratungPage() {
         <img
           src="/images/kueche-render-1.jpg"
           alt=""
+          data-no-zoom
           className="absolute inset-0 h-full w-full object-cover opacity-50"
         />
         <div className="relative mx-auto max-w-6xl px-4 py-24">

@@ -46,6 +46,7 @@ export function PlanungPage() {
         <img
           src="/images/planung/kueche-3.jpg"
           alt=""
+          data-no-zoom
           className="absolute inset-0 h-full w-full object-cover opacity-35"
         />
         <div

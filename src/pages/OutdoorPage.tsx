@@ -7,6 +7,7 @@ export function OutdoorPage() {
         <img
           src="/images/terrasse-1.jpg"
           alt=""
+          data-no-zoom
           className="absolute inset-0 h-full w-full object-cover opacity-70"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/45 to-black/20" />

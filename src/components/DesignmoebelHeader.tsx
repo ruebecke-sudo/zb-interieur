@@ -13,6 +13,7 @@ export function DesignmoebelHeader() {
       <img
         src={images.lounge}
         alt=""
+        data-no-zoom
         className="animate-kenburns absolute inset-0 h-full w-full object-cover"
       />
       <div
