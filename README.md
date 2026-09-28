@@ -10,9 +10,9 @@ Die Seite **Marken** (`/marken`) zeigt Logos, Produktheadlines und Produktbilder
 
 Aktueller Deploy (anonym / Drop – bitte innerhalb von 60 Min. in dein Netlify-Konto übernehmen):
 
-- **URL:** https://brilliant-fairy-e11e8e.netlify.app  
+- **URL:** https://whimsical-moxie-01eaf5.netlify.app  
 - **Zugangspasswort (Drop):** `My-Drop-Site`  
-- **Site beanspruchen:** [Claim-Link](https://app.netlify.com/drop/brilliant-fairy-e11e8e) (im Agent-Chat bzw. CLI-Ausgabe)
+- **Site beanspruchen:** [Claim-Link](https://app.netlify.com/drop/whimsical-moxie-01eaf5) (im Agent-Chat bzw. CLI-Ausgabe)
 
 Nach dem Claim kannst du die Domain `zb-interieur.de` unter Domain management zuweisen und das Drop-Passwort entfernen.
 
