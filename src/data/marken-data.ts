@@ -194,7 +194,7 @@ export const markenProducts = [
     "brandSlug": "al2",
     "brandName": "AL2",
     "headline": "Al B 012 Stuhl – Luxuriöser Designer-Polsterstuhl mit massivem Echtholzgestell",
-    "price": "AB 655 €",
+    "price": "Preis auf Anfrage",
     "stilpunkteUrl": "https://www.stilpunkte.de/produkt/al2/al-b-012-stuhl-luxurioeser-designer-polsterstuhl-mit-massivem-echtholzgestell/",
     "image": "/images/marken/produkte/al2-2b338ddf20.jpg"
   },
@@ -210,7 +210,7 @@ export const markenProducts = [
     "brandSlug": "papadatos",
     "brandName": "Papadatos",
     "headline": "Barschrank Twist V",
-    "price": "AB 4154 €",
+    "price": "Preis auf Anfrage",
     "stilpunkteUrl": "https://www.stilpunkte.de/produkt/papadatos/barschrank-twist-v/",
     "image": "/images/marken/produkte/papadatos-7c8ae4aa0b.jpg"
   },
@@ -218,7 +218,7 @@ export const markenProducts = [
     "brandSlug": "al2",
     "brandName": "AL2",
     "headline": "Bo M 013 Stuhl – Minimalistischer Luxus-Polsterstuhl mit filigranem Metallgestell",
-    "price": "AB 940 €",
+    "price": "Preis auf Anfrage",
     "stilpunkteUrl": "https://www.stilpunkte.de/produkt/al2/bo-m-013-stuhl-minimalistischer-luxus-polsterstuhl-mit-filigranem-metallgestell/",
     "image": "/images/marken/produkte/al2-f19b23834b.jpg"
   },
@@ -242,7 +242,7 @@ export const markenProducts = [
     "brandSlug": "al2",
     "brandName": "AL2",
     "headline": "Clara 012 Stuhl – Eleganter Luxus-Polsterstuhl mit zeitloser Silhouette",
-    "price": "AB 1012 €",
+    "price": "Preis auf Anfrage",
     "stilpunkteUrl": "https://www.stilpunkte.de/produkt/al2/clara-012-stuhl-eleganter-luxus-polsterstuhl-mit-zeitloser-silhouette/",
     "image": "/images/marken/produkte/al2-1d0e4d056e.jpg"
   },
@@ -258,7 +258,7 @@ export const markenProducts = [
     "brandSlug": "al2",
     "brandName": "AL2",
     "headline": "Dakry B 001 Esstisch – Organische Eleganz und skulpturales Design für luxuriöse Dining-Bereiche",
-    "price": "AB 6962 €",
+    "price": "Preis auf Anfrage",
     "stilpunkteUrl": "https://www.stilpunkte.de/produkt/al2/dakry-b-001-esstisch-organische-eleganz-und-skulpturales-design-fuer-luxurioese-dining-bereiche/",
     "image": "/images/marken/produkte/al2-0e7dd62587.jpg"
   },
@@ -266,7 +266,7 @@ export const markenProducts = [
     "brandSlug": "marchetti",
     "brandName": "Marchetti",
     "headline": "Deckenlampe Maestri di Luce Rim – Elegante Luxus-Ringbeleuchtung und minimalistische Design-Pendelleuchte",
-    "price": "AB 1828 €",
+    "price": "Preis auf Anfrage",
     "stilpunkteUrl": "https://www.stilpunkte.de/produkt/marchetti/deckenlampe-maestri-di-luce-rim-elegante-luxus-ringbeleuchtung-und-minimalistische-design-pendelleuchte/",
     "image": "/images/marken/produkte/marchetti-5761ac33c9.jpg"
   },
@@ -274,7 +274,7 @@ export const markenProducts = [
     "brandSlug": "marchetti",
     "brandName": "Marchetti",
     "headline": "Deckenlampe Marchetti Maestri di Luce Anime – Exklusive Luxus-Designerleuchte und poetische Lichtskulptur",
-    "price": "AB 691 €",
+    "price": "Preis auf Anfrage",
     "stilpunkteUrl": "https://www.stilpunkte.de/produkt/marchetti/deckenlampe-marchetti-maestri-di-luce-anime-exklusive-luxus-designerleuchte-und-poetische-lichtskulptur/",
     "image": "/images/marken/produkte/marchetti-a00c35c09d.jpg"
   },
@@ -282,7 +282,7 @@ export const markenProducts = [
     "brandSlug": "marchetti",
     "brandName": "Marchetti",
     "headline": "Deckenlampe Marchetti Maestri di Luce Pura – Minimalistische Luxus-Designerleuchte für puristische Eleganz",
-    "price": "AB 625 €",
+    "price": "Preis auf Anfrage",
     "stilpunkteUrl": "https://www.stilpunkte.de/produkt/marchetti/deckenlampe-marchetti-maestri-di-luce-pura-minimalistische-luxus-designerleuchte-fuer-puristische-eleganz/",
     "image": "/images/marken/produkte/marchetti-3c52374ddf.jpg"
   },
@@ -290,7 +290,7 @@ export const markenProducts = [
     "brandSlug": "al2",
     "brandName": "AL2",
     "headline": "Echo C-001 Esstisch – Luxuriöser Designertisch mit rhythmischer Eleganz und architektonischer Symmetrie",
-    "price": "AB 4546 €",
+    "price": "Preis auf Anfrage",
     "stilpunkteUrl": "https://www.stilpunkte.de/produkt/al2/echo-c-001-esstisch-luxurioeser-designertisch-mit-rhythmischer-eleganz-und-architektonischer-symmetrie/",
     "image": "/images/marken/produkte/al2-e3d7c5c0db.jpg"
   },
@@ -298,7 +298,7 @@ export const markenProducts = [
     "brandSlug": "al2",
     "brandName": "AL2",
     "headline": "El It 003 Sideboard – Minimalistisches Luxus-Sideboard mit architektonischer Eleganz",
-    "price": "AB 5700 €",
+    "price": "Preis auf Anfrage",
     "stilpunkteUrl": "https://www.stilpunkte.de/produkt/al2/el-it-003-sideboard-minimalistisches-luxus-sideboard-mit-architektonischer-eleganz/",
     "image": "/images/marken/produkte/al2-a5b8ae5515.jpg"
   },
@@ -322,7 +322,7 @@ export const markenProducts = [
     "brandSlug": "al2",
     "brandName": "AL2",
     "headline": "Eterna A 003 Sideboard – Luxuriöse Design-Anrichte mit meisterhafter Holz-Handwerkskunst",
-    "price": "AB 4570 €",
+    "price": "Preis auf Anfrage",
     "stilpunkteUrl": "https://www.stilpunkte.de/produkt/al2/eterna-a-003-sideboard-luxurioese-design-anrichte-mit-meisterhafter-holz-handwerkskunst/",
     "image": "/images/marken/produkte/al2-64ee6305f8.jpg"
   },
@@ -330,7 +330,7 @@ export const markenProducts = [
     "brandSlug": "al2",
     "brandName": "AL2",
     "headline": "Fatty 012 Stuhl – Extravaganter Luxus-Polsterstuhl für maximalen Komfort und gemütliche Eleganz",
-    "price": "AB 940 €",
+    "price": "Preis auf Anfrage",
     "stilpunkteUrl": "https://www.stilpunkte.de/produkt/al2/fatty-012-stuhl-extravaganter-luxus-polsterstuhl-fuer-maximalen-komfort-und-gemuetliche-eleganz/",
     "image": "/images/marken/produkte/al2-f6f60ea228.jpg"
   },
@@ -338,7 +338,7 @@ export const markenProducts = [
     "brandSlug": "rohleder",
     "brandName": "Rohleder",
     "headline": "Hocker Caribbean – Luxuriöser Lounge-Pouf und Designer-Hocker mit exklusiver Textilkunst",
-    "price": "",
+    "price": "Preis auf Anfrage",
     "stilpunkteUrl": "https://www.stilpunkte.de/produkt/rohleder/hocker-caribbean-luxurioeser-lounge-pouf-und-designer-hocker-mit-exklusiver-textilkunst/",
     "image": "/images/marken/produkte/rohleder-6d34c2d0aa.jpg"
   },
@@ -346,7 +346,7 @@ export const markenProducts = [
     "brandSlug": "form-exclusiv",
     "brandName": "Form exclusiv",
     "headline": "Jahrhunderttisch Campus mit Mittelader aus Stahl",
-    "price": "AB 4546 €",
+    "price": "Preis auf Anfrage",
     "stilpunkteUrl": "https://www.stilpunkte.de/produkt/form-exclusiv/jahrhunderttisch-campus-mit-mittelader-aus-stahl/",
     "image": "/images/marken/produkte/form-exclusiv-d4c9015d18.jpg"
   },
@@ -354,7 +354,7 @@ export const markenProducts = [
     "brandSlug": "al2",
     "brandName": "AL2",
     "headline": "Koi Bett – Luxuriöses Designer-Bett mit fließender Eleganz und meisterhafter Manufaktur-Qualität",
-    "price": "AB 3606 €",
+    "price": "Preis auf Anfrage",
     "stilpunkteUrl": "https://www.stilpunkte.de/produkt/al2/koi-bett-luxurioeses-designer-bett-mit-flieender-eleganz-und-meisterhafter-manufaktur-qualitaet/",
     "image": "/images/marken/produkte/al2-7bb22bb3e6.jpg"
   },
@@ -370,7 +370,7 @@ export const markenProducts = [
     "brandSlug": "al2",
     "brandName": "AL2",
     "headline": "Meguru Beistelltisch – Luxuriöser Designer-Couchtisch mit organischer Harmonie und meisterhafter Holzverarbeitung",
-    "price": "",
+    "price": "Preis auf Anfrage",
     "stilpunkteUrl": "https://www.stilpunkte.de/produkt/al2/meguru-beistelltisch-luxurioeser-designer-couchtisch-mit-organischer-harmonie-und-meisterhafter-holzverarbeitung/",
     "image": "/images/marken/produkte/al2-77469a5d57.jpg"
   },
@@ -386,7 +386,7 @@ export const markenProducts = [
     "brandSlug": "al2",
     "brandName": "AL2",
     "headline": "Mob 012 Stuhl – Skulpturaler Luxus-Designerstuhl mit ausdrucksstarker Silhouette",
-    "price": "AB 940 €",
+    "price": "Preis auf Anfrage",
     "stilpunkteUrl": "https://www.stilpunkte.de/produkt/al2/mob-012-stuhl-skulpturaler-luxus-designerstuhl-mit-ausdrucksstarker-silhouette/",
     "image": "/images/marken/produkte/al2-c08e0b0e47.jpg"
   },
@@ -402,7 +402,7 @@ export const markenProducts = [
     "brandSlug": "al2",
     "brandName": "AL2",
     "headline": "Mos-i-ko GLA-001 Esstisch – Exklusiver Designertisch mit skulpturalem Mosaik-Charakter und grafischer Präzision",
-    "price": "AB 6295 €",
+    "price": "Preis auf Anfrage",
     "stilpunkteUrl": "https://www.stilpunkte.de/produkt/al2/mos-i-ko-gla-001-esstisch-exklusiver-designertisch-mit-skulpturalem-mosaik-charakter-und-grafischer-praezision/",
     "image": "/images/marken/produkte/al2-d293181e38.jpg"
   },
@@ -426,7 +426,7 @@ export const markenProducts = [
     "brandSlug": "al2",
     "brandName": "AL2",
     "headline": "Prism Esstisch – Architektonisches Luxus-Meisterwerk mit prismatischer Geometrie",
-    "price": "AB 5689 €",
+    "price": "Preis auf Anfrage",
     "stilpunkteUrl": "https://www.stilpunkte.de/produkt/al2/prism-esstisch-architektonisches-luxus-meisterwerk-mit-prismatischer-geometrie/",
     "image": "/images/marken/produkte/al2-b6893b4fce.jpg"
   },
@@ -434,7 +434,7 @@ export const markenProducts = [
     "brandSlug": "papadatos",
     "brandName": "Papadatos",
     "headline": "Sessel ANN",
-    "price": "AB 2096 €",
+    "price": "Preis auf Anfrage",
     "stilpunkteUrl": "https://www.stilpunkte.de/produkt/papadatos/sessel-ann/",
     "image": "/images/marken/produkte/papadatos-bd45584d92.jpg"
   },
@@ -442,7 +442,7 @@ export const markenProducts = [
     "brandSlug": "al2",
     "brandName": "AL2",
     "headline": "Sessel Bonet 013",
-    "price": "AB 3023 €",
+    "price": "Preis auf Anfrage",
     "stilpunkteUrl": "https://www.stilpunkte.de/produkt/al2/sessel-bonet-013/",
     "image": "/images/marken/produkte/al2-5a9c72ce99.jpg"
   },
@@ -450,7 +450,7 @@ export const markenProducts = [
     "brandSlug": "papadatos",
     "brandName": "Papadatos",
     "headline": "Sessel Cozy",
-    "price": "AB 1374 €",
+    "price": "Preis auf Anfrage",
     "stilpunkteUrl": "https://www.stilpunkte.de/produkt/papadatos/sessel-cozy/",
     "image": "/images/marken/produkte/papadatos-b94a950444.jpg"
   },
@@ -458,7 +458,7 @@ export const markenProducts = [
     "brandSlug": "kolini",
     "brandName": "Kolini",
     "headline": "Sessel LUC",
-    "price": "",
+    "price": "Preis auf Anfrage",
     "stilpunkteUrl": "https://www.stilpunkte.de/produkt/kolini/sessel-luc-2/",
     "image": "/images/marken/produkte/kolini-5bd2de738e.jpg"
   },
@@ -482,7 +482,7 @@ export const markenProducts = [
     "brandSlug": "al2",
     "brandName": "AL2",
     "headline": "Siena 012 Stuhl – Drehbarer Luxus-Designersessel für anspruchsvolle Essbereiche",
-    "price": "AB 857 €",
+    "price": "Preis auf Anfrage",
     "stilpunkteUrl": "https://www.stilpunkte.de/produkt/al2/siena-012-stuhl-drehbarer-luxus-designersessel-fuer-anspruchsvolle-essbereiche/",
     "image": "/images/marken/produkte/al2-81cb89cf40.jpg"
   },
@@ -530,7 +530,7 @@ export const markenProducts = [
     "brandSlug": "form-exclusiv",
     "brandName": "Form exclusiv",
     "headline": "Tisch Schachbrettmuster Madison",
-    "price": "AB 4836 €",
+    "price": "Preis auf Anfrage",
     "stilpunkteUrl": "https://www.stilpunkte.de/produkt/form-exclusiv/tisch-schachbrettmuster-madison/",
     "image": "/images/marken/produkte/form-exclusiv-5aba45f981.jpg"
   },
@@ -546,7 +546,7 @@ export const markenProducts = [
     "brandSlug": "al2",
     "brandName": "AL2",
     "headline": "Wood-oo A 001 Esstisch – Die Magie edler Holz-Handwerkskunst und skulpturaler Design-Ästhetik",
-    "price": "AB 5189 €",
+    "price": "Preis auf Anfrage",
     "stilpunkteUrl": "https://www.stilpunkte.de/produkt/al2/wood-oo-a-001-esstisch-die-magie-edler-holz-handwerkskunst-und-skulpturaler-design-sthetik/",
     "image": "/images/marken/produkte/al2-c18150c7cd.jpg"
   },
@@ -554,7 +554,7 @@ export const markenProducts = [
     "brandSlug": "al2",
     "brandName": "AL2",
     "headline": "Zephyr AR-001 Esstisch – Luxuriöser Designertisch mit grazil-leichter Silhouette und architektonischer Eleganz",
-    "price": "AB 3261 €",
+    "price": "Preis auf Anfrage",
     "stilpunkteUrl": "https://www.stilpunkte.de/produkt/al2/zephyr-ar-001-esstisch-luxurioeser-designertisch-mit-grazil-leichter-silhouette-und-architektonischer-eleganz/",
     "image": "/images/marken/produkte/al2-0409b061cd.jpg"
   }

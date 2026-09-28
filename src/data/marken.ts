@@ -22,7 +22,7 @@ export const marken: Marke[] = markenBrands.map((b) => ({ ...b }))
 
 export const markenProdukte: MarkenProdukt[] = markenProducts
   .filter((p) => p.image && p.headline)
-  .map((p) => ({ ...p }))
+  .map((p) => ({ ...p, price: 'Preis auf Anfrage' }))
 
 export const markenMitProdukten = marken.filter((m) =>
   markenProdukte.some((p) => p.brandSlug === m.slug),
