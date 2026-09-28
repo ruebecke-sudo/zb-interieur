@@ -53,8 +53,7 @@ export function MarkenPage() {
           </h1>
           <p className="animate-fade-up mt-6 max-w-xl text-[15px] leading-relaxed text-white/80 md:text-base [animation-delay:140ms]">
             {marken.length} Designermarken und ausgewählte Produktwelten aus dem Showroom in
-            Homburg – Logos, Headlines und Bilder. Tippen Sie auf ein Produktbild für die
-            Originalgröße.
+            Homburg.
           </p>
           <div className="animate-fade-up mt-10 flex flex-wrap gap-3 [animation-delay:200ms]">
             <a
