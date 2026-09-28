@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom'
 import { DesignmoebelHeader } from '../components/DesignmoebelHeader'
 import { FaqSection } from '../components/FaqSection'
-import { HomeHero } from '../components/HomeHero'
 import { TestimonialsSection } from '../components/TestimonialsSection'
 import { WhatsAppIcon } from '../components/WhatsAppButton'
 import { services, showroomImages, whatsappHref } from '../data/site'
@@ -10,8 +9,6 @@ export function HomePage() {
   return (
     <>
       <DesignmoebelHeader />
-
-      <HomeHero />
 
       <section className="bg-white">
         <div className="mx-auto max-w-6xl px-4 py-16 md:py-20">

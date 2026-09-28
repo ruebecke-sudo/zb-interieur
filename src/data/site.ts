@@ -88,25 +88,6 @@ export const showroomImages = [
   '/images/showroom-live-9.jpg',
 ] as const
 
-export const reasons = [
-  {
-    title: 'Optimale Raumnutzung',
-    text: 'Jeder Quadratmeter wird sinnvoll geplant – ohne Kompromisse bei Stil und Komfort.',
-  },
-  {
-    title: 'Zeitersparnis',
-    text: 'Weniger Suchen, weniger Fehlkäufe: Wir führen Sie zielgerichtet zum Ergebnis.',
-  },
-  {
-    title: 'Budgetoptimierung',
-    text: 'Klare Prioritäten und passende Alternativen – für Wohnqualität im geplanten Rahmen.',
-  },
-  {
-    title: 'Persönlicher Stil',
-    text: 'Ihre Persönlichkeit steht im Mittelpunkt – keine Standardlösungen von der Stange.',
-  },
-] as const
-
 /** Kundenstimmen – bitte bei Bedarf durch Ihre echten Google-Zitate ersetzen */
 export const testimonials = [
   {
