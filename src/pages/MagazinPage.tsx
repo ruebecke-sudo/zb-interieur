@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 
-const FLIPBOOK_SRC = '/magazin/Broschuere_2026_Flipbook.html'
+const PDF_SRC = '/magazin/Broschuere_2026.pdf'
 
 export function MagazinPage() {
   return (
@@ -30,12 +30,19 @@ export function MagazinPage() {
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <a
-              href={FLIPBOOK_SRC}
+              href={PDF_SRC}
               target="_blank"
               rel="noreferrer"
               className="inline-flex bg-accent px-7 py-3.5 text-sm font-bold tracking-[0.08em] text-white uppercase hover:brightness-95"
             >
               Vollbild öffnen
+            </a>
+            <a
+              href={PDF_SRC}
+              download="ZB-Interieur-Broschuere-2026.pdf"
+              className="inline-flex border border-white/35 px-7 py-3.5 text-sm font-semibold tracking-[0.1em] text-white uppercase transition hover:border-white hover:bg-white/5"
+            >
+              PDF speichern
             </a>
             <Link
               to="/termin"
@@ -50,18 +57,24 @@ export function MagazinPage() {
       <section className="bg-fog">
         <div className="mx-auto max-w-6xl px-4 py-10 md:py-14">
           <div className="overflow-hidden border border-line bg-white shadow-[0_12px_40px_rgba(0,0,0,0.08)]">
-            <iframe
-              title="ZB Interieur Broschüre 2026 – Blättermagazin"
-              src={FLIPBOOK_SRC}
-              className="h-[min(78vh,920px)] w-full bg-white"
-              loading="lazy"
-              allow="fullscreen"
-            />
+            <object
+              data={`${PDF_SRC}#view=FitH&toolbar=1`}
+              type="application/pdf"
+              className="h-[min(82vh,980px)] w-full"
+              aria-label="ZB Interieur Broschüre 2026"
+            >
+              <iframe
+                title="ZB Interieur Broschüre 2026"
+                src={`${PDF_SRC}#view=FitH`}
+                className="h-[min(82vh,980px)] w-full bg-white"
+                loading="lazy"
+              />
+            </object>
           </div>
-          <p className="mt-4 text-center text-sm text-muted">
-            Tippen oder klicken Sie die Seitenecken zum Umblättern. Bei Problemen:{' '}
-            <a href={FLIPBOOK_SRC} target="_blank" rel="noreferrer" className="font-semibold text-brand hover:underline">
-              Magazin separat öffnen
+          <p className="mt-4 text-center text-sm text-muted md:hidden">
+            Auf dem Smartphone öffnen Sie die Broschüre am besten{' '}
+            <a href={PDF_SRC} target="_blank" rel="noreferrer" className="font-semibold text-brand hover:underline">
+              hier als PDF
             </a>
             .
           </p>

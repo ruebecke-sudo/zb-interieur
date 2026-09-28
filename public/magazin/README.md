@@ -1,9 +1,5 @@
-# Magazin / Flipbook
+# Magazin
 
-Lege hier die exportierten Flipbook-Dateien ab:
+Aktuelle Broschüre: `Broschuere_2026.pdf` (ZB Interieur Broschüre 2026).
 
-- `Broschuere_2026_Flipbook.html` (ersetzt den Platzhalter)
-- alle zugehörigen Ordner aus dem Export (z. B. `files/`, `javascript/`, `css/`, Bilder)
-
-Quellpfad beim Kunden (lokal):
-`C:\Users\pc\Documents\Zenz\2026\Broschüre 26\2026 rgb pdf\`
+Eingebunden auf der Seite `/magazin`.
