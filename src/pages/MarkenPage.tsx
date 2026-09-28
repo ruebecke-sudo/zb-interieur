@@ -24,7 +24,7 @@ export function MarkenPage() {
   return (
     <>
       {/* Full-bleed editorial hero */}
-      <section className="relative min-h-[88vh] overflow-hidden bg-brand text-white md:min-h-[92vh]">
+      <section className="relative min-h-[58vh] overflow-hidden bg-brand text-white md:min-h-[64vh]">
         {heroImage ? (
           <img
             src={heroImage}
@@ -43,7 +43,7 @@ export function MarkenPage() {
             `,
           }}
         />
-        <div className="relative mx-auto flex min-h-[88vh] max-w-6xl flex-col justify-end px-4 pb-16 pt-28 md:min-h-[92vh] md:pb-24 md:pt-32">
+        <div className="relative mx-auto flex min-h-[58vh] max-w-6xl flex-col justify-center px-4 py-14 md:min-h-[64vh] md:py-16">
           <p className="animate-fade-up text-[clamp(2rem,5vw,3.25rem)] font-extrabold tracking-[-0.03em] text-white">
             ZB Interieur
           </p>
