@@ -3,7 +3,7 @@ import { DesignmoebelHeader } from '../components/DesignmoebelHeader'
 import { FaqSection } from '../components/FaqSection'
 import { TestimonialsSection } from '../components/TestimonialsSection'
 import { WhatsAppIcon } from '../components/WhatsAppButton'
-import { services, showroomImages, whatsappHref } from '../data/site'
+import { showroomImages, whatsappHref } from '../data/site'
 
 export function HomePage() {
   return (
@@ -46,41 +46,6 @@ export function HomePage() {
                 Rückruf
               </Link>
             </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-fog">
-        <div className="mx-auto max-w-6xl px-4 py-16 md:py-20">
-          <div className="mb-10 max-w-2xl">
-            <p className="text-xs font-semibold tracking-[0.16em] text-brand uppercase">Leistungen</p>
-            <h2 className="mt-2 font-serif text-3xl font-bold md:text-4xl">
-              Wir planen und richten ein
-            </h2>
-            <p className="mt-3 text-muted">
-              Von der Einrichtungsberatung bis zur Terrasse – ein Ansprechpartner für Ihr gesamtes
-              Wohnkonzept.
-            </p>
-          </div>
-          <div className="grid gap-6 md:grid-cols-3">
-            {services.map((s) => (
-              <Link key={s.href} to={s.href} className="group block bg-white">
-                <div className="overflow-hidden">
-                  <img
-                    src={s.image}
-                    alt={s.title}
-                    className="aspect-[4/3] w-full object-cover transition duration-700 group-hover:scale-105"
-                  />
-                </div>
-                <div className="p-5">
-                  <h3 className="font-serif text-xl font-bold group-hover:text-brand">{s.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-muted">{s.blurb}</p>
-                  <span className="mt-4 inline-block text-sm font-semibold text-accent">
-                    Mehr erfahren →
-                  </span>
-                </div>
-              </Link>
-            ))}
           </div>
         </div>
       </section>
