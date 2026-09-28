@@ -8,9 +8,9 @@ Blog und Galerie-Kategorien entfallen bewusst – Fokus auf Beratung, Planung un
 
 Aktueller Deploy (anonym / Drop – bitte innerhalb von 60 Min. in dein Netlify-Konto übernehmen):
 
-- **URL:** https://startling-cascaron-8204a9.netlify.app  
+- **URL:** https://moonlit-marigold-e5e092.netlify.app  
 - **Zugangspasswort (Drop):** `My-Drop-Site`  
-- **Site beanspruchen:** [Claim-Link](https://app.netlify.com/drop/startling-cascaron-8204a9) (im Agent-Chat bzw. CLI-Ausgabe)
+- **Site beanspruchen:** [Claim-Link](https://app.netlify.com/drop/moonlit-marigold-e5e092) (im Agent-Chat bzw. CLI-Ausgabe)
 
 Nach dem Claim kannst du die Domain `zb-interieur.de` unter Domain management zuweisen und das Drop-Passwort entfernen.
 
