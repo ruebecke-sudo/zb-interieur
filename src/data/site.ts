@@ -50,6 +50,7 @@ export const nav = [
       { label: 'Raumgestaltung', href: '/planung#raumgestaltung' },
     ],
   },
+  { label: 'Marken', href: '/marken' },
   { label: 'Service', href: '/service' },
   { label: 'Kontakt', href: '/kontakt' },
 ] as const

@@ -19,6 +19,7 @@ if (!existsSync(index)) {
 const routes = [
   'beratung',
   'planung',
+  'marken',
   'outdoor',
   'service',
   'termin',

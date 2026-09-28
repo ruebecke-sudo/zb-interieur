@@ -4,6 +4,7 @@ import { BeratungPage } from './pages/BeratungPage'
 import { HomePage } from './pages/HomePage'
 import { AgbPage, DatenschutzPage, ImpressumPage } from './pages/LegalPages'
 import { KontaktPage } from './pages/KontaktPage'
+import { MarkenPage } from './pages/MarkenPage'
 import { OutdoorPage } from './pages/OutdoorPage'
 import { PlanungPage } from './pages/PlanungPage'
 import { ServicePage } from './pages/ServicePage'
@@ -17,6 +18,7 @@ const router = createBrowserRouter([
       { index: true, element: <HomePage /> },
       { path: 'beratung', element: <BeratungPage /> },
       { path: 'planung', element: <PlanungPage /> },
+      { path: 'marken', element: <MarkenPage /> },
       { path: 'outdoor', element: <OutdoorPage /> },
       { path: 'kuechenplanungen-2', element: <Navigate to="/planung#kueche" replace /> },
       { path: 'badeinrichtungen', element: <Navigate to="/planung#bad" replace /> },
