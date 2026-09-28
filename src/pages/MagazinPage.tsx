@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 
+const FLIPBOOK_SRC = '/magazin/Broschuere_2026_Flipbook.html'
 const PDF_SRC = '/magazin/Broschuere_2026.pdf'
 
 export function MagazinPage() {
@@ -30,7 +31,7 @@ export function MagazinPage() {
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <a
-              href={PDF_SRC}
+              href={FLIPBOOK_SRC}
               target="_blank"
               rel="noreferrer"
               className="inline-flex bg-accent px-7 py-3.5 text-sm font-bold tracking-[0.08em] text-white uppercase hover:brightness-95"
@@ -54,27 +55,21 @@ export function MagazinPage() {
         </div>
       </section>
 
-      <section className="bg-fog">
-        <div className="mx-auto max-w-6xl px-4 py-10 md:py-14">
-          <div className="overflow-hidden border border-line bg-white shadow-[0_12px_40px_rgba(0,0,0,0.08)]">
-            <object
-              data={`${PDF_SRC}#view=FitH&toolbar=1`}
-              type="application/pdf"
-              className="h-[min(82vh,980px)] w-full"
-              aria-label="ZB Interieur Broschüre 2026"
-            >
-              <iframe
-                title="ZB Interieur Broschüre 2026"
-                src={`${PDF_SRC}#view=FitH`}
-                className="h-[min(82vh,980px)] w-full bg-white"
-                loading="lazy"
-              />
-            </object>
+      <section className="bg-ink">
+        <div className="mx-auto max-w-6xl px-4 py-8 md:py-10">
+          <div className="overflow-hidden border border-white/10 bg-[#111] shadow-[0_12px_40px_rgba(0,0,0,0.35)]">
+            <iframe
+              title="ZB Interieur Broschüre 2026 – Blättermagazin"
+              src={FLIPBOOK_SRC}
+              className="h-[min(84vh,980px)] w-full bg-[#111]"
+              loading="lazy"
+              allow="fullscreen"
+            />
           </div>
-          <p className="mt-4 text-center text-sm text-muted md:hidden">
-            Auf dem Smartphone öffnen Sie die Broschüre am besten{' '}
-            <a href={PDF_SRC} target="_blank" rel="noreferrer" className="font-semibold text-brand hover:underline">
-              hier als PDF
+          <p className="mt-4 text-center text-sm text-white/55">
+            Seiten umblättern mit den Pfeilen oder per Klick. Als Datei:{' '}
+            <a href={PDF_SRC} className="font-semibold text-accent hover:underline">
+              PDF herunterladen
             </a>
             .
           </p>

@@ -1,5 +1,6 @@
 # Magazin
 
-Aktuelle Broschüre: `Broschuere_2026.pdf` (ZB Interieur Broschüre 2026).
+- `Broschuere_2026_Flipbook.html` – interaktives Blättermagazin (selbstständig)
+- `Broschuere_2026.pdf` – PDF-Download der Broschüre 2026
 
-Eingebunden auf der Seite `/magazin`.
+Eingebunden auf `/magazin`.
