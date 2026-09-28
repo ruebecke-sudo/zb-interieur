@@ -51,6 +51,7 @@ export const nav = [
     ],
   },
   { label: 'Marken', href: '/marken' },
+  { label: 'Magazin', href: '/magazin' },
   { label: 'Service', href: '/service' },
   { label: 'Kontakt', href: '/kontakt' },
 ] as const

@@ -20,6 +20,7 @@ const routes = [
   'beratung',
   'planung',
   'marken',
+  'magazin',
   'outdoor',
   'service',
   'termin',
