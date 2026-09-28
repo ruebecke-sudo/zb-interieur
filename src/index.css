@@ -58,6 +58,26 @@ body {
   }
 }
 
+@keyframes marken-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes marken-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(28px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 .animate-fade-up {
   animation: fade-up 0.8s ease-out both;
 }
@@ -68,4 +88,28 @@ body {
 
 .animate-slide-fade {
   animation: slide-fade 0.7s ease-out both;
+}
+
+.animate-marken-reveal {
+  animation: marken-reveal 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.marken-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marken-marquee 48s linear infinite;
+}
+
+.marken-marquee-track:hover {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-up,
+  .animate-kenburns,
+  .animate-slide-fade,
+  .animate-marken-reveal,
+  .marken-marquee-track {
+    animation: none !important;
+  }
 }

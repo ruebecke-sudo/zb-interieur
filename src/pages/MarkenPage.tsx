@@ -17,37 +17,49 @@ export function MarkenPage() {
   }, [active])
 
   const activeBrand = marken.find((m) => m.slug === active)
+  const featured = filtered[0]
+  const rest = filtered.slice(1)
+  const heroImage = markenProdukte[4]?.image ?? markenProdukte[0]?.image
 
   return (
     <>
-      <section className="relative overflow-hidden bg-brand text-white">
+      {/* Full-bleed editorial hero */}
+      <section className="relative min-h-[88vh] overflow-hidden bg-brand text-white md:min-h-[92vh]">
+        {heroImage ? (
+          <img
+            src={heroImage}
+            alt=""
+            data-no-zoom
+            className="animate-kenburns absolute inset-0 h-full w-full object-cover opacity-45"
+          />
+        ) : null}
         <div
           aria-hidden
           className="absolute inset-0"
           style={{
             background: `
-              radial-gradient(ellipse 70% 50% at 90% 10%, color-mix(in srgb, var(--color-brand-soft) 50%, transparent), transparent 55%),
-              linear-gradient(155deg, var(--color-brand-dark) 0%, var(--color-brand) 55%, #1a000c 100%)
+              linear-gradient(105deg, rgba(26,0,12,0.94) 0%, rgba(66,0,27,0.82) 42%, rgba(88,0,36,0.35) 72%, rgba(26,0,12,0.55) 100%),
+              radial-gradient(ellipse 55% 45% at 85% 20%, color-mix(in srgb, var(--color-accent) 28%, transparent), transparent 60%)
             `,
           }}
         />
-        <div className="relative mx-auto max-w-6xl px-4 py-20 md:py-28">
-          <p className="text-[11px] font-semibold tracking-[0.28em] text-white/55 uppercase">
-            ZB Interieur · Markenwelt
+        <div className="relative mx-auto flex min-h-[88vh] max-w-6xl flex-col justify-end px-4 pb-16 pt-28 md:min-h-[92vh] md:pb-24 md:pt-32">
+          <p className="animate-fade-up text-[clamp(2rem,5vw,3.25rem)] font-extrabold tracking-[-0.03em] text-white">
+            ZB Interieur
           </p>
-          <h1 className="mt-4 max-w-3xl font-sans text-[clamp(2.4rem,6vw,4.5rem)] leading-[0.95] font-extrabold tracking-[-0.03em]">
-            Kuratierte
-            <span className="mt-1 block text-accent">Designermarken</span>
+          <h1 className="animate-fade-up mt-3 max-w-3xl font-sans text-[clamp(2.6rem,7vw,5rem)] leading-[0.92] font-extrabold tracking-[-0.04em] [animation-delay:80ms]">
+            Markenwelt
+            <span className="mt-2 block text-accent">kuratiert.</span>
           </h1>
-          <p className="mt-6 max-w-2xl text-[15px] leading-relaxed text-white/80 md:text-base">
-            Exklusive Möbel, Leuchten und Accessoires – ausgewählt für den Showroom in Homburg.
-            Entdecken Sie Produktwelten führender Labels. Tippen Sie auf ein Bild für die
+          <p className="animate-fade-up mt-6 max-w-xl text-[15px] leading-relaxed text-white/80 md:text-base [animation-delay:140ms]">
+            {marken.length} Designermarken und ausgewählte Produktwelten aus dem Showroom in
+            Homburg – Logos, Headlines und Bilder. Tippen Sie auf ein Produktbild für die
             Originalgröße.
           </p>
-          <div className="mt-10 flex flex-wrap gap-3">
+          <div className="animate-fade-up mt-10 flex flex-wrap gap-3 [animation-delay:200ms]">
             <a
               href="#produkte"
-              className="inline-flex rounded-full bg-accent px-7 py-3.5 text-sm font-bold tracking-[0.08em] text-white uppercase hover:brightness-95"
+              className="inline-flex bg-accent px-7 py-3.5 text-sm font-bold tracking-[0.08em] text-white uppercase hover:brightness-95"
             >
               Produkte entdecken
             </a>
@@ -61,44 +73,43 @@ export function MarkenPage() {
         </div>
       </section>
 
-      {/* Logo-Band */}
-      <section className="border-b border-line bg-white">
-        <div className="mx-auto max-w-6xl px-4 py-10 md:py-14">
-          <div className="mb-8 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
-            <div>
-              <p className="text-[11px] font-semibold tracking-[0.22em] text-brand uppercase">
-                {marken.length} Marken
-              </p>
-              <h2 className="mt-2 font-sans text-2xl font-extrabold tracking-tight md:text-3xl">
-                Partnerlabels im Showroom
-              </h2>
-            </div>
-            <p className="max-w-md text-sm text-muted">
-              Auswahl ohne Lambert und Sifas – Fokus auf die übrigen Designermarken aus dem
-              STILPUNKTE-Eintrag.
-            </p>
-          </div>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-            {marken.map((b) => (
+      {/* Logo marquee */}
+      <section className="overflow-hidden border-b border-line bg-white py-10 md:py-12" data-no-zoom-root>
+        <div className="mx-auto mb-6 max-w-6xl px-4">
+          <p className="text-[11px] font-semibold tracking-[0.22em] text-brand uppercase">
+            Partnerlabels
+          </p>
+          <h2 className="mt-2 font-sans text-2xl font-extrabold tracking-tight md:text-3xl">
+            {marken.length} Marken im Showroom
+          </h2>
+        </div>
+        <div className="relative">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-white to-transparent md:w-24"
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-white to-transparent md:w-24"
+          />
+          <div className="marken-marquee-track gap-10 px-6 md:gap-14">
+            {[...marken, ...marken].map((b, i) => (
               <button
-                key={b.slug}
+                key={`${b.slug}-${i}`}
                 type="button"
                 onClick={() => {
                   setActive(b.slug)
                   document.getElementById('produkte')?.scrollIntoView({ behavior: 'smooth' })
                 }}
-                className={`group flex aspect-[5/3] items-center justify-center border bg-fog px-4 transition ${
-                  active === b.slug
-                    ? 'border-brand bg-white'
-                    : 'border-transparent hover:border-line hover:bg-white'
-                }`}
+                className="flex h-16 w-[140px] shrink-0 items-center justify-center opacity-70 transition hover:opacity-100"
                 aria-label={`Produkte von ${b.name} zeigen`}
               >
                 {b.logo ? (
                   <img
                     src={b.logo}
                     alt={b.name}
-                    className="max-h-12 w-auto max-w-full object-contain opacity-80 transition group-hover:opacity-100"
+                    data-no-zoom
+                    className="max-h-10 w-auto max-w-full object-contain"
                   />
                 ) : (
                   <span className="text-xs font-semibold tracking-wide text-muted uppercase">
@@ -111,30 +122,26 @@ export function MarkenPage() {
         </div>
       </section>
 
-      {/* Produkte */}
+      {/* Produkte – editorial */}
       <section id="produkte" className="scroll-mt-36 bg-fog md:scroll-mt-40">
         <div className="mx-auto max-w-6xl px-4 py-14 md:py-20">
-          <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+          <div className="mb-10 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <p className="text-[11px] font-semibold tracking-[0.22em] text-brand uppercase">
                 Produktauswahl
               </p>
-              <h2 className="mt-2 font-sans text-2xl font-extrabold tracking-tight md:text-3xl">
+              <h2 className="mt-2 font-sans text-[clamp(1.75rem,4vw,2.75rem)] font-extrabold tracking-tight">
                 {active === 'alle'
-                  ? 'Alle gezeigten Produkte'
+                  ? 'Kuratierte Stücke'
                   : activeBrand?.name ?? 'Produkte'}
               </h2>
               <p className="mt-2 text-sm text-muted">
                 {filtered.length} {filtered.length === 1 ? 'Produkt' : 'Produkte'}
-                {active !== 'alle' ? ` · ${activeBrand?.name}` : ''}
+                {active !== 'alle' ? ` · ${activeBrand?.name}` : ` · ${markenMitProdukten.length} Marken mit Exponaten`}
               </p>
             </div>
-            <div className="flex flex-wrap gap-2">
-              <FilterChip
-                active={active === 'alle'}
-                onClick={() => setActive('alle')}
-                label="Alle"
-              />
+            <div className="flex max-w-3xl flex-wrap gap-1.5">
+              <FilterChip active={active === 'alle'} onClick={() => setActive('alle')} label="Alle" />
               {markenMitProdukten.map((m) => (
                 <FilterChip
                   key={m.slug}
@@ -146,9 +153,40 @@ export function MarkenPage() {
             </div>
           </div>
 
+          {featured ? (
+            <article className="animate-marken-reveal group mb-8 grid overflow-hidden bg-white lg:grid-cols-12">
+              <div className="relative overflow-hidden bg-fog lg:col-span-7">
+                <img
+                  src={featured.image}
+                  alt={`${featured.brandName}: ${featured.headline}`}
+                  className="aspect-[4/5] w-full object-cover transition duration-700 group-hover:scale-[1.03] lg:aspect-[5/4] lg:min-h-[420px]"
+                />
+                <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/55 to-transparent p-4 opacity-0 transition group-hover:opacity-100">
+                  <span className="text-[10px] font-semibold tracking-[0.16em] text-white uppercase">
+                    Klicken für Originalgröße
+                  </span>
+                </div>
+              </div>
+              <div className="flex flex-col justify-center p-8 md:p-12 lg:col-span-5">
+                <BrandMark product={featured} />
+                <h3 className="mt-5 font-sans text-2xl leading-snug font-extrabold tracking-tight text-ink md:text-3xl">
+                  {featured.headline}
+                </h3>
+                {featured.price ? (
+                  <p className="mt-5 text-sm font-medium tracking-wide text-muted uppercase">
+                    {featured.price}
+                  </p>
+                ) : null}
+                <p className="mt-6 text-sm leading-relaxed text-muted">
+                  Exklusiv im Showroom erlebbar – Materialien und Varianten besprechen wir vor Ort.
+                </p>
+              </div>
+            </article>
+          ) : null}
+
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {filtered.map((p) => (
-              <ProductCard key={p.stilpunkteUrl} product={p} />
+            {rest.map((p, i) => (
+              <ProductCard key={p.stilpunkteUrl} product={p} index={i} />
             ))}
           </div>
 
@@ -157,6 +195,56 @@ export function MarkenPage() {
               Für diese Marke sind in der aktuellen Auswahl keine Produktbilder hinterlegt.
             </p>
           ) : null}
+        </div>
+      </section>
+
+      {/* Brand index */}
+      <section className="border-t border-line bg-white">
+        <div className="mx-auto max-w-6xl px-4 py-14 md:py-16">
+          <div className="mb-8">
+            <p className="text-[11px] font-semibold tracking-[0.22em] text-brand uppercase">
+              Markenverzeichnis
+            </p>
+            <h2 className="mt-2 font-sans text-2xl font-extrabold tracking-tight md:text-3xl">
+              Alle Labels auf einen Blick
+            </h2>
+          </div>
+          <ul className="grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+            {marken.map((b) => {
+              const count = markenProdukte.filter((p) => p.brandSlug === b.slug).length
+              return (
+                <li key={b.slug}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setActive(b.slug)
+                      document.getElementById('produkte')?.scrollIntoView({ behavior: 'smooth' })
+                    }}
+                    className="group flex w-full items-center gap-3 text-left"
+                  >
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center bg-fog p-1.5">
+                      {b.logo ? (
+                        <img
+                          src={b.logo}
+                          alt=""
+                          data-no-zoom
+                          className="max-h-full max-w-full object-contain opacity-80 transition group-hover:opacity-100"
+                        />
+                      ) : null}
+                    </span>
+                    <span>
+                      <span className="block text-sm font-semibold text-ink transition group-hover:text-brand">
+                        {b.name}
+                      </span>
+                      <span className="text-[11px] text-muted">
+                        {count > 0 ? `${count} Produkte` : 'Showroom'}
+                      </span>
+                    </span>
+                  </button>
+                </li>
+              )
+            })}
+          </ul>
         </div>
       </section>
 
@@ -170,14 +258,11 @@ export function MarkenPage() {
               Materialien, Maße und Varianten besprechen wir persönlich. Vereinbaren Sie einen
               Termin – wir ordnen die passende Markenwelt Ihrem Raum zu.
             </p>
-            <p className="mt-3 text-[11px] tracking-wide text-white/40 uppercase">
-              Quelle: stilpunkte.de · ZB Interieur
-            </p>
           </div>
           <div className="flex flex-wrap gap-3">
             <Link
               to="/termin"
-              className="inline-flex rounded-full bg-accent px-6 py-3 text-sm font-bold tracking-[0.08em] text-white uppercase hover:brightness-95"
+              className="inline-flex bg-accent px-6 py-3 text-sm font-bold tracking-[0.08em] text-white uppercase hover:brightness-95"
             >
               Termin buchen
             </Link>
@@ -218,10 +303,31 @@ function FilterChip({
   )
 }
 
-function ProductCard({ product }: { product: MarkenProdukt }) {
+function BrandMark({ product }: { product: MarkenProdukt }) {
   const brand = marken.find((m) => m.slug === product.brandSlug)
   return (
-    <article className="group flex h-full flex-col bg-white">
+    <div className="flex items-center gap-3">
+      {brand?.logo ? (
+        <img
+          src={brand.logo}
+          alt=""
+          data-no-zoom
+          className="h-7 w-auto max-w-[100px] object-contain"
+        />
+      ) : null}
+      <p className="text-[11px] font-semibold tracking-[0.16em] text-brand uppercase">
+        {product.brandName}
+      </p>
+    </div>
+  )
+}
+
+function ProductCard({ product, index }: { product: MarkenProdukt; index: number }) {
+  return (
+    <article
+      className="animate-marken-reveal group flex h-full flex-col bg-white"
+      style={{ animationDelay: `${Math.min(index, 8) * 45}ms` }}
+    >
       <div className="relative overflow-hidden bg-fog">
         <img
           src={product.image}
@@ -235,20 +341,8 @@ function ProductCard({ product }: { product: MarkenProdukt }) {
         </div>
       </div>
       <div className="flex flex-1 flex-col p-5">
-        <div className="mb-3 flex items-center gap-3">
-          {brand?.logo ? (
-            <img
-              src={brand.logo}
-              alt=""
-              data-no-zoom
-              className="h-6 w-auto max-w-[88px] object-contain"
-            />
-          ) : null}
-          <p className="text-[11px] font-semibold tracking-[0.16em] text-brand uppercase">
-            {product.brandName}
-          </p>
-        </div>
-        <h3 className="font-sans text-lg leading-snug font-bold text-ink">{product.headline}</h3>
+        <BrandMark product={product} />
+        <h3 className="mt-3 font-sans text-lg leading-snug font-bold text-ink">{product.headline}</h3>
         {product.price ? (
           <p className="mt-3 text-sm font-medium text-muted">{product.price}</p>
         ) : null}

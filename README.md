@@ -1,8 +1,10 @@
 # ZB Interieur – Website (Netlify)
 
-Statische Neuauflage der Website [zb-interieur.de](https://zb-interieur.de/) für den Betrieb auf **Netlify**: Startseite, Planung, Beratung, Outdoor, Service, Kontakt (Netlify Forms) sowie Impressum, Datenschutz und AGB.
+Statische Neuauflage der Website [zb-interieur.de](https://zb-interieur.de/) für den Betrieb auf **Netlify**: Startseite, Planung, Markenwelt, Beratung, Outdoor, Service, Kontakt (Netlify Forms) sowie Impressum, Datenschutz und AGB.
 
-Blog und Galerie-Kategorien entfallen bewusst – Fokus auf Beratung, Planung und Terminbuchung.
+Blog und Galerie-Kategorien entfallen bewusst – Fokus auf Beratung, Planung, kuratierte Marken und Terminbuchung.
+
+Die Seite **Marken** (`/marken`) zeigt Logos, Produktheadlines und Produktbilder der Designermarken aus dem [STILPUNKTE-Eintrag](https://www.stilpunkte.de/saarland/eintraege/zb-interieur/) (ohne Lambert und Sifas). Produktbilder öffnen per Klick in Originalgröße.
 
 ## Live auf Netlify
 
