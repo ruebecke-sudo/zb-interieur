@@ -8,9 +8,9 @@ Blog und Galerie-Kategorien entfallen bewusst – Fokus auf Beratung, Planung un
 
 Aktueller Deploy (anonym / Drop – bitte innerhalb von 60 Min. in dein Netlify-Konto übernehmen):
 
-- **URL:** https://sage-maamoul-5523d7.netlify.app  
+- **URL:** https://coruscating-churros-793570.netlify.app  
 - **Zugangspasswort (Drop):** `My-Drop-Site`  
-- **Site beanspruchen:** [Claim-Link](https://app.netlify.com/drop/sage-maamoul-5523d7) (im Agent-Chat bzw. CLI-Ausgabe)
+- **Site beanspruchen:** [Claim-Link](https://app.netlify.com/drop/coruscating-churros-793570) (im Agent-Chat bzw. CLI-Ausgabe)
 
 Nach dem Claim kannst du die Domain `zb-interieur.de` unter Domain management zuweisen und das Drop-Passwort entfernen.
 
