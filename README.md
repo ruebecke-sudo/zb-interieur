@@ -8,13 +8,12 @@ Die Seite **Marken** (`/marken`) zeigt Logos, Produktheadlines und Produktbilder
 
 ## Live auf Netlify
 
-Aktueller Deploy (anonym / Drop – bitte innerhalb von 60 Min. in dein Netlify-Konto übernehmen):
+Letzter anonymer Drop (Passwort-geschützt, zeitlich begrenzt):
 
 - **URL:** https://whimsical-moxie-01eaf5.netlify.app  
 - **Zugangspasswort (Drop):** `My-Drop-Site`  
-- **Site beanspruchen:** [Claim-Link](https://app.netlify.com/drop/whimsical-moxie-01eaf5) (im Agent-Chat bzw. CLI-Ausgabe)
 
-Nach dem Claim kannst du die Domain `zb-interieur.de` unter Domain management zuweisen und das Drop-Passwort entfernen.
+Für den dauerhaften Betrieb bitte **Variante A** nutzen (GitHub → Netlify). Drop-Deploys sind nur Zwischenstände.
 
 ## Lokal starten
 
@@ -35,15 +34,20 @@ npm run preview
 
 ## Auf Netlify installieren / deployen
 
-### Variante A – Git verbinden (empfohlen)
+### Variante A – GitHub verbinden (empfohlen, dauerhaft)
 
-1. Repository bei GitHub/GitLab/Bitbucket anlegen bzw. dieses Repo verbinden.
-2. Unter [app.netlify.com](https://app.netlify.com) → **Add new site** → **Import an existing project**.
+Ziel-Repo: [github.com/ruebecke-sudo/zb-interieur](https://github.com/ruebecke-sudo/zb-interieur)
+
+1. Aktuellen Code nach `main` pushen (Agent braucht Secret `GITHUB_TOKEN` mit `repo`-Recht, oder manuell pushen).
+2. Unter [app.netlify.com](https://app.netlify.com) → **Add new site** → **Import an existing project** → GitHub → Repo wählen.
 3. Build-Einstellungen (stehen auch in `netlify.toml`):
    - **Build command:** `npm run build`
    - **Publish directory:** `dist`
    - **Node:** 22
-4. Deploy starten. Domain optional unter **Domain management** zuweisen (z. B. `zb-interieur.de` nach DNS-Umstellung).
+4. Deploy starten.
+5. Unter **Domain management** `zb-interieur.de` hinzufügen und DNS umstellen.
+6. Site-Passwort / Drop-Schutz entfernen.
+7. Unter **Forms** Benachrichtigungen für das Kontaktformular aktivieren.
 
 ### Variante B – Netlify CLI
 
