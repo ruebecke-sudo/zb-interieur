@@ -10,10 +10,10 @@ Die Seite **Marken** (`/marken`) zeigt Logos, Produktheadlines und Produktbilder
 
 Letzter anonymer Drop (Passwort-geschützt, zeitlich begrenzt):
 
-- **URL:** https://harmonious-croissant-7a21f3.netlify.app  
+- **URL:** https://phenomenal-banoffee-e35638.netlify.app  
 - **Zugangspasswort (Drop):** `My-Drop-Site`  
 
-Für den dauerhaften Betrieb bitte **Variante A** nutzen (GitHub → Netlify). Drop-Deploys sind nur Zwischenstände. Claim innerhalb von 60 Min.: [Claim-Link](https://app.netlify.com/drop/harmonious-croissant-7a21f3)
+Für den dauerhaften Betrieb bitte **Variante A** nutzen (GitHub → Netlify). Drop-Deploys sind nur Zwischenstände. Claim innerhalb von 60 Min.: [Claim-Link](https://app.netlify.com/drop/phenomenal-banoffee-e35638)
 
 ## Lokal starten
 
