@@ -5,6 +5,77 @@
 [build.environment]
   NODE_VERSION = "22"
 
+# Alte Planungs-Unterseiten
+[[redirects]]
+  from = "/kuechenplanungen-2"
+  to = "/planung#kueche"
+  status = 301
+
+[[redirects]]
+  from = "/kuechenplanungen-2/"
+  to = "/planung#kueche"
+  status = 301
+
+[[redirects]]
+  from = "/badeinrichtungen"
+  to = "/planung#bad"
+  status = 301
+
+[[redirects]]
+  from = "/badeinrichtungen/"
+  to = "/planung#bad"
+  status = 301
+
+[[redirects]]
+  from = "/bueroeinrichtungen-2"
+  to = "/planung#buero"
+  status = 301
+
+[[redirects]]
+  from = "/bueroeinrichtungen-2/"
+  to = "/planung#buero"
+  status = 301
+
+[[redirects]]
+  from = "/terrassenplanung"
+  to = "/planung#terrasse"
+  status = 301
+
+[[redirects]]
+  from = "/terrassenplanung/"
+  to = "/planung#terrasse"
+  status = 301
+
+[[redirects]]
+  from = "/objekt-hoteleinrichtungen-2"
+  to = "/planung#objekt"
+  status = 301
+
+[[redirects]]
+  from = "/objekt-hoteleinrichtungen-2/"
+  to = "/planung#objekt"
+  status = 301
+
+[[redirects]]
+  from = "/sonderanfertigungen-2"
+  to = "/planung#sonder"
+  status = 301
+
+[[redirects]]
+  from = "/sonderanfertigungen-2/"
+  to = "/planung#sonder"
+  status = 301
+
+[[redirects]]
+  from = "/raumgestaltung"
+  to = "/planung#raumgestaltung"
+  status = 301
+
+[[redirects]]
+  from = "/raumgestaltung/"
+  to = "/planung#raumgestaltung"
+  status = 301
+
 # Alte Galerie-/Blog-Pfade
 [[redirects]]
   from = "/galerien/*"
