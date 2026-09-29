@@ -23,14 +23,12 @@ export function MarkenweltenSection() {
           </p>
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-6 lg:grid-rows-2">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {markenwelten.map((cat, i) => {
             const span =
               i === 0
-                ? 'lg:col-span-3 lg:row-span-2 min-h-[320px] lg:min-h-[520px]'
-                : i === 1
-                  ? 'lg:col-span-3 min-h-[240px]'
-                  : 'lg:col-span-2 min-h-[220px]'
+                ? 'sm:col-span-2 lg:col-span-2 lg:row-span-2 min-h-[280px] lg:min-h-[540px]'
+                : 'min-h-[220px] lg:min-h-[260px]'
             return (
               <button
                 key={cat.id}
