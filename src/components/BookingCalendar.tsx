@@ -342,7 +342,7 @@ export function BookingCalendar() {
                   <a className="underline" href={`mailto:${site.email}`}>
                     {site.email}
                   </a>{' '}
-                  schreiben.
+                  schreiben. Prüfen Sie in Netlify → Forms, ob „termin“ nach dem Deploy erscheint.
                 </p>
               ) : null}
               <p className="text-xs text-muted">

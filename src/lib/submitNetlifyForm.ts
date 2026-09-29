@@ -4,16 +4,21 @@ export function encodeFormData(data: FormData): string {
   for (const [key, value] of data.entries()) {
     if (typeof value === 'string') params.append(key, value)
   }
+  // Always send empty honeypot if missing – required for some Netlify setups
+  if (!params.has('bot-field')) params.set('bot-field', '')
   return params.toString()
 }
 
 /**
- * Submit to Netlify Forms.
- * On local Vite, POST / returns HTML 200 – we treat that as offline and still
- * surface success only when the request reaches a Netlify-hosted origin or
- * when a dedicated form endpoint responds OK.
+ * Submit to Netlify Forms via AJAX.
+ * Forms must be registered at deploy time (see index.html + public/netlify-forms.html).
  */
 export async function submitNetlifyForm(data: FormData): Promise<'ok' | 'dev-ok' | 'error'> {
+  if (!data.get('form-name')) {
+    console.error('[form] form-name fehlt')
+    return 'error'
+  }
+
   const body = encodeFormData(data)
   const host = window.location.hostname
   const isLocal = host === 'localhost' || host === '127.0.0.1' || host.endsWith('.local')
@@ -21,17 +26,25 @@ export async function submitNetlifyForm(data: FormData): Promise<'ok' | 'dev-ok'
   try {
     const res = await fetch('/', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
       body,
     })
 
-    // Netlify Forms typically redirects (302) or returns 200 after acceptance.
-    // Local Vite always returns 200 HTML for POST / – not a real form backend.
     if (isLocal) {
       if (import.meta.env.DEV) {
         console.info('[form] Lokaler Dev-Modus – Anfrage simuliert:', Object.fromEntries(data))
       }
       return 'dev-ok'
+    }
+
+    // Netlify returns 404 when the form-name is not registered for the site.
+    if (res.status === 404) {
+      console.error(
+        '[form] Netlify Forms 404 – Formular nicht registriert. Neues Deploy nötig, Forms in HTML prüfen.',
+      )
+      return 'error'
     }
 
     if (!res.ok) throw new Error(`HTTP ${res.status}`)

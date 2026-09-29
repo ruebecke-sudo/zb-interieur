@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <title>ZB Interieur – Formular-Erkennung</title>
+    <meta name="robots" content="noindex" />
+  </head>
+  <body>
+    <!-- Extra HTML file in publish dir so Netlify reliably registers forms -->
+    <form
+      name="kontakt"
+      method="POST"
+      action="/"
+      data-netlify="true"
+      data-netlify-honeypot="bot-field"
+      netlify
+      netlify-honeypot="bot-field"
+    >
+      <input type="hidden" name="form-name" value="kontakt" />
+      <p style="display: none"><label>Nicht ausfüllen <input name="bot-field" /></label></p>
+      <input type="text" name="name" />
+      <input type="email" name="email" />
+      <input type="tel" name="phone" />
+      <input type="text" name="source" />
+      <input type="text" name="callback" />
+      <textarea name="message"></textarea>
+    </form>
+
+    <form
+      name="termin"
+      method="POST"
+      action="/"
+      data-netlify="true"
+      data-netlify-honeypot="bot-field"
+      netlify
+      netlify-honeypot="bot-field"
+    >
+      <input type="hidden" name="form-name" value="termin" />
+      <p style="display: none"><label>Nicht ausfüllen <input name="bot-field" /></label></p>
+      <input type="text" name="name" />
+      <input type="email" name="email" />
+      <input type="tel" name="phone" />
+      <input type="text" name="terminart" />
+      <input type="text" name="datum" />
+      <input type="text" name="uhrzeit" />
+      <input type="text" name="dauer" />
+      <textarea name="message"></textarea>
+    </form>
+  </body>
+</html>

@@ -35,8 +35,23 @@
   </head>
   <body>
     <div id="root"></div>
-    <!-- Netlify Forms: static forms for build-time detection -->
-    <form name="kontakt" netlify netlify-honeypot="bot-field" hidden>
+
+    <!--
+      Netlify Forms: must exist in deployed HTML for registration at build time.
+      Use data-netlify="true" + explicit form-name + honeypot field.
+    -->
+    <form
+      name="kontakt"
+      method="POST"
+      action="/"
+      data-netlify="true"
+      data-netlify-honeypot="bot-field"
+      netlify
+      netlify-honeypot="bot-field"
+      style="display: none"
+    >
+      <input type="hidden" name="form-name" value="kontakt" />
+      <input name="bot-field" />
       <input type="text" name="name" />
       <input type="email" name="email" />
       <input type="tel" name="phone" />
@@ -44,7 +59,19 @@
       <input type="text" name="callback" />
       <textarea name="message"></textarea>
     </form>
-    <form name="termin" netlify netlify-honeypot="bot-field" hidden>
+
+    <form
+      name="termin"
+      method="POST"
+      action="/"
+      data-netlify="true"
+      data-netlify-honeypot="bot-field"
+      netlify
+      netlify-honeypot="bot-field"
+      style="display: none"
+    >
+      <input type="hidden" name="form-name" value="termin" />
+      <input name="bot-field" />
       <input type="text" name="name" />
       <input type="email" name="email" />
       <input type="tel" name="phone" />
@@ -54,6 +81,7 @@
       <input type="text" name="dauer" />
       <textarea name="message"></textarea>
     </form>
+
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

@@ -209,11 +209,12 @@ export function KontaktPage() {
             ) : null}
             {status === 'error' ? (
               <p className="text-sm text-red-700" role="alert">
-                Absenden fehlgeschlagen. Bitte versuchen Sie es erneut oder schreiben Sie an{' '}
+                Absenden fehlgeschlagen. Bitte erneut versuchen oder an{' '}
                 <a className="underline" href={`mailto:${site.email}`}>
                   {site.email}
-                </a>
-                .
+                </a>{' '}
+                schreiben. Wenn das Problem bleibt: In Netlify unter Forms prüfen, ob „kontakt“ /
+                „termin“ nach dem Deploy gelistet sind.
               </p>
             ) : null}
           </form>
