@@ -4,8 +4,8 @@ export const site = {
   tagline: 'Einrichtungshaus Homburg · Designmöbel · Raumgestaltung',
   phone: '+49 (0) 6841 9597223',
   phoneHref: 'tel:+4968419597223',
-  /** internationale Nummer ohne Leerzeichen für WhatsApp */
-  whatsapp: '4968419597223',
+  /** internationale Nummer ohne Leerzeichen für WhatsApp: +49 (0) 6641 9597 223 */
+  whatsapp: '4966419597223',
   email: 'info@zb-interieur.de',
   street: 'Mainzerstr. 77',
   zipCity: '66424 Homburg',
