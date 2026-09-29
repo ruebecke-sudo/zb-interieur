@@ -453,8 +453,14 @@ export const markenwelten: MarkenweltCategory[] = [
     "id": "schlafen",
     "label": "Schlafen",
     "teaser": "Betten und Schlafzimmer",
-    "cover": "/images/schlafzimmer-render-1.jpg",
+    "cover": "/images/galerien/betten/07.jpg",
     "items": [
+      {
+        "brand": "Möller Design",
+        "title": "Dana Daybed",
+        "caption": "Dana Daybed Milieu – elegantes Daybed für exklusive Schlaf- und Ruheräume.",
+        "image": "/images/galerien/betten/07.jpg"
+      },
       {
         "brand": "Betten",
         "title": "Moeller Design",
@@ -490,12 +496,6 @@ export const markenwelten: MarkenweltCategory[] = [
         "title": "Md13 Yoda 18 01",
         "caption": "Betten – Motiv aus der ZB Interieur Galerie.",
         "image": "/images/galerien/betten/06.jpg"
-      },
-      {
-        "brand": "Betten",
-        "title": "Dana Daybed Milieu 01",
-        "caption": "Betten – Motiv aus der ZB Interieur Galerie.",
-        "image": "/images/galerien/betten/07.jpg"
       },
       {
         "brand": "Betten",
@@ -581,8 +581,20 @@ export const markenwelten: MarkenweltCategory[] = [
     "id": "outdoor",
     "label": "Outdoor",
     "teaser": "Terrasse und Gartenmöbel",
-    "cover": "/images/planung/terrasse-1.jpg",
+    "cover": "/images/galerien/varaschin/04.jpg",
     "items": [
+      {
+        "brand": "Varaschin",
+        "title": "Belt Coffee Daybed",
+        "caption": "Varaschin Belt Coffee Daybed Gia0872 – Outdoor-Daybed mit großzügiger Liegefläche.",
+        "image": "/images/galerien/varaschin/04.jpg"
+      },
+      {
+        "brand": "Varaschin",
+        "title": "Outdoor Sofa Emma",
+        "caption": "Lounge für Terrasse und Garten – wetterfest, elegant.",
+        "image": "/images/galerien/varaschin/05.jpg"
+      },
       {
         "brand": "Varaschin",
         "title": "Varaschin Tibidabo Daybed Compact Gia2489 1",
@@ -600,18 +612,6 @@ export const markenwelten: MarkenweltCategory[] = [
         "title": "Outdoor Sofa Emma",
         "caption": "Outdoor Sofa Emma",
         "image": "/images/galerien/varaschin/03.jpg"
-      },
-      {
-        "brand": "Varaschin",
-        "title": "Varaschin Belt Coffee Daybed Gia0872 1 1",
-        "caption": "Varaschin – Motiv aus der ZB Interieur Galerie.",
-        "image": "/images/galerien/varaschin/04.jpg"
-      },
-      {
-        "brand": "Varaschin",
-        "title": "Outdoor Sofa Emma",
-        "caption": "Outdoor Sofa Emma",
-        "image": "/images/galerien/varaschin/05.jpg"
       },
       {
         "brand": "Varaschin",

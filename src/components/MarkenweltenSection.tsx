@@ -131,7 +131,7 @@ function CategoryOverlay({
                   <img
                     src={item.image}
                     alt={`${item.brand}: ${item.title}`}
-                    className="aspect-[4/5] w-full object-cover transition duration-700 group-hover:scale-[1.03]"
+                    className="aspect-[4/5] w-full cursor-zoom-in object-cover transition duration-700 group-hover:scale-[1.03]"
                   />
                   <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/55 to-transparent p-3 opacity-0 transition group-hover:opacity-100">
                     <span className="text-[10px] font-semibold tracking-[0.16em] text-white uppercase">

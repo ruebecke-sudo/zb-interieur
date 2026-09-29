@@ -62,6 +62,7 @@ export function LightboxProvider({ children }: { children: ReactNode }) {
               role="dialog"
               aria-modal="true"
               aria-label={item.alt || 'Bild in Originalgröße'}
+              data-lightbox-root
               onClick={close}
             >
               <button
@@ -103,15 +104,17 @@ export function ImageZoomRoot({ children }: { children: ReactNode }) {
       if (!img) return
       if (img.closest('header, footer, [data-no-zoom-root]')) return
       if (img.hasAttribute('data-no-zoom')) return
-      if (img.closest('[role="dialog"]')) return
+      // Allow zoom inside gallery overlays; skip only the lightbox dialog itself
+      if (img.closest('[role="dialog"][aria-label*="Originalgröße"], [data-lightbox-root]')) return
       const src = img.currentSrc || img.src
       if (!src) return
       e.preventDefault()
+      e.stopPropagation()
       open(src, img.alt || '')
     }
 
-    document.addEventListener('click', onClick)
-    return () => document.removeEventListener('click', onClick)
+    document.addEventListener('click', onClick, true)
+    return () => document.removeEventListener('click', onClick, true)
   }, [open])
 
   return <>{children}</>
