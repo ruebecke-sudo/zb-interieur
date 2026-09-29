@@ -34,7 +34,7 @@ export const whatsappHref = `https://wa.me/${site.whatsapp}?text=${encodeURIComp
   'Hallo ZB Interieur, ich interessiere mich für eine Einrichtungsberatung.',
 )}`
 
-/** Schlanke Navigation – Fokus auf Planung & Showroom (ohne Blog/Galerien) */
+/** Schlanke Navigation – Fokus auf Planung & Showroom */
 export const nav = [
   {
     label: 'Planung',
@@ -51,6 +51,7 @@ export const nav = [
   },
   { label: 'Marken', href: '/marken' },
   { label: 'Magazin', href: '/magazin' },
+  { label: 'Blog', href: '/blog' },
   { label: 'Service', href: '/service' },
   { label: 'Kontakt', href: '/kontakt' },
 ] as const

@@ -1,6 +1,8 @@
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 import { Layout } from './components/Layout'
 import { BeratungPage } from './pages/BeratungPage'
+import { BlogPage } from './pages/BlogPage'
+import { BlogPostPage } from './pages/BlogPostPage'
 import { HomePage } from './pages/HomePage'
 import { AgbPage, BarrierefreiheitPage, DatenschutzPage, ImpressumPage } from './pages/LegalPages'
 import { KontaktPage } from './pages/KontaktPage'
@@ -21,6 +23,8 @@ const router = createBrowserRouter([
       { path: 'planung', element: <PlanungPage /> },
       { path: 'marken', element: <MarkenPage /> },
       { path: 'magazin', element: <MagazinPage /> },
+      { path: 'blog', element: <BlogPage /> },
+      { path: 'blog/:slug', element: <BlogPostPage /> },
       { path: 'outdoor', element: <OutdoorPage /> },
       { path: 'kuechenplanungen-2', element: <Navigate to="/planung#kueche" replace /> },
       { path: 'badeinrichtungen', element: <Navigate to="/planung#bad" replace /> },
@@ -38,8 +42,6 @@ const router = createBrowserRouter([
       { path: 'agb', element: <AgbPage /> },
       { path: 'galerien', element: <Navigate to="/planung" replace /> },
       { path: 'galerie', element: <Navigate to="/planung" replace /> },
-      { path: 'blog', element: <Navigate to="/" replace /> },
-      { path: 'blog/*', element: <Navigate to="/" replace /> },
     ],
   },
 ])

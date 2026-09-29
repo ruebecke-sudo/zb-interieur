@@ -1,3 +1,4 @@
+import { blogPosts, getBlogPost } from './blog'
 import { markenBrands } from './marken-data'
 import { site } from './site'
 
@@ -113,6 +114,20 @@ export const pageSeo: Record<string, PageSeo> = {
     ],
     ogImage: defaultOgImage,
   },
+  '/blog': {
+    path: '/blog',
+    title: 'Blog | Einrichtungsplanung, Designmöbel & Küchenplanung | ZB Interieur Homburg',
+    description:
+      'Blog vom Einrichtungshaus ZB Interieur in Homburg: Tipps zu Designmöbeln, Einrichtungsplanung, Küchenplanung und Showroom-Themen für Saarbrücken und das Saarland.',
+    keywords: [
+      'Blog Einrichtungshaus Homburg',
+      'Einrichtungsplanung Tipps',
+      'Küchenplanung Blog Saarland',
+      'Designmöbel Blog Homburg',
+      ...localKeywords.slice(0, 6),
+    ],
+    ogImage: defaultOgImage,
+  },
   '/outdoor': {
     path: '/outdoor',
     title: 'Outdoormöbel & Terrassenplanung Homburg | Varaschin | ZB Interieur',
@@ -201,6 +216,27 @@ export const pageSeo: Record<string, PageSeo> = {
 
 export function resolvePageSeo(pathname: string): PageSeo {
   const clean = pathname.endsWith('/') && pathname !== '/' ? pathname.slice(0, -1) : pathname
+
+  if (clean.startsWith('/blog/') && clean !== '/blog') {
+    const slug = clean.slice('/blog/'.length)
+    const post = getBlogPost(slug)
+    if (post) {
+      return {
+        path: clean,
+        title: `${post.title} | Blog ZB Interieur Homburg`,
+        description: post.excerpt,
+        keywords: [
+          post.category,
+          'Blog ZB Interieur',
+          'Einrichtungshaus Homburg',
+          ...localKeywords.slice(0, 5),
+        ],
+        ogImage: absoluteUrl(post.image),
+        type: 'article',
+      }
+    }
+  }
+
   return pageSeo[clean] ?? {
     path: clean || '/',
     title: `${site.name} | Einrichtungshaus Homburg · Designmöbel Saarland`,
@@ -304,4 +340,7 @@ export function breadcrumbJsonLd(pathname: string, title: string) {
   }
 }
 
-export const sitemapPaths = Object.keys(pageSeo).filter((p) => !pageSeo[p].noindex)
+export const sitemapPaths = [
+  ...Object.keys(pageSeo).filter((p) => !pageSeo[p].noindex),
+  ...blogPosts.map((p) => `/blog/${p.slug}`),
+]

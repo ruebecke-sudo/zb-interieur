@@ -1,5 +1,6 @@
 import { Helmet } from 'react-helmet-async'
 import { useLocation } from 'react-router-dom'
+import { getBlogPost } from '../data/blog'
 import {
   absoluteUrl,
   breadcrumbJsonLd,
@@ -36,6 +37,30 @@ export function Seo() {
         },
       })),
     })
+  }
+
+  if (seo.path.startsWith('/blog/') && seo.path !== '/blog') {
+    const post = getBlogPost(seo.path.slice('/blog/'.length))
+    if (post) {
+      graph.push({
+        '@context': 'https://schema.org',
+        '@type': 'BlogPosting',
+        headline: post.title,
+        description: post.excerpt,
+        image: absoluteUrl(post.image),
+        datePublished: post.date,
+        author: {
+          '@type': 'Organization',
+          name: site.name,
+        },
+        publisher: {
+          '@type': 'Organization',
+          name: site.name,
+          logo: absoluteUrl('/images/logo.jpg'),
+        },
+        mainEntityOfPage: url,
+      })
+    }
   }
 
   return (

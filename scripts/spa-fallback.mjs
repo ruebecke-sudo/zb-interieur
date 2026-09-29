@@ -21,6 +21,7 @@ const routes = [
   'planung',
   'marken',
   'magazin',
+  'blog',
   'outdoor',
   'service',
   'termin',
@@ -46,4 +47,18 @@ for (const route of routes) {
   copyFileSync(index, join(dir, 'index.html'))
 }
 
-console.log(`SPA route mirrors: ${routes.length} paths`)
+// Blog article deep links
+const blogSlugs = [
+  'einrichtungsplanung-homburg-worauf-es-ankommt',
+  'kuechenplanung-saarland-modern-und-funktional',
+  'designmoebel-marken-im-showroom-homburg',
+  'outdoor-terrasse-planen-varaschin',
+  'stilpunkte-award-einrichtungshaus-homburg',
+]
+for (const slug of blogSlugs) {
+  const dir = join(dist, 'blog', slug)
+  mkdirSync(dir, { recursive: true })
+  copyFileSync(index, join(dir, 'index.html'))
+}
+
+console.log(`SPA route mirrors: ${routes.length + blogSlugs.length} paths`)

@@ -26,6 +26,36 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://zb-interieur.de/blog</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://zb-interieur.de/blog/einrichtungsplanung-homburg-worauf-es-ankommt</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://zb-interieur.de/blog/kuechenplanung-saarland-modern-und-funktional</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://zb-interieur.de/blog/designmoebel-marken-im-showroom-homburg</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://zb-interieur.de/blog/outdoor-terrasse-planen-varaschin</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://zb-interieur.de/blog/stilpunkte-award-einrichtungshaus-homburg</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://zb-interieur.de/outdoor</loc>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
