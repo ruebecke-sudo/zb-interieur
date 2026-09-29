@@ -48,20 +48,18 @@ export function MarkenweltenSection() {
                   data-no-zoom
                   className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-[1.04]"
                 />
-                <div
-                  aria-hidden
-                  className="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/30 to-transparent transition group-hover:from-ink/90"
-                />
-                <div className="relative flex h-full flex-col justify-end p-5 md:p-7">
-                  <p className="text-[11px] font-semibold tracking-[0.2em] text-white/80 uppercase">
-                    {cat.teaser}
-                  </p>
-                  <h3 className="mt-1 font-sans text-2xl font-extrabold tracking-tight text-white md:text-3xl">
-                    {cat.label}
-                  </h3>
-                  <span className="mt-3 inline-flex text-[11px] font-semibold tracking-[0.14em] text-accent uppercase opacity-90 transition group-hover:opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-visible:opacity-100">
-                    Mehr entdecken →
-                  </span>
+                <div className="relative flex h-full flex-col justify-end p-4 md:p-5">
+                  <div className="bg-black/40 px-4 py-3 md:px-5 md:py-4">
+                    <p className="text-[11px] font-semibold tracking-[0.2em] text-white/90 uppercase">
+                      {cat.teaser}
+                    </p>
+                    <h3 className="mt-1 font-sans text-2xl font-extrabold tracking-tight text-white md:text-3xl">
+                      {cat.label}
+                    </h3>
+                    <span className="mt-3 inline-flex text-[11px] font-semibold tracking-[0.14em] text-accent uppercase opacity-90 transition group-hover:opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-visible:opacity-100">
+                      Mehr entdecken →
+                    </span>
+                  </div>
                 </div>
                 </button>
               </li>
