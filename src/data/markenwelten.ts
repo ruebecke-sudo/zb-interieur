@@ -581,19 +581,19 @@ export const markenwelten: MarkenweltCategory[] = [
     "id": "outdoor",
     "label": "Outdoor",
     "teaser": "Terrasse und Gartenmöbel",
-    "cover": "/images/galerien/varaschin/04.jpg",
+    "cover": "/images/galerien/varaschin/05.jpg",
     "items": [
-      {
-        "brand": "Varaschin",
-        "title": "Belt Coffee Daybed",
-        "caption": "Varaschin Belt Coffee Daybed Gia0872 – Outdoor-Daybed mit großzügiger Liegefläche.",
-        "image": "/images/galerien/varaschin/04.jpg"
-      },
       {
         "brand": "Varaschin",
         "title": "Outdoor Sofa Emma",
         "caption": "Lounge für Terrasse und Garten – wetterfest, elegant.",
         "image": "/images/galerien/varaschin/05.jpg"
+      },
+      {
+        "brand": "Varaschin",
+        "title": "Belt Coffee Daybed",
+        "caption": "Varaschin Belt Coffee Daybed Gia0872 – Outdoor-Daybed mit großzügiger Liegefläche.",
+        "image": "/images/galerien/varaschin/04.jpg"
       },
       {
         "brand": "Varaschin",
