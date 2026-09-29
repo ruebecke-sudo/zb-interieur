@@ -115,7 +115,7 @@ export const markenwelten: MarkenweltCategory[] = [
   },
   {
     "id": "essen",
-    "label": "Essen",
+    "label": "Dining",
     "teaser": "Tische und Essbereiche",
     "cover": "/images/designmoebel-2.jpg",
     "items": [
@@ -243,7 +243,7 @@ export const markenwelten: MarkenweltCategory[] = [
   },
   {
     "id": "stauraum",
-    "label": "Stauraum",
+    "label": "Space",
     "teaser": "Regale, Sideboards und Systeme",
     "cover": "/images/galerien/piure/01.jpg",
     "items": [
