@@ -37,6 +37,7 @@ export function MagazinPage() {
               className="inline-flex bg-accent px-7 py-3.5 text-sm font-bold tracking-[0.08em] text-white uppercase hover:brightness-95"
             >
               Vollbild öffnen
+              <span className="sr-only"> (öffnet in neuem Fenster)</span>
             </a>
             <a
               href={PDF_SRC}
@@ -44,6 +45,7 @@ export function MagazinPage() {
               className="inline-flex border border-white/35 px-7 py-3.5 text-sm font-semibold tracking-[0.1em] text-white uppercase transition hover:border-white hover:bg-white/5"
             >
               PDF speichern
+              <span className="sr-only"> – Broschüre 2026 als PDF herunterladen</span>
             </a>
             <Link
               to="/termin"

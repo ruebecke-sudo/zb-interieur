@@ -99,14 +99,19 @@ export function HomePage() {
             </div>
             <Link
               to="/termin"
-              className="text-sm font-semibold tracking-wide text-accent uppercase"
+              className="text-sm font-semibold tracking-wide text-brand uppercase hover:underline"
             >
               Besuchstermin →
             </Link>
           </div>
           <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
-            {showroomImages.map((src) => (
-              <img key={src} src={src} alt="" className="aspect-square w-full object-cover" />
+            {showroomImages.map((src, i) => (
+              <img
+                key={src}
+                src={src}
+                alt={`Showroom ZB Interieur Homburg, Motiv ${i + 1}`}
+                className="aspect-square w-full object-cover"
+              />
             ))}
           </div>
         </div>
@@ -135,10 +140,14 @@ export function HomePage() {
             </p>
           </div>
           <div className="grid grid-cols-2 gap-3">
-            <img src="/images/kueche-render-1.jpg" alt="" className="aspect-[3/4] object-cover" />
+            <img
+              src="/images/kueche-render-1.jpg"
+              alt="3D-Visualisierung einer modernen Küche"
+              className="aspect-[3/4] object-cover"
+            />
             <img
               src="/images/kueche-render-3.jpg"
-              alt=""
+              alt="3D-Visualisierung eines Wohn- und Essbereichs"
               className="mt-8 aspect-[3/4] object-cover"
             />
           </div>

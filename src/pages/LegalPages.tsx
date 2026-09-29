@@ -154,6 +154,117 @@ export function AgbPage() {
   )
 }
 
+export function BarrierefreiheitPage() {
+  return (
+    <LegalLayout title="Erklärung zur Barrierefreiheit">
+      <p>
+        {site.legalName} ist bemüht, die Website zb-interieur.de im Einklang mit den Anforderungen
+        des Barrierefreiheitsstärkungsgesetzes (BFSG) sowie den Web Content Accessibility Guidelines
+        (WCAG) 2.1 auf Konformitätsstufe AA barrierefrei zugänglich zu gestalten.
+      </p>
+
+      <h2>Stand dieser Erklärung</h2>
+      <p>
+        Diese Erklärung wurde am 29. September 2026 erstellt und gilt für die öffentlich
+        erreichbare Website zb-interieur.de (einschließlich Unterseiten wie Beratung, Planung,
+        Marken, Magazin, Service, Termin und Kontakt).
+      </p>
+
+      <h2>Erfüllungsstatus</h2>
+      <p>
+        Die Website ist <strong className="font-semibold text-ink">teilweise barrierefrei</strong>.
+        Die wesentlichen Anforderungen der WCAG 2.1 AA werden weitgehend erfüllt. Einzelne Inhalte
+        können noch nicht vollständig den Anforderungen entsprechen.
+      </p>
+
+      <h2>Umgesetzte Maßnahmen</h2>
+      <ul>
+        <li>Sprache der Seite ist als Deutsch (lang=&quot;de&quot;) gekennzeichnet</li>
+        <li>Skip-Link zum Hauptinhalt für Tastaturbedienung</li>
+        <li>Sichtbare Tastaturfokus-Hervorhebung</li>
+        <li>Semantische Überschriften, Landmarks und beschriftete Formulare</li>
+        <li>Alternativtexte für inhaltliche Bilder; dekorative Bilder sind als solche gekennzeichnet</li>
+        <li>Dialoge (Markenwelten, Bildvergrößerung, Mobilmenü) mit Escape, Fokusfang und Schließen-Buttons</li>
+        <li>Unterstützung von prefers-reduced-motion</li>
+        <li>Ausreichende Kontraste für Fließtext und zentrale Bedienelemente</li>
+      </ul>
+
+      <h2>Nicht barrierefreie Inhalte</h2>
+      <ul>
+        <li>
+          Eingebettete Karten (Google Maps) und externe Inhalte (WhatsApp, Social Media, PDF-Downloads)
+          können eigene Barrieren aufweisen, die außerhalb unseres unmittelbaren Einflusses liegen.
+        </li>
+        <li>
+          Das Magazin-Flipbook und einzelne PDF-Dokumente können je nach Endgerät eingeschränkt
+          zugänglich sein. Auf Anfrage stellen wir Inhalte in einem zugänglichen Format bereit.
+        </li>
+        <li>
+          Einzelne Galeriebilder aus älteren Beständen können noch ungenaue Bildbeschreibungen
+          enthalten; wir verbessern diese fortlaufend.
+        </li>
+      </ul>
+
+      <h2>Feedback und Kontakt</h2>
+      <p>
+        Wenn Sie auf Barrieren stoßen oder Informationen in einem zugänglichen Format benötigen,
+        melden Sie sich gerne:
+      </p>
+      <p>
+        {site.legalName}
+        <br />
+        {site.street}
+        <br />
+        {site.zipCity}
+        <br />
+        Telefon:{' '}
+        <a className="text-brand underline" href={site.phoneHref}>
+          {site.phone}
+        </a>
+        <br />
+        E-Mail:{' '}
+        <a className="text-brand underline" href={`mailto:${site.email}`}>
+          {site.email}
+        </a>
+      </p>
+      <p>Wir bemühen uns, auf Hinweise innerhalb einer angemessenen Frist zu reagieren.</p>
+
+      <h2>Schlichtungsverfahren</h2>
+      <p>
+        Wenn Sie mit der Antwort auf Ihre Mitteilung über Barrieren nicht zufrieden sind, können Sie
+        sich an die Schlichtungsstelle nach dem Behindertengleichstellungsgesetz wenden:
+      </p>
+      <p>
+        Schlichtungsstelle BGG
+        <br />
+        bei dem Beauftragten der Bundesregierung für die Belange von Menschen mit Behinderungen
+        <br />
+        Mauerstraße 53
+        <br />
+        10117 Berlin
+        <br />
+        Telefon: 030 18 527-2805
+        <br />
+        E-Mail:{' '}
+        <a className="text-brand underline" href="mailto:info@schlichtungsstelle-bgg.de">
+          info@schlichtungsstelle-bgg.de
+        </a>
+        <br />
+        Web:{' '}
+        <a
+          className="text-brand underline"
+          href="https://www.schlichtungsstelle-bgg.de"
+          target="_blank"
+          rel="noreferrer"
+        >
+          www.schlichtungsstelle-bgg.de
+          <span className="sr-only"> (öffnet in neuem Fenster)</span>
+        </a>
+      </p>
+    </LegalLayout>
+  )
+}
+
 function LegalLayout({ title, children }: { title: string; children: ReactNode }) {
   return (
     <>
@@ -162,7 +273,7 @@ function LegalLayout({ title, children }: { title: string; children: ReactNode }
           <h1 className="font-serif text-4xl font-bold">{title}</h1>
         </div>
       </section>
-      <article className="legal mx-auto max-w-3xl space-y-4 px-4 py-12 text-[15px] leading-relaxed text-ink [&_h2]:mt-8 [&_h2]:font-serif [&_h2]:text-2xl [&_h2]:font-bold [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-5 [&_ul]:text-muted [&_p]:text-muted">
+      <article className="legal mx-auto max-w-3xl space-y-4 px-4 py-12 text-[15px] leading-relaxed text-ink [&_h2]:mt-8 [&_h2]:font-serif [&_h2]:text-2xl [&_h2]:font-bold [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-5 [&_ul]:text-muted [&_a]:underline-offset-2 [&_p]:text-muted">
         {children}
       </article>
     </>

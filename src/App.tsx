@@ -2,7 +2,7 @@ import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 import { Layout } from './components/Layout'
 import { BeratungPage } from './pages/BeratungPage'
 import { HomePage } from './pages/HomePage'
-import { AgbPage, DatenschutzPage, ImpressumPage } from './pages/LegalPages'
+import { AgbPage, BarrierefreiheitPage, DatenschutzPage, ImpressumPage } from './pages/LegalPages'
 import { KontaktPage } from './pages/KontaktPage'
 import { MarkenPage } from './pages/MarkenPage'
 import { MagazinPage } from './pages/MagazinPage'
@@ -34,6 +34,7 @@ const router = createBrowserRouter([
       { path: 'kontakt', element: <KontaktPage /> },
       { path: 'impressum', element: <ImpressumPage /> },
       { path: 'datenschutz', element: <DatenschutzPage /> },
+      { path: 'barrierefreiheit', element: <BarrierefreiheitPage /> },
       { path: 'agb', element: <AgbPage /> },
       { path: 'galerien', element: <Navigate to="/planung" replace /> },
       { path: 'galerie', element: <Navigate to="/planung" replace /> },

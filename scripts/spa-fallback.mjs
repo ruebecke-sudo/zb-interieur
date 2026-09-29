@@ -27,6 +27,7 @@ const routes = [
   'kontakt',
   'impressum',
   'datenschutz',
+  'barrierefreiheit',
   'agb',
   'kuechenplanungen-2',
   'badeinrichtungen',

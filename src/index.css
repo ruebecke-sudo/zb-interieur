@@ -7,8 +7,9 @@
   --color-brand-dark: #42001b;
   --color-brand-soft: #7a2048;
   --color-accent: #f58220;
+  --color-accent-text: #9a4a00;
   --color-ink: #1a1a1a;
-  --color-muted: #5b5b5b;
+  --color-muted: #4a4a4a;
   --color-line: #e6e6e6;
   --color-fog: #f7f5f6;
 }
@@ -23,10 +24,74 @@ body {
   color: var(--color-ink);
   background: #fff;
   -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
 }
 
 ::selection {
   background: color-mix(in srgb, var(--color-brand) 25%, white);
+}
+
+/* Skip link – WCAG 2.4.1 */
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: 0;
+  z-index: 200;
+  transform: translateY(-120%);
+  border-radius: 0 0 0.25rem 0.25rem;
+  background: var(--color-brand);
+  color: #fff;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 0.15s ease;
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+  outline: 3px solid #fff;
+  outline-offset: 2px;
+}
+
+/* Visible keyboard focus – WCAG 2.4.7 */
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+summary:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+/* Forms: clearer focus border for low-vision users */
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  border-color: var(--color-brand) !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 45%, transparent);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 @keyframes fade-up {
@@ -105,11 +170,25 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
   .animate-fade-up,
   .animate-kenburns,
   .animate-slide-fade,
   .animate-marken-reveal,
   .marken-marquee-track {
     animation: none !important;
+    transform: none !important;
   }
 }

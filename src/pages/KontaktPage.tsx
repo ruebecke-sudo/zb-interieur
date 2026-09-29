@@ -133,19 +133,29 @@ export function KontaktPage() {
             </p>
 
             <label className="block">
-              <span className="mb-1 block text-sm font-medium">Name *</span>
+              <span className="mb-1 block text-sm font-medium">
+                Name <span aria-hidden>*</span>
+                <span className="sr-only">(Pflichtfeld)</span>
+              </span>
               <input
                 required
                 name="name"
+                autoComplete="name"
+                aria-required="true"
                 className="w-full border border-line px-3 py-2.5 outline-none focus:border-brand"
               />
             </label>
             <label className="block">
-              <span className="mb-1 block text-sm font-medium">E-Mail *</span>
+              <span className="mb-1 block text-sm font-medium">
+                E-Mail <span aria-hidden>*</span>
+                <span className="sr-only">(Pflichtfeld)</span>
+              </span>
               <input
                 required
                 type="email"
                 name="email"
+                autoComplete="email"
+                aria-required="true"
                 className="w-full border border-line px-3 py-2.5 outline-none focus:border-brand"
               />
             </label>
@@ -153,11 +163,13 @@ export function KontaktPage() {
               <span className="mb-1 block text-sm font-medium">Telefon</span>
               <input
                 name="phone"
+                type="tel"
+                autoComplete="tel"
                 className="w-full border border-line px-3 py-2.5 outline-none focus:border-brand"
               />
             </label>
             <label className="flex items-center gap-2 text-sm">
-              <input type="checkbox" name="callback" value="ja" className="accent-brand" />
+              <input type="checkbox" name="callback" value="ja" className="h-4 w-4 accent-brand" />
               Bitte um Rückruf
             </label>
             <label className="block">
@@ -178,11 +190,15 @@ export function KontaktPage() {
               </select>
             </label>
             <label className="block">
-              <span className="mb-1 block text-sm font-medium">Nachricht *</span>
+              <span className="mb-1 block text-sm font-medium">
+                Nachricht <span aria-hidden>*</span>
+                <span className="sr-only">(Pflichtfeld)</span>
+              </span>
               <textarea
                 required
                 name="message"
                 rows={5}
+                aria-required="true"
                 className="w-full border border-line px-3 py-2.5 outline-none focus:border-brand"
               />
             </label>

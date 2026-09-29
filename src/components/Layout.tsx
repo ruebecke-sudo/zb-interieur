@@ -9,8 +9,15 @@ export function Layout() {
     <LightboxProvider>
       <ImageZoomRoot>
         <div className="min-h-screen bg-white">
+          <a href="#main-content" className="skip-link">
+            Zum Inhalt springen
+          </a>
           <Header />
-          <main className="[&_img:not([data-no-zoom])]:cursor-zoom-in">
+          <main
+            id="main-content"
+            tabIndex={-1}
+            className="outline-none [&_img:not([data-no-zoom])]:cursor-zoom-in"
+          >
             <Outlet />
           </main>
           <Footer />

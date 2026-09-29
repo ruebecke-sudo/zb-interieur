@@ -6,8 +6,8 @@ export function WhatsAppButton() {
       href={whatsappHref}
       target="_blank"
       rel="noreferrer"
-      aria-label="WhatsApp Nachricht an ZB Interieur"
-      className="fixed right-4 bottom-4 z-50 flex items-center gap-2 rounded-full bg-[#25D366] px-4 py-3 text-sm font-semibold text-white shadow-lg transition hover:brightness-95 hover:shadow-xl md:right-6 md:bottom-6"
+      aria-label="WhatsApp-Nachricht an ZB Interieur schreiben (öffnet in neuem Fenster)"
+      className="fixed right-4 bottom-4 z-50 flex min-h-11 min-w-11 items-center gap-2 rounded-full bg-[#25D366] px-4 py-3 text-sm font-semibold text-white shadow-lg transition hover:brightness-95 hover:shadow-xl focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-white md:right-6 md:bottom-6"
     >
       <WhatsAppIcon className="h-5 w-5 shrink-0" />
       <span className="hidden sm:inline">WhatsApp</span>

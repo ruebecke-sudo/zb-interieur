@@ -284,28 +284,43 @@ export function BookingCalendar() {
               </p>
 
               <label className="block">
-                <span className="mb-1 block text-sm font-medium">Name *</span>
+                <span className="mb-1 block text-sm font-medium">
+                  Name <span aria-hidden>*</span>
+                  <span className="sr-only">(Pflichtfeld)</span>
+                </span>
                 <input
                   required
                   name="name"
+                  autoComplete="name"
+                  aria-required="true"
                   className="w-full border border-line px-3 py-2.5 outline-none focus:border-brand"
                 />
               </label>
               <label className="block">
-                <span className="mb-1 block text-sm font-medium">E-Mail *</span>
+                <span className="mb-1 block text-sm font-medium">
+                  E-Mail <span aria-hidden>*</span>
+                  <span className="sr-only">(Pflichtfeld)</span>
+                </span>
                 <input
                   required
                   type="email"
                   name="email"
+                  autoComplete="email"
+                  aria-required="true"
                   className="w-full border border-line px-3 py-2.5 outline-none focus:border-brand"
                 />
               </label>
               <label className="block">
-                <span className="mb-1 block text-sm font-medium">Telefon *</span>
+                <span className="mb-1 block text-sm font-medium">
+                  Telefon <span aria-hidden>*</span>
+                  <span className="sr-only">(Pflichtfeld)</span>
+                </span>
                 <input
                   required
                   name="phone"
                   type="tel"
+                  autoComplete="tel"
+                  aria-required="true"
                   className="w-full border border-line px-3 py-2.5 outline-none focus:border-brand"
                 />
               </label>

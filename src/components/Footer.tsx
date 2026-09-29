@@ -7,8 +7,9 @@ export function Footer() {
     <footer className="bg-brand text-white">
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-14 md:grid-cols-3">
         <div>
-          <img src="/images/logo.jpg" alt="ZB Interieur" className="mb-4 h-12 w-auto" />
+          <img src="/images/logo.jpg" alt="" className="mb-4 h-12 w-auto" data-no-zoom />
           <p className="font-serif text-lg leading-snug">
+            <span className="sr-only">ZB Interieur – </span>
             Exklusives Interieur · Designmöbel · Raumgestaltung in Homburg
           </p>
         </div>
@@ -105,6 +106,9 @@ export function Footer() {
             </Link>
             <Link to="/datenschutz" className="hover:text-white">
               Datenschutz
+            </Link>
+            <Link to="/barrierefreiheit" className="hover:text-white">
+              Barrierefreiheit
             </Link>
             <Link to="/agb" className="hover:text-white">
               AGB

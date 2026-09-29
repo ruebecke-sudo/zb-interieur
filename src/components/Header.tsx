@@ -1,10 +1,13 @@
 import { NavLink } from 'react-router-dom'
-import { useEffect, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import { openingHoursNav } from '../data/booking'
 import { nav, site } from '../data/site'
 
 export function Header() {
   const [open, setOpen] = useState(false)
+  const menuId = useId()
+  const menuButtonRef = useRef<HTMLButtonElement>(null)
+  const mobileNavRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     document.body.style.overflow = open ? 'hidden' : ''
@@ -13,9 +16,22 @@ export function Header() {
     }
   }, [open])
 
+  useEffect(() => {
+    if (!open) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setOpen(false)
+        menuButtonRef.current?.focus()
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    const firstLink = mobileNavRef.current?.querySelector<HTMLElement>('a')
+    firstLink?.focus()
+    return () => window.removeEventListener('keydown', onKey)
+  }, [open])
+
   return (
     <header className="sticky top-0 z-50 bg-white shadow-[0_1px_0_rgba(0,0,0,0.06)]">
-      {/* Tier 1 – Kontakt + Öffnungszeiten sofort sichtbar */}
       <div className="border-b border-line bg-white text-[12px] text-muted">
         <div className="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-2 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
           <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
@@ -42,8 +58,8 @@ export function Header() {
                 href={site.social.facebook}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex h-7 w-7 items-center justify-center bg-[#e8e8e8] text-[10px] font-bold text-muted hover:bg-brand hover:text-white"
-                aria-label="Facebook"
+                className="inline-flex h-9 w-9 items-center justify-center bg-[#e8e8e8] text-[10px] font-bold text-muted hover:bg-brand hover:text-white"
+                aria-label="Facebook – öffnet in neuem Fenster"
               >
                 f
               </a>
@@ -51,8 +67,8 @@ export function Header() {
                 href={site.social.linkedin}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex h-7 w-7 items-center justify-center bg-[#e8e8e8] text-[10px] font-bold text-muted hover:bg-brand hover:text-white"
-                aria-label="LinkedIn"
+                className="inline-flex h-9 w-9 items-center justify-center bg-[#e8e8e8] text-[10px] font-bold text-muted hover:bg-brand hover:text-white"
+                aria-label="LinkedIn – öffnet in neuem Fenster"
               >
                 in
               </a>
@@ -64,31 +80,37 @@ export function Header() {
       <div className="bg-brand">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
           <NavLink to="/" className="shrink-0" onClick={() => setOpen(false)}>
-            <img src="/images/logo.jpg" alt="ZB Interieur" className="h-14 w-auto object-contain md:h-16" />
+            <img
+              src="/images/logo.jpg"
+              alt="ZB Interieur – zur Startseite"
+              className="h-14 w-auto object-contain md:h-16"
+            />
           </NavLink>
           <div className="hidden text-right text-sm text-white/95 md:block">
             <p className="font-semibold tracking-wide">Öffnungszeiten</p>
-            <p className="text-white/85">{openingHoursNav}</p>
+            <p className="text-white/90">{openingHoursNav}</p>
           </div>
           <button
+            ref={menuButtonRef}
             type="button"
-            className="inline-flex h-10 w-10 items-center justify-center text-white lg:hidden"
+            className="inline-flex h-11 w-11 items-center justify-center text-white lg:hidden"
             aria-label={open ? 'Menü schließen' : 'Menü öffnen'}
             aria-expanded={open}
+            aria-controls={menuId}
             onClick={() => setOpen((v) => !v)}
           >
-            <div className="flex w-5 flex-col gap-1.5">
+            <span className="flex w-5 flex-col gap-1.5" aria-hidden>
               <span className={`h-0.5 w-full bg-current transition ${open ? 'translate-y-2 rotate-45' : ''}`} />
               <span className={`h-0.5 w-full bg-current transition ${open ? 'opacity-0' : ''}`} />
               <span className={`h-0.5 w-full bg-current transition ${open ? '-translate-y-2 -rotate-45' : ''}`} />
-            </div>
+            </span>
           </button>
         </div>
       </div>
 
       <div className="hidden border-b border-line bg-white lg:block">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4">
-          <nav className="flex items-center">
+          <nav aria-label="Hauptnavigation" className="flex items-center">
             <NavLink
               to="/"
               end
@@ -109,17 +131,20 @@ export function Header() {
                       isActive ? 'text-brand' : 'text-ink/80 hover:text-brand'
                     }`
                   }
+                  aria-haspopup={'children' in item && item.children ? 'true' : undefined}
                 >
                   {item.label}
-                  {'children' in item && item.children ? ' ▾' : ''}
+                  {'children' in item && item.children ? (
+                    <span aria-hidden> ▾</span>
+                  ) : null}
                 </NavLink>
                 {'children' in item && item.children ? (
-                  <div className="invisible absolute left-0 top-full z-20 min-w-[220px] bg-white py-2 opacity-0 shadow-lg transition group-hover:visible group-hover:opacity-100">
+                  <div className="invisible absolute left-0 top-full z-20 min-w-[220px] bg-white py-2 opacity-0 shadow-lg transition group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
                     {item.children.map((child) => (
                       <NavLink
                         key={child.href}
                         to={child.href}
-                        className="block px-4 py-2 text-sm text-ink/80 hover:bg-fog hover:text-brand"
+                        className="block px-4 py-2.5 text-sm text-ink/80 hover:bg-fog hover:text-brand"
                       >
                         {child.label}
                       </NavLink>
@@ -141,7 +166,7 @@ export function Header() {
           </nav>
           <NavLink
             to="/termin"
-            className="rounded-full bg-accent px-4 py-1.5 text-[12px] font-bold tracking-[0.06em] text-white uppercase hover:brightness-95"
+            className="rounded-full bg-accent px-4 py-2 text-[12px] font-bold tracking-[0.06em] text-white uppercase hover:brightness-95"
           >
             Termin buchen
           </NavLink>
@@ -149,8 +174,15 @@ export function Header() {
       </div>
 
       {open ? (
-        <div className="max-h-[70vh] overflow-y-auto border-t border-line bg-white lg:hidden">
-          <div className="space-y-1 px-4 py-4">
+        <div
+          id={menuId}
+          ref={mobileNavRef}
+          className="max-h-[70vh] overflow-y-auto border-t border-line bg-white lg:hidden"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Mobilnavigation"
+        >
+          <nav aria-label="Mobilnavigation" className="space-y-1 px-4 py-4">
             <div className="mb-3 rounded-sm bg-fog px-3 py-3 text-sm">
               <p className="font-semibold text-brand">Öffnungszeiten</p>
               <p className="text-ink">{openingHoursNav}</p>
@@ -179,7 +211,7 @@ export function Header() {
                         key={child.href}
                         to={child.href}
                         onClick={() => setOpen(false)}
-                        className="block py-1 text-sm text-muted"
+                        className="block py-2 text-sm text-muted"
                       >
                         {child.label}
                       </NavLink>
@@ -195,7 +227,7 @@ export function Header() {
             >
               Termin buchen
             </NavLink>
-          </div>
+          </nav>
         </div>
       ) : null}
     </header>
