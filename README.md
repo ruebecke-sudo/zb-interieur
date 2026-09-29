@@ -10,10 +10,10 @@ Die Seite **Marken** (`/marken`) zeigt Logos, Produktheadlines und Produktbilder
 
 Letzter anonymer Drop (Passwort-geschützt, zeitlich begrenzt):
 
-- **URL:** https://precious-llama-26497c.netlify.app  
+- **URL:** https://wonderful-biscochitos-ede8b9.netlify.app  
 - **Zugangspasswort (Drop):** `My-Drop-Site`  
 
-Für den dauerhaften Betrieb bitte **Variante A** nutzen (GitHub → Netlify). Drop-Deploys sind nur Zwischenstände. Claim innerhalb von 60 Min.: [Claim-Link](https://app.netlify.com/drop/precious-llama-26497c)
+Für den dauerhaften Betrieb bitte **Variante A** nutzen (GitHub → Netlify). Drop-Deploys sind nur Zwischenstände. Claim innerhalb von 60 Min.: [Claim-Link](https://app.netlify.com/drop/wonderful-biscochitos-ede8b9)
 
 ## Lokal starten
 
