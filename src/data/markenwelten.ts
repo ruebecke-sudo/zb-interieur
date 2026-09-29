@@ -95,24 +95,6 @@ export const markenwelten: MarkenweltCategory[] = [
       },
       {
         "brand": "Papadatos",
-        "title": "Bild 21",
-        "caption": "Papadatos – Motiv aus der ZB Interieur Galerie.",
-        "image": "/images/galerien/papadatos/05.jpg"
-      },
-      {
-        "brand": "Papadatos",
-        "title": "Bild 07",
-        "caption": "Papadatos – Motiv aus der ZB Interieur Galerie.",
-        "image": "/images/galerien/papadatos/06.jpg"
-      },
-      {
-        "brand": "Papadatos",
-        "title": "Bild 02",
-        "caption": "Papadatos – Motiv aus der ZB Interieur Galerie.",
-        "image": "/images/galerien/papadatos/07.jpg"
-      },
-      {
-        "brand": "Papadatos",
         "title": "Bild 13",
         "caption": "Papadatos – Motiv aus der ZB Interieur Galerie.",
         "image": "/images/galerien/papadatos/08.jpg"
