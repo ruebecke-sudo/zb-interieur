@@ -33,8 +33,8 @@ export function DesignmoebelHeader() {
             ZB Interieur · Homburg
           </p>
           <h2 className="mt-5 font-sans text-[clamp(2.75rem,8vw,5.25rem)] leading-[0.92] font-extrabold tracking-[-0.03em]">
-            Design
-            <span className="block text-accent">möbel</span>
+            Exklusives
+            <span className="block text-accent">Interieur</span>
           </h2>
           <p className="mt-6 max-w-md text-[15px] leading-relaxed text-white/80 md:text-base">
             Kuratierte Stücke, präzise ausgewählt – für Räume mit Haltung. Weniger Katalog, mehr
