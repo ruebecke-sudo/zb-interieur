@@ -423,20 +423,8 @@ export const markenwelten: MarkenweltCategory[] = [
     "id": "schlafen",
     "label": "Schlafen",
     "teaser": "Betten und Schlafzimmer",
-    "cover": "/images/galerien/betten/07.jpg",
+    "cover": "/images/galerien/betten/04.jpg",
     "items": [
-      {
-        "brand": "Möller Design",
-        "title": "Dana Daybed",
-        "caption": "Dana Daybed Milieu – elegantes Daybed für exklusive Schlaf- und Ruheräume.",
-        "image": "/images/galerien/betten/07.jpg"
-      },
-      {
-        "brand": "Betten",
-        "title": "Moeller Design",
-        "caption": "Betten – Motiv aus der ZB Interieur Galerie.",
-        "image": "/images/galerien/betten/01.png"
-      },
       {
         "brand": "Betten",
         "title": "Rose Milieu Schraeg 05",
@@ -472,78 +460,6 @@ export const markenwelten: MarkenweltCategory[] = [
         "title": "Liv 034",
         "caption": "Betten – Motiv aus der ZB Interieur Galerie.",
         "image": "/images/galerien/betten/08.jpg"
-      },
-      {
-        "brand": "Möller Design",
-        "title": "Möller Design Fold Edition",
-        "caption": "Luxuriöses Designer-Boxspringbett mit ikonischem Falt-Kopfteil",
-        "image": "/images/galerien/moeller/01.png"
-      },
-      {
-        "brand": "Möller Design",
-        "title": "Leanbox Carry",
-        "caption": "Möller Design – Motiv aus der ZB Interieur Galerie.",
-        "image": "/images/galerien/moeller/02.png"
-      },
-      {
-        "brand": "Möller Design",
-        "title": "Rag Box Milieu 01",
-        "caption": "Möller Design – Motiv aus der ZB Interieur Galerie.",
-        "image": "/images/galerien/moeller/03.jpg"
-      },
-      {
-        "brand": "Möller Design",
-        "title": "Rose Milieu Schraeg 05",
-        "caption": "Möller Design – Motiv aus der ZB Interieur Galerie.",
-        "image": "/images/galerien/moeller/04.jpg"
-      },
-      {
-        "brand": "Möller Design",
-        "title": "Steely Topshot 4",
-        "caption": "Möller Design – Motiv aus der ZB Interieur Galerie.",
-        "image": "/images/galerien/moeller/05.jpg"
-      },
-      {
-        "brand": "Möller Design",
-        "title": "Wood Fellas 01",
-        "caption": "Möller Design – Motiv aus der ZB Interieur Galerie.",
-        "image": "/images/galerien/moeller/06.jpg"
-      },
-      {
-        "brand": "Möller Design",
-        "title": "Md 280616 6528",
-        "caption": "Möller Design – Motiv aus der ZB Interieur Galerie.",
-        "image": "/images/galerien/moeller/07.jpg"
-      },
-      {
-        "brand": "Möller Design",
-        "title": "Yva Milieu Frontal",
-        "caption": "Möller Design – Motiv aus der ZB Interieur Galerie.",
-        "image": "/images/galerien/moeller/08.jpg"
-      },
-      {
-        "brand": "Möller Design",
-        "title": "Rose Milieu Schraeg 05",
-        "caption": "Möller Design – Motiv aus der ZB Interieur Galerie.",
-        "image": "/images/galerien/moebel-moeller-design/01.jpg"
-      },
-      {
-        "brand": "Möller Design",
-        "title": "Steely Topshot 4",
-        "caption": "Möller Design – Motiv aus der ZB Interieur Galerie.",
-        "image": "/images/galerien/moebel-moeller-design/02.jpg"
-      },
-      {
-        "brand": "Möller Design",
-        "title": "Leanbox Beistelltische",
-        "caption": "Möller Design – Motiv aus der ZB Interieur Galerie.",
-        "image": "/images/galerien/moebel-moeller-design/03.jpg"
-      },
-      {
-        "brand": "Möller Design",
-        "title": "Md13 Yoda 18 01",
-        "caption": "Möller Design – Motiv aus der ZB Interieur Galerie.",
-        "image": "/images/galerien/moebel-moeller-design/04.jpg"
       }
     ]
   },
