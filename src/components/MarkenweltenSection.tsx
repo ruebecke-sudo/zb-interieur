@@ -18,8 +18,8 @@ export function MarkenweltenSection() {
             Inspiration nach Raum
           </h2>
           <p className="mt-3 text-sm leading-relaxed text-muted md:text-base">
-            Wählen Sie eine Kategorie – im Overlay öffnen sich Motive führender Lieferanten mit
-            kurzen Beschreibungen.
+            Wählen Sie eine Kategorie – im Overlay sehen Sie Motive aus unseren Galerien und dem
+            Möbel-Sortiment mit Kurzbezeichnungen. Tippen Sie auf ein Bild für die Originalgröße.
           </p>
         </div>
 
