@@ -88,12 +88,6 @@ export const markenwelten: MarkenweltCategory[] = [
         "image": "/images/galerien/papadatos/03.jpg"
       },
       {
-        "brand": "Papadatos",
-        "title": "Bild 13",
-        "caption": "Papadatos – Motiv aus der ZB Interieur Galerie.",
-        "image": "/images/galerien/papadatos/08.jpg"
-      },
-      {
         "brand": "Giellesse",
         "title": "Giellesse Designstück",
         "caption": "Motiv aus der Giellesse-Galerie bei ZB Interieur.",
