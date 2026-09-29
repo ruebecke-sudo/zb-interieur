@@ -93,7 +93,10 @@ export const planungTopics: PlanungTopic[] = [
       'Stellen Sie sich vor: Die Kinder spielen sicher auf einer warmen Holzterrasse, während Sie entspannt Ihren Kaffee genießen. Gemeinsame Grillabende, unvergessliche Sommernächte – mit unserer individuellen Terrassenplanung wird Ihr Garten zum Lieblingsort für die ganze Familie.',
     ],
     images: [
-      { src: '/images/planung/terrasse-1.jpg', alt: 'Terrassenplanung Outdoor-Möbel' },
+      {
+        src: '/images/galerien/moebel-varaschin/03.jpg',
+        alt: 'Varaschin The One 08 – Outdoormöbel',
+      },
       { src: '/images/planung/terrasse-2.jpg', alt: 'Gartenterrasse Konzept' },
       { src: '/images/planung/terrasse-3.jpg', alt: 'Outdoor-Wohnbereich' },
     ],
