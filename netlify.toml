@@ -76,7 +76,7 @@
   to = "/planung#raumgestaltung"
   status = 301
 
-# Alte Galerie-/Blog-Pfade
+# Alte Galerie-Pfade (Blog bleibt aktiv unter /blog)
 [[redirects]]
   from = "/galerien/*"
   to = "/planung"
@@ -85,11 +85,6 @@
 [[redirects]]
   from = "/galerie/*"
   to = "/planung"
-  status = 301
-
-[[redirects]]
-  from = "/blog/*"
-  to = "/"
   status = 301
 
 # SPA routing

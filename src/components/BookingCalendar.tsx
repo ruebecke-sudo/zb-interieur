@@ -10,6 +10,8 @@ import {
   toIsoDate,
   type AppointmentTypeId,
 } from '../data/booking'
+import { site } from '../data/site'
+import { submitNetlifyForm } from '../lib/submitNetlifyForm'
 
 const weekdays = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So']
 
@@ -22,7 +24,7 @@ export function BookingCalendar() {
   const [cursor, setCursor] = useState(() => new Date(today.getFullYear(), today.getMonth(), 1))
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
   const [selectedTime, setSelectedTime] = useState<string | null>(null)
-  const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
+  const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error' | 'dev'>('idle')
 
   const selectedType = appointmentTypes.find((t) => t.id === typeId) ?? null
 
@@ -56,21 +58,14 @@ export function BookingCalendar() {
     data.set('uhrzeit', selectedTime)
     data.set('dauer', `${selectedType.durationMin} Min.`)
     setStatus('submitting')
-    try {
-      const res = await fetch('/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams(data as unknown as Record<string, string>).toString(),
-      })
-      if (!res.ok) throw new Error('fail')
-      setStatus('success')
-      setStep('done')
-      form.reset()
-    } catch {
-      setStatus('success')
-      setStep('done')
-      form.reset()
+    const result = await submitNetlifyForm(data)
+    if (result === 'error') {
+      setStatus('error')
+      return
     }
+    setStatus(result === 'dev-ok' ? 'dev' : 'success')
+    setStep('done')
+    form.reset()
   }
 
   return (
@@ -341,6 +336,15 @@ export function BookingCalendar() {
               >
                 {status === 'submitting' ? 'Wird gesendet…' : 'Termin verbindlich anfragen'}
               </button>
+              {status === 'error' ? (
+                <p className="text-sm text-red-700" role="alert">
+                  Absenden fehlgeschlagen. Bitte erneut versuchen oder{' '}
+                  <a className="underline" href={`mailto:${site.email}`}>
+                    {site.email}
+                  </a>{' '}
+                  schreiben.
+                </p>
+              ) : null}
               <p className="text-xs text-muted">
                 Ihre Anfrage geht an ZB Interieur. Wir bestätigen den Termin in der Regel zeitnah per
                 Telefon oder E-Mail.
@@ -356,6 +360,11 @@ export function BookingCalendar() {
             <p className="mx-auto mt-3 max-w-md text-muted">
               Wir haben Ihre Wunschzeit erhalten und melden uns zur Bestätigung. Bis dahin ist der
               Termin noch nicht fest gebucht.
+              {status === 'dev' ? (
+                <span className="mt-2 block text-sm">
+                  (Lokaler Testmodus – auf Netlify wird die Anfrage per Forms zugestellt.)
+                </span>
+              ) : null}
             </p>
             <button
               type="button"

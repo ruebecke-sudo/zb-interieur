@@ -1,28 +1,24 @@
 import { useState, type FormEvent } from 'react'
 import { WhatsAppIcon } from '../components/WhatsAppButton'
+import { submitNetlifyForm } from '../lib/submitNetlifyForm'
 import { site, whatsappHref } from '../data/site'
 
 export function KontaktPage() {
-  const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
+  const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error' | 'dev'>('idle')
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
     const form = e.currentTarget
     const data = new FormData(form)
+    if (!data.get('form-name')) data.set('form-name', 'kontakt')
     setStatus('submitting')
-    try {
-      const res = await fetch('/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams(data as unknown as Record<string, string>).toString(),
-      })
-      if (!res.ok) throw new Error('submit failed')
-      setStatus('success')
-      form.reset()
-    } catch {
-      setStatus('success')
-      form.reset()
+    const result = await submitNetlifyForm(data)
+    if (result === 'error') {
+      setStatus('error')
+      return
     }
+    setStatus(result === 'dev-ok' ? 'dev' : 'success')
+    form.reset()
   }
 
   return (
@@ -103,29 +99,15 @@ export function KontaktPage() {
         <div className="bg-white p-6 shadow-[0_0_0_1px_rgba(0,0,0,0.06)] md:p-8">
           <h2 className="font-serif text-2xl font-bold">Nachricht senden</h2>
           <p className="mt-2 text-sm text-muted">
-            Formular wird über Netlify Forms zugestellt (nach dem Deploy).
+            Pflichtfelder sind markiert. Nach dem Netlify-Deploy werden Anfragen per Netlify Forms
+            zugestellt.
           </p>
-
-          <form
-            name="kontakt"
-            data-netlify="true"
-            data-netlify-honeypot="bot-field"
-            hidden
-            aria-hidden
-          >
-            <input name="form-name" value="kontakt" readOnly />
-            <input name="name" />
-            <input name="email" />
-            <input name="phone" />
-            <input name="callback" />
-            <input name="source" />
-            <textarea name="message" />
-          </form>
 
           <form
             name="kontakt"
             method="POST"
             data-netlify="true"
+            data-netlify-honeypot="bot-field"
             className="mt-6 space-y-4"
             onSubmit={onSubmit}
           >
@@ -215,9 +197,23 @@ export function KontaktPage() {
               {status === 'submitting' ? 'Wird gesendet…' : 'Absenden'}
             </button>
 
-            {status === 'success' ? (
+            {status === 'success' || status === 'dev' ? (
               <p className="text-sm text-brand" role="status">
                 Vielen Dank! Ihre Nachricht wurde aufgenommen. Wir melden uns zeitnah.
+                {status === 'dev' ? (
+                  <span className="mt-1 block text-muted">
+                    (Lokaler Testmodus – auf Netlify wird die Anfrage per Forms zugestellt.)
+                  </span>
+                ) : null}
+              </p>
+            ) : null}
+            {status === 'error' ? (
+              <p className="text-sm text-red-700" role="alert">
+                Absenden fehlgeschlagen. Bitte versuchen Sie es erneut oder schreiben Sie an{' '}
+                <a className="underline" href={`mailto:${site.email}`}>
+                  {site.email}
+                </a>
+                .
               </p>
             ) : null}
           </form>
