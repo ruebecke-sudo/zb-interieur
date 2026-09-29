@@ -2,6 +2,7 @@ import { Outlet, ScrollRestoration } from 'react-router-dom'
 import { Footer } from './Footer'
 import { Header } from './Header'
 import { ImageZoomRoot, LightboxProvider } from './ImageLightbox'
+import { Seo } from './Seo'
 import { WhatsAppButton } from './WhatsAppButton'
 
 export function Layout() {
@@ -9,6 +10,7 @@ export function Layout() {
     <LightboxProvider>
       <ImageZoomRoot>
         <div className="min-h-screen bg-white">
+          <Seo />
           <a href="#main-content" className="skip-link">
             Zum Inhalt springen
           </a>

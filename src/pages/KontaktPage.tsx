@@ -29,12 +29,16 @@ export function KontaktPage() {
     <>
       <section className="bg-fog">
         <div className="mx-auto max-w-6xl px-4 py-16">
-          <p className="text-xs font-semibold tracking-[0.16em] text-brand uppercase">Kontakt</p>
+          <p className="text-xs font-semibold tracking-[0.16em] text-brand uppercase">
+            Kontakt · Möbelhaus Homburg
+          </p>
           <h1 className="mt-2 font-serif text-4xl font-bold md:text-5xl">
-            Der direkte Draht zu uns!
+            Einrichtungshaus ZB Interieur in Homburg
           </h1>
           <p className="mt-3 max-w-2xl text-muted">
-            Schreiben Sie uns, rufen Sie an oder nutzen Sie WhatsApp – wir melden uns schnellstmöglich.
+            Schreiben Sie uns, rufen Sie an oder nutzen Sie WhatsApp – Ihr Einrichtungshaus und
+            Möbelhaus in Homburg für Designmöbel und Einrichtungsplanung in Saarbrücken und dem
+            Saarland.
           </p>
         </div>
       </section>

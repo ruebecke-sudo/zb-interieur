@@ -12,12 +12,15 @@ export function OutdoorPage() {
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/45 to-black/20" />
         <div className="relative mx-auto max-w-6xl px-4 py-24">
-          <p className="text-xs font-semibold tracking-[0.16em] text-white/70 uppercase">Outdoor</p>
+          <p className="text-xs font-semibold tracking-[0.16em] text-white/70 uppercase">
+            Outdoormöbel Homburg · Saarland
+          </p>
           <h1 className="mt-3 max-w-3xl text-4xl font-bold md:text-5xl">
-            Terrassenplanung & Premium-Outdoor
+            Terrassenplanung & Premium-Outdoormöbel
           </h1>
           <p className="mt-4 max-w-2xl text-white/85">
-            Varaschin, Sifas und weitere Marken – für Außenräume mit dem gleichen Anspruch wie innen.
+            Varaschin, Unopiu und weitere Outdoor-Designmöbel – Terrassenplanung im
+            Einrichtungshaus Homburg für Kundinnen und Kunden aus Saarbrücken und dem Saarland.
           </p>
         </div>
       </section>
@@ -30,7 +33,7 @@ export function OutdoorPage() {
             zusammenwirken – wetterfest, elegant und einladend.
           </p>
           <ul className="mt-6 space-y-2 text-muted">
-            <li>• Outdoor-Möbel von Varaschin & Sifas</li>
+            <li>• Outdoor-Möbel von Varaschin & Unopiu</li>
             <li>• Ganzheitliche Terrassenkonzepte</li>
             <li>• Abstimmung mit Innenraum und Architektur</li>
           </ul>

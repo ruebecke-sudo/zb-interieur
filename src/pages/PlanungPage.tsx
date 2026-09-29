@@ -59,16 +59,16 @@ export function PlanungPage() {
         />
         <div className="relative mx-auto max-w-6xl px-4 py-20 md:py-28">
           <p className="animate-fade-up text-[11px] font-semibold tracking-[0.28em] text-white/55 uppercase">
-            ZB Interieur · Planung
+            Küchenplanung · Einrichtungsplanung · Homburg
           </p>
           <h1 className="animate-fade-up mt-4 max-w-3xl font-sans text-[clamp(2.4rem,6vw,4.25rem)] leading-[0.98] font-extrabold tracking-[-0.03em] [animation-delay:60ms]">
-            Inneneinrichtungen
+            Einrichtungsplanung
             <span className="mt-1 block text-accent">nach Maß</span>
           </h1>
           <p className="animate-fade-up mt-6 max-w-2xl text-[15px] leading-relaxed text-white/80 md:text-base [animation-delay:120ms]">
-            Möchten Sie eine individuelle, moderne Inneneinrichtung, in der man sich wohlfühlt und
-            entspannt – mit zeitlosem Design? Fachkundige Beratung sowie Planung nach Ihren Wünschen
-            garantieren eine Einrichtung nach Ihren Vorstellungen.
+            Küchenplanung, Bad-, Büro- und Terrassenplanung im Einrichtungshaus Homburg – moderne
+            Inneneinrichtung mit zeitlosem Design für Homburg, Saarbrücken und das Saarland.
+            Fachkundige Beratung nach Ihren Wünschen.
           </p>
           <div className="animate-fade-up mt-10 flex flex-wrap gap-3 [animation-delay:180ms]">
             <Link

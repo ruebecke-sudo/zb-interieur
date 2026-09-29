@@ -19,15 +19,15 @@ export function MagazinPage() {
         />
         <div className="relative mx-auto max-w-6xl px-4 py-14 md:py-16">
           <p className="text-[11px] font-semibold tracking-[0.28em] text-white/55 uppercase">
-            ZB Interieur · Magazin
+            Designmöbel Magazin · Homburg
           </p>
           <h1 className="mt-3 max-w-3xl font-sans text-[clamp(2.2rem,5vw,3.75rem)] leading-[0.95] font-extrabold tracking-[-0.03em]">
             Broschüre
             <span className="mt-1 block text-accent">2026</span>
           </h1>
           <p className="mt-5 max-w-xl text-[15px] leading-relaxed text-white/80 md:text-base">
-            Blättern Sie durch unsere aktuelle Showroom-Broschüre – Inspiration, Marken und
-            Raumstimmungen aus Homburg.
+            Inspiration für Designmöbel, Einrichtungsplanung und Raumstimmungen aus dem
+            Einrichtungshaus ZB Interieur in Homburg – für Saarbrücken und das Saarland.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <a

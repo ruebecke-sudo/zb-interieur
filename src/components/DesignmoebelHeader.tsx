@@ -31,15 +31,15 @@ export function DesignmoebelHeader() {
       <div className="relative mx-auto grid min-h-[78vh] max-w-6xl items-center gap-10 px-4 py-16 md:grid-cols-[1fr_1fr] md:gap-12 md:py-20 lg:min-h-[88vh]">
         <div className="animate-fade-up max-w-xl">
           <p className="text-[11px] font-semibold tracking-[0.28em] text-white/55 uppercase">
-            ZB Interieur · Homburg
+            Einrichtungshaus Homburg · Saarland
           </p>
           <h1 className="mt-5 font-sans text-[clamp(2.75rem,8vw,5.25rem)] leading-[0.92] font-extrabold tracking-[-0.03em]">
             Exklusives
             <span className="block text-accent">Interieur</span>
           </h1>
           <p className="mt-6 max-w-md text-[15px] leading-relaxed text-white/80 md:text-base">
-            Kuratierte Stücke, präzise ausgewählt – für Räume mit Haltung. Weniger Katalog, mehr
-            Charakter: Interieur, das bleibt.
+            Designmöbel und Einrichtungsplanung im Möbelhaus Homburg – kuratiert für Räume mit
+            Haltung. Persönliche Beratung für Homburg, Saarbrücken und das Saarland.
           </p>
 
           <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-3 text-[11px] font-semibold tracking-[0.18em] text-white/50 uppercase">

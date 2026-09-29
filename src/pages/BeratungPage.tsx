@@ -22,14 +22,15 @@ export function BeratungPage() {
         />
         <div className="relative mx-auto max-w-6xl px-4 py-24">
           <p className="text-xs font-semibold tracking-[0.16em] text-white/70 uppercase">
-            Einrichtungsberatung Homburg
+            Einrichtungsberatung Homburg · Saarland
           </p>
           <h1 className="mt-3 max-w-3xl text-4xl font-bold md:text-5xl">
-            Küchenplanung, Büroplanung, Terrassenplanung, Badplanung
+            Einrichtungsplanung & Küchenplanung in Homburg
           </h1>
           <p className="mt-4 max-w-2xl text-white/85">
-            Fachkundige Beratung sowie Planung nach Ihren Wünschen – für eine Einrichtung, in der man
-            sich wohlfühlt und entspannt.
+            Fachkundige Einrichtungsberatung für Küche, Bad, Büro und Terrasse – im
+            Einrichtungshaus Homburg, für Kundinnen und Kunden aus Saarbrücken und dem gesamten
+            Saarland.
           </p>
         </div>
       </section>

@@ -17,14 +17,15 @@ export function HomePage() {
         <div className="mx-auto max-w-6xl px-4 py-16 md:py-20">
           <div className="mx-auto max-w-2xl text-center">
             <p className="text-xs font-semibold tracking-[0.16em] text-brand uppercase">
-              Unverbindlich & persönlich
+              Unverbindlich & persönlich · Homburg & Saarland
             </p>
             <h2 className="mt-2 font-serif text-3xl font-bold md:text-4xl">
-              Beratungstermin in Homburg
+              Beratungstermin im Einrichtungshaus Homburg
             </h2>
             <p className="mt-4 text-muted">
-              Vereinbaren Sie einen Termin im Showroom oder schreiben Sie uns kurz per WhatsApp –
-              wir melden uns gerne.
+              Vereinbaren Sie einen Termin im Möbelhaus und Showroom in Homburg – für
+              Designmöbel, Einrichtungsplanung und Küchenplanung. Auch für Saarbrücken und das
+              Saarland gerne persönlich oder per WhatsApp.
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               <Link

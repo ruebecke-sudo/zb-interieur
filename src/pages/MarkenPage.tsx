@@ -45,15 +45,15 @@ export function MarkenPage() {
         />
         <div className="relative mx-auto flex min-h-[58vh] max-w-6xl flex-col justify-center px-4 py-14 md:min-h-[64vh] md:py-16">
           <p className="animate-fade-up text-[clamp(2rem,5vw,3.25rem)] font-extrabold tracking-[-0.03em] text-white">
-            ZB Interieur
+            Designmöbel Homburg
           </p>
           <h1 className="animate-fade-up mt-3 max-w-3xl font-sans text-[clamp(2.6rem,7vw,5rem)] leading-[0.92] font-extrabold tracking-[-0.04em] [animation-delay:80ms]">
             Markenwelt
             <span className="mt-2 block text-accent">kuratiert.</span>
           </h1>
           <p className="animate-fade-up mt-6 max-w-xl text-[15px] leading-relaxed text-white/80 md:text-base [animation-delay:140ms]">
-            {marken.length} Designermarken und ausgewählte Produktwelten aus dem Showroom in
-            Homburg.
+            {marken.length} Designermarken und ausgewählte Produktwelten im Möbelhaus und
+            Einrichtungshaus Homburg – Designmöbel für Saarbrücken und das Saarland.
           </p>
           <div className="animate-fade-up mt-10 flex flex-wrap gap-3 [animation-delay:200ms]">
             <a
@@ -79,8 +79,13 @@ export function MarkenPage() {
             Partnerlabels
           </p>
           <h2 className="mt-2 font-sans text-2xl font-extrabold tracking-tight md:text-3xl">
-            {marken.length} Marken im Showroom
+            {marken.length} Marken im Showroom Homburg
           </h2>
+          <p className="mt-2 max-w-2xl text-sm text-muted md:text-base">
+            Unter anderem {marken.slice(0, 8).map((m) => m.name).join(', ')}
+            {marken.length > 8 ? ' und weitere Designermarken' : ''} – erhältlich im
+            Einrichtungshaus ZB Interieur.
+          </p>
         </div>
         <div className="relative">
           <div

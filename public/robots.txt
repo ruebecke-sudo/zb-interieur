@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://zb-interieur.de/sitemap.xml

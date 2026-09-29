@@ -9,10 +9,15 @@ export function TerminPage() {
     <>
       <section className="bg-fog">
         <div className="mx-auto max-w-6xl px-4 py-12 md:py-16">
-          <p className="text-xs font-semibold tracking-[0.16em] text-brand uppercase">Terminbuchung</p>
-          <h1 className="mt-2 text-4xl font-bold md:text-5xl">Beratungstermin vereinbaren</h1>
+          <p className="text-xs font-semibold tracking-[0.16em] text-brand uppercase">
+            Termin · Einrichtungshaus Homburg
+          </p>
+          <h1 className="mt-2 text-4xl font-bold md:text-5xl">
+            Beratungstermin im Möbelhaus Homburg
+          </h1>
           <p className="mt-3 max-w-2xl text-muted">
-            Wählen Sie Terminart, Tag und Uhrzeit im Kalender. Öffnungszeiten: {openingHoursNav}.
+            Termin für Einrichtungsplanung, Küchenplanung oder Showroom-Besuch buchen – für Homburg,
+            Saarbrücken und das Saarland. Öffnungszeiten: {openingHoursNav}.
           </p>
           <div className="mt-4 flex flex-wrap gap-3 text-sm">
             <a href={site.phoneHref} className="font-medium text-brand hover:underline">

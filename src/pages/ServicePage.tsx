@@ -5,12 +5,15 @@ export function ServicePage() {
     <>
       <section className="bg-fog">
         <div className="mx-auto max-w-6xl px-4 py-16">
-          <p className="text-xs font-semibold tracking-[0.16em] text-brand uppercase">Service</p>
+          <p className="text-xs font-semibold tracking-[0.16em] text-brand uppercase">
+            Service · Einrichtungshaus Homburg
+          </p>
           <h1 className="mt-2 font-serif text-4xl font-bold md:text-5xl">
             Tipps, Pflege & Informationen
           </h1>
           <p className="mt-3 max-w-2xl text-muted">
-            Praktisches Wissen rund um Einrichtung und Möbelpflege – direkt zum Download.
+            Praktisches Wissen rund um Designmöbel, Einrichtungsplanung und Möbelpflege – vom
+            Einrichtungshaus ZB Interieur in Homburg für das Saarland.
           </p>
         </div>
       </section>
