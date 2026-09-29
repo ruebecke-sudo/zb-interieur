@@ -76,6 +76,7 @@ export function HomePage() {
               alt="STILPUNKTE Lifestyle Guide Siegel"
               className="h-28 w-28 bg-black object-contain p-2 md:h-32 md:w-32"
             />
+            <StilpunkteRichSnippet />
             <img
               src="/images/award.jpg"
               alt="STILPUNKTE Award 2025/2026"
