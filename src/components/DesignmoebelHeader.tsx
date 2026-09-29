@@ -42,11 +42,11 @@ export function DesignmoebelHeader() {
           </p>
 
           <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-3 text-[11px] font-semibold tracking-[0.18em] text-white/50 uppercase">
-            <span>Showroom only</span>
+            <span>Showroom in Homburg</span>
             <span className="h-px w-8 bg-white/25" aria-hidden />
             <span>Persönliche Beratung</span>
             <span className="h-px w-8 bg-white/25" aria-hidden />
-            <span>STILPUNKTE 25/26</span>
+            <span>Exklusives Interieur</span>
           </div>
 
           <div className="mt-10 flex flex-wrap gap-3">
