@@ -102,7 +102,7 @@ export function Footer() {
               {site.phone}
             </p>
             <p>
-              Copyright 2026{' '}
+              Website:{' '}
               <a
                 href="https://www.my-digital-world.de"
                 target="_blank"
