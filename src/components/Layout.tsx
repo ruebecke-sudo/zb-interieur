@@ -2,6 +2,7 @@ import { Outlet, ScrollRestoration } from 'react-router-dom'
 import { Footer } from './Footer'
 import { Header } from './Header'
 import { ImageZoomRoot, LightboxProvider } from './ImageLightbox'
+import { ScrollToTopButton } from './ScrollToTopButton'
 import { Seo } from './Seo'
 import { WhatsAppButton } from './WhatsAppButton'
 
@@ -9,7 +10,7 @@ export function Layout() {
   return (
     <LightboxProvider>
       <ImageZoomRoot>
-        <div className="min-h-screen bg-white">
+        <div id="top" tabIndex={-1} className="min-h-screen bg-white outline-none">
           <Seo />
           <a href="#main-content" className="skip-link">
             Zum Inhalt springen
@@ -23,6 +24,7 @@ export function Layout() {
             <Outlet />
           </main>
           <Footer />
+          <ScrollToTopButton />
           <WhatsAppButton />
           <ScrollRestoration />
         </div>
