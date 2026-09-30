@@ -641,14 +641,6 @@ export const markenProducts = [
   {
     "brandSlug": "papadatos",
     "brandName": "Papadatos",
-    "headline": "Bouclé-Sofa organisch",
-    "price": "Preis auf Anfrage",
-    "stilpunkteUrl": "/marken#produktauswahl-papadatos-09",
-    "image": "/images/papadatos/09.jpg"
-  },
-  {
-    "brandSlug": "papadatos",
-    "brandName": "Papadatos",
     "headline": "Modulsofa mit Gartenblick",
     "price": "Preis auf Anfrage",
     "stilpunkteUrl": "/marken#produktauswahl-papadatos-10",
