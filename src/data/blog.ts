@@ -20,8 +20,8 @@ export const blogPosts: BlogPost[] = [
     date: '2026-09-15',
     dateLabel: '15. September 2026',
     category: 'Einrichtungsplanung',
-    image: '/images/kueche-render-1.jpg',
-    imageAlt: '3D-Visualisierung einer modernen Küche',
+    image: '/images/blog/einrichtungsplanung.jpg',
+    imageAlt: 'Modernes Wohnzimmer mit modularer Sofa-Landschaft und offenem Kamin',
     readingMinutes: 4,
     body: [
       'Eine gute Einrichtungsplanung beginnt nicht mit dem Sofa, sondern mit dem Raum: Licht, Wege, Proportionen und der Alltag, der darin stattfinden soll. Im Einrichtungshaus ZB Interieur in Homburg arbeiten wir deshalb zuerst mit Ihren Bedürfnissen – und erst danach mit Marken und Materialien.',
