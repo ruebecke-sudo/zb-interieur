@@ -591,6 +591,78 @@ export const markenProducts = [
     "image": "/images/marken/produkte/moeller-design-456d713267.jpg"
   },
   {
+    "brandSlug": "moeller-design",
+    "brandName": "Möller Design",
+    "headline": "Organische Beistelltische",
+    "price": "Preis auf Anfrage",
+    "stilpunkteUrl": "/marken#produktauswahl-moeller-design-01",
+    "image": "/images/moeller-design/01.jpg"
+  },
+  {
+    "brandSlug": "moeller-design",
+    "brandName": "Möller Design",
+    "headline": "Boxspring Cognac mit Tufting",
+    "price": "Preis auf Anfrage",
+    "stilpunkteUrl": "/marken#produktauswahl-moeller-design-02",
+    "image": "/images/moeller-design/02.jpg"
+  },
+  {
+    "brandSlug": "moeller-design",
+    "brandName": "Möller Design",
+    "headline": "Polsterbett mit Kanalsteppung",
+    "price": "Preis auf Anfrage",
+    "stilpunkteUrl": "/marken#produktauswahl-moeller-design-03",
+    "image": "/images/moeller-design/03.jpg"
+  },
+  {
+    "brandSlug": "moeller-design",
+    "brandName": "Möller Design",
+    "headline": "Bouclé-Sofa organisch",
+    "price": "Preis auf Anfrage",
+    "stilpunkteUrl": "/marken#produktauswahl-moeller-design-04",
+    "image": "/images/moeller-design/04.jpg"
+  },
+  {
+    "brandSlug": "moeller-design",
+    "brandName": "Möller Design",
+    "headline": "Daybed Cord in Petrol",
+    "price": "Preis auf Anfrage",
+    "stilpunkteUrl": "/marken#produktauswahl-moeller-design-05",
+    "image": "/images/moeller-design/05.jpg"
+  },
+  {
+    "brandSlug": "moeller-design",
+    "brandName": "Möller Design",
+    "headline": "Daybed in Warmbraun",
+    "price": "Preis auf Anfrage",
+    "stilpunkteUrl": "/marken#produktauswahl-moeller-design-06",
+    "image": "/images/moeller-design/06.jpg"
+  },
+  {
+    "brandSlug": "moeller-design",
+    "brandName": "Möller Design",
+    "headline": "Sideboards & Kommoden",
+    "price": "Preis auf Anfrage",
+    "stilpunkteUrl": "/marken#produktauswahl-moeller-design-07",
+    "image": "/images/moeller-design/07.jpg"
+  },
+  {
+    "brandSlug": "moeller-design",
+    "brandName": "Möller Design",
+    "headline": "Holzbett mit Kontrastkissen",
+    "price": "Preis auf Anfrage",
+    "stilpunkteUrl": "/marken#produktauswahl-moeller-design-08",
+    "image": "/images/moeller-design/08.jpg"
+  },
+  {
+    "brandSlug": "moeller-design",
+    "brandName": "Möller Design",
+    "headline": "Polsterbett Anthrazit",
+    "price": "Preis auf Anfrage",
+    "stilpunkteUrl": "/marken#produktauswahl-moeller-design-09",
+    "image": "/images/moeller-design/09.jpg"
+  },
+  {
     "brandSlug": "form-exclusiv",
     "brandName": "Form exclusiv",
     "headline": "Tisch Schachbrettmuster Madison",
