@@ -245,56 +245,8 @@ export const markenwelten: MarkenweltCategory[] = [
     "id": "stauraum",
     "label": "Space",
     "teaser": "Regale, Sideboards und Systeme",
-    "cover": "/images/galerien/piure/01.jpg",
+    "cover": "/images/marken/produkte/bonaldo-74caea5e65.jpg",
     "items": [
-      {
-        "brand": "Piure",
-        "title": "Nexglamour 5120X3200 1 Scaled 1",
-        "caption": "Piure – Motiv aus der ZB Interieur Galerie.",
-        "image": "/images/galerien/piure/01.jpg"
-      },
-      {
-        "brand": "Piure",
-        "title": "News 2560 2",
-        "caption": "Piure – Motiv aus der ZB Interieur Galerie.",
-        "image": "/images/galerien/piure/02.jpg"
-      },
-      {
-        "brand": "Piure",
-        "title": "Slider Scaled 2560X1600 Nexpurregal 05",
-        "caption": "Piure – Motiv aus der ZB Interieur Galerie.",
-        "image": "/images/galerien/piure/03.jpg"
-      },
-      {
-        "brand": "Piure",
-        "title": "Nexbox 5120X3200 11 Scaled",
-        "caption": "Piure – Motiv aus der ZB Interieur Galerie.",
-        "image": "/images/galerien/piure/04.jpg"
-      },
-      {
-        "brand": "Piure",
-        "title": "Nexbox 5120X3200 10 Scaled",
-        "caption": "Piure – Motiv aus der ZB Interieur Galerie.",
-        "image": "/images/galerien/piure/05.jpg"
-      },
-      {
-        "brand": "Piure",
-        "title": "Piure Sideboard 5120 06 Scaled",
-        "caption": "Piure – Motiv aus der ZB Interieur Galerie.",
-        "image": "/images/galerien/piure/06.jpg"
-      },
-      {
-        "brand": "Piure",
-        "title": "Nexglamour 5120X3200 3 Scaled",
-        "caption": "Piure – Motiv aus der ZB Interieur Galerie.",
-        "image": "/images/galerien/piure/07.jpg"
-      },
-      {
-        "brand": "Piure",
-        "title": "Nexglamour 5120X3200 4 Scaled",
-        "caption": "Piure – Motiv aus der ZB Interieur Galerie.",
-        "image": "/images/galerien/piure/08.jpg"
-      },
       {
         "brand": "Bonaldo",
         "title": "Arragan Sideboard (high & low)",
@@ -356,18 +308,6 @@ export const markenwelten: MarkenweltCategory[] = [
         "title": "Mogg Lamp Era 19 Kopie",
         "caption": "Lampen – Motiv aus der ZB Interieur Galerie.",
         "image": "/images/galerien/lampen/02.jpg"
-      },
-      {
-        "brand": "Lampen",
-        "title": "In Between 4050X2190",
-        "caption": "Lampen – Motiv aus der ZB Interieur Galerie.",
-        "image": "/images/galerien/lampen/03.jpg"
-      },
-      {
-        "brand": "Lampen",
-        "title": "Lt40",
-        "caption": "Lampen – Motiv aus der ZB Interieur Galerie.",
-        "image": "/images/galerien/lampen/04.jpg"
       },
       {
         "brand": "Lampen",
