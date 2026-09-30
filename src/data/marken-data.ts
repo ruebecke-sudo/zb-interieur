@@ -575,6 +575,110 @@ export const markenProducts = [
     "image": "/images/marken/produkte/papadatos-9238eb4515.jpg"
   },
   {
+    "brandSlug": "papadatos",
+    "brandName": "Papadatos",
+    "headline": "Outdoor-Lounge am Pool",
+    "price": "Preis auf Anfrage",
+    "stilpunkteUrl": "/marken#produktauswahl-papadatos-01",
+    "image": "/images/papadatos/01.jpg"
+  },
+  {
+    "brandSlug": "papadatos",
+    "brandName": "Papadatos",
+    "headline": "Modulsofa mit Nestingtischen",
+    "price": "Preis auf Anfrage",
+    "stilpunkteUrl": "/marken#produktauswahl-papadatos-02",
+    "image": "/images/papadatos/02.jpg"
+  },
+  {
+    "brandSlug": "papadatos",
+    "brandName": "Papadatos",
+    "headline": "Ecksofa mit Bouclé-Sesseln",
+    "price": "Preis auf Anfrage",
+    "stilpunkteUrl": "/marken#produktauswahl-papadatos-03",
+    "image": "/images/papadatos/03.jpg"
+  },
+  {
+    "brandSlug": "papadatos",
+    "brandName": "Papadatos",
+    "headline": "Modulsofa mit Marmortisch",
+    "price": "Preis auf Anfrage",
+    "stilpunkteUrl": "/marken#produktauswahl-papadatos-04",
+    "image": "/images/papadatos/04.jpg"
+  },
+  {
+    "brandSlug": "papadatos",
+    "brandName": "Papadatos",
+    "headline": "Sofa mit Waldblick",
+    "price": "Preis auf Anfrage",
+    "stilpunkteUrl": "/marken#produktauswahl-papadatos-05",
+    "image": "/images/papadatos/05.jpg"
+  },
+  {
+    "brandSlug": "papadatos",
+    "brandName": "Papadatos",
+    "headline": "Lounge Chair in Blau",
+    "price": "Preis auf Anfrage",
+    "stilpunkteUrl": "/marken#produktauswahl-papadatos-06",
+    "image": "/images/papadatos/06.jpg"
+  },
+  {
+    "brandSlug": "papadatos",
+    "brandName": "Papadatos",
+    "headline": "Couchtisch Glas skulptural",
+    "price": "Preis auf Anfrage",
+    "stilpunkteUrl": "/marken#produktauswahl-papadatos-07",
+    "image": "/images/papadatos/07.jpg"
+  },
+  {
+    "brandSlug": "papadatos",
+    "brandName": "Papadatos",
+    "headline": "Sofa mit Konsoltisch",
+    "price": "Preis auf Anfrage",
+    "stilpunkteUrl": "/marken#produktauswahl-papadatos-08",
+    "image": "/images/papadatos/08.jpg"
+  },
+  {
+    "brandSlug": "papadatos",
+    "brandName": "Papadatos",
+    "headline": "Bouclé-Sofa organisch",
+    "price": "Preis auf Anfrage",
+    "stilpunkteUrl": "/marken#produktauswahl-papadatos-09",
+    "image": "/images/papadatos/09.jpg"
+  },
+  {
+    "brandSlug": "papadatos",
+    "brandName": "Papadatos",
+    "headline": "Modulsofa mit Gartenblick",
+    "price": "Preis auf Anfrage",
+    "stilpunkteUrl": "/marken#produktauswahl-papadatos-10",
+    "image": "/images/papadatos/10.jpg"
+  },
+  {
+    "brandSlug": "papadatos",
+    "brandName": "Papadatos",
+    "headline": "Wohnzimmer-Ensemble",
+    "price": "Preis auf Anfrage",
+    "stilpunkteUrl": "/marken#produktauswahl-papadatos-11",
+    "image": "/images/papadatos/11.jpg"
+  },
+  {
+    "brandSlug": "papadatos",
+    "brandName": "Papadatos",
+    "headline": "Sofa Burgunder Samt",
+    "price": "Preis auf Anfrage",
+    "stilpunkteUrl": "/marken#produktauswahl-papadatos-12",
+    "image": "/images/papadatos/12.jpg"
+  },
+  {
+    "brandSlug": "papadatos",
+    "brandName": "Papadatos",
+    "headline": "Sideboard mit Marmorplatte",
+    "price": "Preis auf Anfrage",
+    "stilpunkteUrl": "/marken#produktauswahl-papadatos-13",
+    "image": "/images/papadatos/13.jpg"
+  },
+  {
     "brandSlug": "mogg",
     "brandName": "Mogg",
     "headline": "Stehlampe Costantina Opal – Skulpturale Luxus-Leuchte mit opalem Glasdiffusor für stimmungsvolles Ambiente",
