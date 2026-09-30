@@ -23,36 +23,6 @@ export const markenwelten: MarkenweltCategory[] = [
     "items": [
       {
         "brand": "Sofas & Couches",
-        "title": "Sofa Glee",
-        "caption": "Sofas & Couches – Sofa Glee.",
-        "image": "/images/galerien/sofas/01.jpg"
-      },
-      {
-        "brand": "Sofas & Couches",
-        "title": "Sofa Cloud",
-        "caption": "Sofas & Couches – Sofa Cloud.",
-        "image": "/images/galerien/sofas/02.jpg"
-      },
-      {
-        "brand": "Sofas & Couches",
-        "title": "Sofa Glee",
-        "caption": "Sofas & Couches – Sofa Glee.",
-        "image": "/images/galerien/sofas/03.jpg"
-      },
-      {
-        "brand": "Sofas & Couches",
-        "title": "Sofa Cloud",
-        "caption": "Sofas & Couches – Sofa Cloud.",
-        "image": "/images/galerien/sofas/04.jpg"
-      },
-      {
-        "brand": "Sofas & Couches",
-        "title": "Sofa Aberdeen",
-        "caption": "Sofas & Couches – Sofa Aberdeen.",
-        "image": "/images/galerien/sofas/05.jpg"
-      },
-      {
-        "brand": "Sofas & Couches",
         "title": "Sofa Lennox",
         "caption": "Sofas & Couches – Sofa Lennox.",
         "image": "/images/galerien/sofas/06.jpg"
