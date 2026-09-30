@@ -797,5 +797,101 @@ export const markenProducts = [
     "price": "Preis auf Anfrage",
     "stilpunkteUrl": "/marken#produktauswahl-al2-01",
     "image": "/images/al2/01.jpg"
+  },
+  {
+    "brandSlug": "fine",
+    "brandName": "Fine",
+    "headline": "Polsterbett mit Waldblick",
+    "price": "Preis auf Anfrage",
+    "stilpunkteUrl": "/marken#produktauswahl-fine-01",
+    "image": "/images/fine/01.jpg"
+  },
+  {
+    "brandSlug": "fine",
+    "brandName": "Fine",
+    "headline": "Holzbett Japandi",
+    "price": "Preis auf Anfrage",
+    "stilpunkteUrl": "/marken#produktauswahl-fine-02",
+    "image": "/images/fine/02.jpg"
+  },
+  {
+    "brandSlug": "fine",
+    "brandName": "Fine",
+    "headline": "Daybed in Hellgrau",
+    "price": "Preis auf Anfrage",
+    "stilpunkteUrl": "/marken#produktauswahl-fine-03",
+    "image": "/images/fine/03.jpg"
+  },
+  {
+    "brandSlug": "fine",
+    "brandName": "Fine",
+    "headline": "Polsterbett organisch",
+    "price": "Preis auf Anfrage",
+    "stilpunkteUrl": "/marken#produktauswahl-fine-04",
+    "image": "/images/fine/04.jpg"
+  },
+  {
+    "brandSlug": "fine",
+    "brandName": "Fine",
+    "headline": "Bett in Terrakotta",
+    "price": "Preis auf Anfrage",
+    "stilpunkteUrl": "/marken#produktauswahl-fine-05",
+    "image": "/images/fine/05.jpg"
+  },
+  {
+    "brandSlug": "fine",
+    "brandName": "Fine",
+    "headline": "Bett Detail Grün",
+    "price": "Preis auf Anfrage",
+    "stilpunkteUrl": "/marken#produktauswahl-fine-06",
+    "image": "/images/fine/06.jpg"
+  },
+  {
+    "brandSlug": "fine",
+    "brandName": "Fine",
+    "headline": "Polsterbett Forest Green",
+    "price": "Preis auf Anfrage",
+    "stilpunkteUrl": "/marken#produktauswahl-fine-07",
+    "image": "/images/fine/07.jpg"
+  },
+  {
+    "brandSlug": "fine",
+    "brandName": "Fine",
+    "headline": "Holzbett mit Laterne",
+    "price": "Preis auf Anfrage",
+    "stilpunkteUrl": "/marken#produktauswahl-fine-08",
+    "image": "/images/fine/08.jpg"
+  },
+  {
+    "brandSlug": "fine",
+    "brandName": "Fine",
+    "headline": "Schlafzimmer mit Gartenblick",
+    "price": "Preis auf Anfrage",
+    "stilpunkteUrl": "/marken#produktauswahl-fine-09",
+    "image": "/images/fine/09.jpg"
+  },
+  {
+    "brandSlug": "fine",
+    "brandName": "Fine",
+    "headline": "Bett industriell",
+    "price": "Preis auf Anfrage",
+    "stilpunkteUrl": "/marken#produktauswahl-fine-10",
+    "image": "/images/fine/10.jpg"
+  },
+  {
+    "brandSlug": "fine",
+    "brandName": "Fine",
+    "headline": "Daybed Sage",
+    "price": "Preis auf Anfrage",
+    "stilpunkteUrl": "/marken#produktauswahl-fine-11",
+    "image": "/images/fine/11.jpg"
+  },
+  {
+    "brandSlug": "fine",
+    "brandName": "Fine",
+    "headline": "Polsterbett Dusty Rose",
+    "price": "Preis auf Anfrage",
+    "stilpunkteUrl": "/marken#produktauswahl-fine-12",
+    "image": "/images/fine/12.jpg"
   }
 ] as const
