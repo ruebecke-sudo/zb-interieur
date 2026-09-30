@@ -789,5 +789,13 @@ export const markenProducts = [
     "price": "Preis auf Anfrage",
     "stilpunkteUrl": "https://www.stilpunkte.de/produkt/al2/zephyr-ar-001-esstisch-luxurioeser-designertisch-mit-grazil-leichter-silhouette-und-architektonischer-eleganz/",
     "image": "/images/marken/produkte/al2-0409b061cd.jpg"
+  },
+  {
+    "brandSlug": "al2",
+    "brandName": "AL2",
+    "headline": "Sofa organisch in Rostorange",
+    "price": "Preis auf Anfrage",
+    "stilpunkteUrl": "/marken#produktauswahl-al2-01",
+    "image": "/images/al2/01.jpg"
   }
 ] as const
