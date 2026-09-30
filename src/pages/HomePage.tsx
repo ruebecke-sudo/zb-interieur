@@ -125,7 +125,7 @@ export function HomePage() {
           className="absolute inset-0"
           style={{
             backgroundImage:
-              "linear-gradient(rgba(255,255,255,0.72),rgba(255,255,255,0.72)), url('/images/kueche-render-2.jpg')",
+              "linear-gradient(rgba(255,255,255,0.72),rgba(255,255,255,0.72)), url('/images/wieso-wir-1.jpg')",
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}
