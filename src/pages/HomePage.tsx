@@ -144,13 +144,13 @@ export function HomePage() {
           </div>
           <div className="grid grid-cols-2 gap-3">
             <img
-              src="/images/kueche-render-1.jpg"
-              alt="3D-Visualisierung einer modernen Küche"
+              src="/images/wieso-wir-1.jpg"
+              alt="Modernes Wohnzimmer mit Designsofa und Stadtblick – Einrichtung von ZB Interieur"
               className="aspect-[3/4] object-cover"
             />
             <img
-              src="/images/kueche-render-3.jpg"
-              alt="3D-Visualisierung eines Wohn- und Essbereichs"
+              src="/images/wieso-wir-2.jpg"
+              alt="Elegantes Wohnzimmer mit Loungesesseln und Designkunst – ZB Interieur Homburg"
               className="mt-8 aspect-[3/4] object-cover"
             />
           </div>
