@@ -22,24 +22,6 @@ export const markenwelten: MarkenweltCategory[] = [
     "cover": "/images/designmoebel-1.jpg",
     "items": [
       {
-        "brand": "Sofas & Couches",
-        "title": "Sofa Lennox",
-        "caption": "Sofas & Couches – Sofa Lennox.",
-        "image": "/images/galerien/sofas/06.jpg"
-      },
-      {
-        "brand": "Sofas & Couches",
-        "title": "Sofa Flowers",
-        "caption": "Sofas & Couches – Sofa Flowers.",
-        "image": "/images/galerien/sofas/07.jpg"
-      },
-      {
-        "brand": "Sofas & Couches",
-        "title": "Sofa Cloud",
-        "caption": "Sofas & Couches – Sofa Cloud.",
-        "image": "/images/galerien/sofas/08.jpg"
-      },
-      {
         "brand": "Papadatos",
         "title": "Bild 23",
         "caption": "Papadatos – Motiv aus der ZB Interieur Galerie.",
