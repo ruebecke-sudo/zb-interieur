@@ -423,6 +423,70 @@ export const markenProducts = [
     "image": "/images/marken/produkte/varaschin-8a0d2b3d48.jpg"
   },
   {
+    "brandSlug": "varaschin",
+    "brandName": "Varaschin",
+    "headline": "Lounge Seilgeflecht",
+    "price": "Preis auf Anfrage",
+    "stilpunkteUrl": "/outdoor#produktauswahl-varaschin",
+    "image": "/images/varaschin/01.jpg"
+  },
+  {
+    "brandSlug": "varaschin",
+    "brandName": "Varaschin",
+    "headline": "Modulare Holz-Lounge",
+    "price": "Preis auf Anfrage",
+    "stilpunkteUrl": "/outdoor#produktauswahl-varaschin-02",
+    "image": "/images/varaschin/02.jpg"
+  },
+  {
+    "brandSlug": "varaschin",
+    "brandName": "Varaschin",
+    "headline": "Modulare Sitzskulpturen",
+    "price": "Preis auf Anfrage",
+    "stilpunkteUrl": "/outdoor#produktauswahl-varaschin-03",
+    "image": "/images/varaschin/03.jpg"
+  },
+  {
+    "brandSlug": "varaschin",
+    "brandName": "Varaschin",
+    "headline": "Geflochtene Sessel",
+    "price": "Preis auf Anfrage",
+    "stilpunkteUrl": "/outdoor#produktauswahl-varaschin-04",
+    "image": "/images/varaschin/04.jpg"
+  },
+  {
+    "brandSlug": "varaschin",
+    "brandName": "Varaschin",
+    "headline": "Sofa mit Flechtwerk",
+    "price": "Preis auf Anfrage",
+    "stilpunkteUrl": "/outdoor#produktauswahl-varaschin-05",
+    "image": "/images/varaschin/05.jpg"
+  },
+  {
+    "brandSlug": "varaschin",
+    "brandName": "Varaschin",
+    "headline": "Daybed Coast",
+    "price": "Preis auf Anfrage",
+    "stilpunkteUrl": "/outdoor#produktauswahl-varaschin-06",
+    "image": "/images/varaschin/06.jpg"
+  },
+  {
+    "brandSlug": "varaschin",
+    "brandName": "Varaschin",
+    "headline": "Daybeds im Garten",
+    "price": "Preis auf Anfrage",
+    "stilpunkteUrl": "/outdoor#produktauswahl-varaschin-07",
+    "image": "/images/varaschin/07.jpg"
+  },
+  {
+    "brandSlug": "varaschin",
+    "brandName": "Varaschin",
+    "headline": "Terrassen-Ensemble",
+    "price": "Preis auf Anfrage",
+    "stilpunkteUrl": "/outdoor#produktauswahl-varaschin-08",
+    "image": "/images/varaschin/08.jpg"
+  },
+  {
     "brandSlug": "al2",
     "brandName": "AL2",
     "headline": "Prism Esstisch – Architektonisches Luxus-Meisterwerk mit prismatischer Geometrie",

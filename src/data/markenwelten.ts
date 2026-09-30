@@ -467,8 +467,56 @@ export const markenwelten: MarkenweltCategory[] = [
     "id": "outdoor",
     "label": "Outdoor",
     "teaser": "Terrasse und Gartenmöbel",
-    "cover": "/images/galerien/varaschin/05.jpg",
+    "cover": "/images/varaschin/08.jpg",
     "items": [
+      {
+        "brand": "Varaschin",
+        "title": "Terrassen-Ensemble",
+        "caption": "Varaschin Outdoor-Sofas und Lounges – Premium-Terrasse.",
+        "image": "/images/varaschin/08.jpg"
+      },
+      {
+        "brand": "Varaschin",
+        "title": "Lounge Seilgeflecht",
+        "caption": "Varaschin Lounge mit Seilgeflecht und petrolfarbenen Polstern.",
+        "image": "/images/varaschin/01.jpg"
+      },
+      {
+        "brand": "Varaschin",
+        "title": "Modulare Holz-Lounge",
+        "caption": "Varaschin modulare Outdoor-Lounges aus Holz.",
+        "image": "/images/varaschin/02.jpg"
+      },
+      {
+        "brand": "Varaschin",
+        "title": "Daybed Coast",
+        "caption": "Varaschin Daybed mit Meerblick.",
+        "image": "/images/varaschin/06.jpg"
+      },
+      {
+        "brand": "Varaschin",
+        "title": "Daybeds im Garten",
+        "caption": "Varaschin Daybeds im Gartenambiente.",
+        "image": "/images/varaschin/07.jpg"
+      },
+      {
+        "brand": "Varaschin",
+        "title": "Sofa mit Flechtwerk",
+        "caption": "Varaschin Outdoor-Sofa in Blau.",
+        "image": "/images/varaschin/05.jpg"
+      },
+      {
+        "brand": "Varaschin",
+        "title": "Geflochtene Sessel",
+        "caption": "Varaschin geflochtene Outdoor-Sessel.",
+        "image": "/images/varaschin/04.jpg"
+      },
+      {
+        "brand": "Varaschin",
+        "title": "Modulare Sitzskulpturen",
+        "caption": "Varaschin modulare Sitzmodule.",
+        "image": "/images/varaschin/03.jpg"
+      },
       {
         "brand": "Varaschin",
         "title": "Outdoor Sofa Emma",
