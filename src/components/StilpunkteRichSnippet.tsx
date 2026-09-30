@@ -15,11 +15,14 @@ export function StilpunkteRichSnippet() {
   }, [])
 
   return (
-    <div className="flex flex-col items-center gap-2 text-center">
+    <aside
+      aria-label="Stilpunkte Zertifikat"
+      className="flex flex-col items-center gap-3 border border-white/25 bg-white/5 px-5 py-4 text-center backdrop-blur-[2px]"
+    >
       <p className="text-[11px] font-semibold tracking-[0.14em] text-white/70 uppercase">
         Zum Stilpunkte Zertifikat
       </p>
       <div className="sp-richsnippets min-h-[120px] min-w-[120px]" />
-    </div>
+    </aside>
   )
 }
