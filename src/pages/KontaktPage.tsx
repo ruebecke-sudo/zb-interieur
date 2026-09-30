@@ -62,7 +62,7 @@ export function KontaktPage() {
               rel="noreferrer"
             >
               <WhatsAppIcon className="h-5 w-5" />
-              WhatsApp schreiben
+              WhatsApp {site.whatsappDisplay}
             </a>
             <a className="font-medium text-brand hover:underline" href={`mailto:${site.email}`}>
               {site.email}

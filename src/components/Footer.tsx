@@ -50,7 +50,7 @@ export function Footer() {
               rel="noreferrer"
             >
               <WhatsAppIcon className="h-4 w-4" />
-              WhatsApp
+              WhatsApp {site.whatsappDisplay}
             </a>
             <br />
             <a className="hover:text-accent" href={`mailto:${site.email}`}>
