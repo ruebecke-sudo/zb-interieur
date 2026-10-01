@@ -319,74 +319,74 @@ export const markenwelten: MarkenweltCategory[] = [
     "items": [
       {
         "brand": "Fine",
-        "title": "Polsterbett mit Waldblick",
-        "caption": "Fine – modernes Polsterbett vor großen Waldfenstern.",
+        "title": "Embrace",
+        "caption": "Fine Embrace.",,
         "image": "/images/fine/01.jpg"
       },
       {
         "brand": "Fine",
-        "title": "Holzbett Japandi",
-        "caption": "Fine – helles Holzbett mit Papierlaterne und warmem Licht.",
+        "title": "Nest",
+        "caption": "Fine Nest.",,
         "image": "/images/fine/02.jpg"
       },
       {
         "brand": "Fine",
-        "title": "Daybed in Hellgrau",
-        "caption": "Fine – schlankes Daybed mit Bouclé-Kissen.",
+        "title": "Daybed",
+        "caption": "Fine Daybed.",,
         "image": "/images/fine/03.jpg"
       },
       {
         "brand": "Fine",
-        "title": "Polsterbett organisch",
-        "caption": "Fine – umlaufendes Kopfteil mit organischer Form.",
+        "title": "Embrace",
+        "caption": "Fine Embrace.",,
         "image": "/images/fine/04.jpg"
       },
       {
         "brand": "Fine",
-        "title": "Bett in Terrakotta",
-        "caption": "Fine – Polsterbett in warmem Braunton mit Bogenarchitektur.",
+        "title": "Soft",
+        "caption": "Fine Soft.",,
         "image": "/images/fine/05.jpg"
       },
       {
         "brand": "Fine",
-        "title": "Bett Detail Grün",
-        "caption": "Fine – grünes Polsterbett mit schwebendem Nachttisch.",
+        "title": "Kira",
+        "caption": "Fine Kira.",,
         "image": "/images/fine/06.jpg"
       },
       {
         "brand": "Fine",
-        "title": "Polsterbett Forest Green",
-        "caption": "Fine – Schlafzimmer in Moosgrün mit schwebendem Nachttisch.",
+        "title": "Kira",
+        "caption": "Fine Kira.",,
         "image": "/images/fine/07.jpg"
       },
       {
         "brand": "Fine",
-        "title": "Holzbett mit Laterne",
-        "caption": "Fine – neutrales Schlafzimmer mit Holzbalken und Laterne.",
+        "title": "Nest",
+        "caption": "Fine Nest.",,
         "image": "/images/fine/08.jpg"
       },
       {
         "brand": "Fine",
-        "title": "Schlafzimmer mit Gartenblick",
-        "caption": "Fine – helles Holzbett und große Glasfront zum Garten.",
+        "title": "Nest",
+        "caption": "Fine Nest.",,
         "image": "/images/fine/09.jpg"
       },
       {
         "brand": "Fine",
-        "title": "Bett industriell",
-        "caption": "Fine – schlichtes Bett vor Industriefenster und Kunstwerk.",
+        "title": "Phase",
+        "caption": "Fine Phase.",,
         "image": "/images/fine/10.jpg"
       },
       {
         "brand": "Fine",
-        "title": "Daybed Sage",
-        "caption": "Fine – Daybed vor geriffelter Sage-Wand.",
+        "title": "Daybed",
+        "caption": "Fine Daybed.",,
         "image": "/images/fine/11.jpg"
       },
       {
         "brand": "Fine",
-        "title": "Polsterbett Dusty Rose",
-        "caption": "Fine – Polsterbett in Roséton mit Waldpanorama.",
+        "title": "Embrace",
+        "caption": "Fine Embrace.",,
         "image": "/images/fine/12.jpg"
       }
     ]
