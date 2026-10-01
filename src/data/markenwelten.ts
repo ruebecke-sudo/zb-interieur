@@ -388,42 +388,6 @@ export const markenwelten: MarkenweltCategory[] = [
         "title": "Polsterbett Dusty Rose",
         "caption": "Fine – Polsterbett in Roséton mit Waldpanorama.",
         "image": "/images/fine/12.jpg"
-      },
-      {
-        "brand": "Betten",
-        "title": "Rose Milieu Schraeg 05",
-        "caption": "Betten – Motiv aus der ZB Interieur Galerie.",
-        "image": "/images/galerien/betten/02.jpg"
-      },
-      {
-        "brand": "Betten",
-        "title": "Md 280616 6528",
-        "caption": "Betten – Motiv aus der ZB Interieur Galerie.",
-        "image": "/images/galerien/betten/03.jpg"
-      },
-      {
-        "brand": "Betten",
-        "title": "Yva Milieu Frontal",
-        "caption": "Betten – Motiv aus der ZB Interieur Galerie.",
-        "image": "/images/galerien/betten/04.jpg"
-      },
-      {
-        "brand": "Betten",
-        "title": "Md13 Smart 18 02",
-        "caption": "Betten – Motiv aus der ZB Interieur Galerie.",
-        "image": "/images/galerien/betten/05.jpg"
-      },
-      {
-        "brand": "Betten",
-        "title": "Md13 Yoda 18 01",
-        "caption": "Betten – Motiv aus der ZB Interieur Galerie.",
-        "image": "/images/galerien/betten/06.jpg"
-      },
-      {
-        "brand": "Betten",
-        "title": "Liv 034",
-        "caption": "Betten – Motiv aus der ZB Interieur Galerie.",
-        "image": "/images/galerien/betten/08.jpg"
       }
     ]
   },
