@@ -1,25 +1,46 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   marken,
-  markenMitProdukten,
-  markenProdukte,
+  markenMitProduktenFrom,
   markenSource,
+  mergeMarkenProdukte,
   type MarkenProdukt,
 } from '../data/marken'
+import {
+  getUploadedAltText,
+  hydrateUploadedProducts,
+} from '../lib/uploadedProductsStore'
 
 export function MarkenPage() {
   const [active, setActive] = useState<string>('alle')
+  const [uploaded, setUploaded] = useState<MarkenProdukt[]>([])
+
+  useEffect(() => {
+    let cancelled = false
+    void hydrateUploadedProducts().then((items) => {
+      if (!cancelled) setUploaded(items)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  const allProdukte = useMemo(() => mergeMarkenProdukte(uploaded), [uploaded])
+  const brandsWithProducts = useMemo(
+    () => markenMitProduktenFrom(allProdukte),
+    [allProdukte],
+  )
 
   const filtered = useMemo(() => {
-    if (active === 'alle') return markenProdukte
-    return markenProdukte.filter((p) => p.brandSlug === active)
-  }, [active])
+    if (active === 'alle') return allProdukte
+    return allProdukte.filter((p) => p.brandSlug === active)
+  }, [active, allProdukte])
 
   const activeBrand = marken.find((m) => m.slug === active)
   const featured = filtered[0]
   const rest = filtered.slice(1)
-  const heroImage = markenProdukte[4]?.image ?? markenProdukte[0]?.image
+  const heroImage = allProdukte[4]?.image ?? allProdukte[0]?.image
 
   return (
     <>
@@ -141,12 +162,14 @@ export function MarkenPage() {
               </h2>
               <p className="mt-2 text-sm text-muted">
                 {filtered.length} {filtered.length === 1 ? 'Produkt' : 'Produkte'}
-                {active !== 'alle' ? ` · ${activeBrand?.name}` : ` · ${markenMitProdukten.length} Marken mit Exponaten`}
+                {active !== 'alle'
+                  ? ` · ${activeBrand?.name}`
+                  : ` · ${brandsWithProducts.length} Marken mit Exponaten`}
               </p>
             </div>
             <div className="flex max-w-3xl flex-wrap gap-1.5">
               <FilterChip active={active === 'alle'} onClick={() => setActive('alle')} label="Alle" />
-              {markenMitProdukten.map((m) => (
+              {brandsWithProducts.map((m) => (
                 <FilterChip
                   key={m.slug}
                   active={active === m.slug}
@@ -162,7 +185,11 @@ export function MarkenPage() {
               <div className="relative overflow-hidden bg-fog lg:col-span-7">
                 <img
                   src={featured.image}
-                  alt={`${featured.brandName}: ${featured.headline}`}
+                  alt={
+                    featured.altText ||
+                    getUploadedAltText(featured.stilpunkteUrl) ||
+                    `${featured.brandName}: ${featured.headline}`
+                  }
                   className="aspect-[4/5] w-full object-cover transition duration-700 group-hover:scale-[1.03] lg:aspect-[5/4] lg:min-h-[420px]"
                 />
                 <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/55 to-transparent p-4 opacity-0 transition group-hover:opacity-100">
@@ -215,7 +242,7 @@ export function MarkenPage() {
           </div>
           <ul className="grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
             {marken.map((b) => {
-              const count = markenProdukte.filter((p) => p.brandSlug === b.slug).length
+              const count = allProdukte.filter((p) => p.brandSlug === b.slug).length
               return (
                 <li key={b.slug}>
                   <button
@@ -327,6 +354,10 @@ function BrandMark({ product }: { product: MarkenProdukt }) {
 }
 
 function ProductCard({ product, index }: { product: MarkenProdukt; index: number }) {
+  const alt =
+    product.altText ||
+    getUploadedAltText(product.stilpunkteUrl) ||
+    `${product.brandName}: ${product.headline}`
   return (
     <article
       className="animate-marken-reveal group flex h-full flex-col bg-white"
@@ -335,7 +366,7 @@ function ProductCard({ product, index }: { product: MarkenProdukt; index: number
       <div className="relative overflow-hidden bg-fog">
         <img
           src={product.image}
-          alt={`${product.brandName}: ${product.headline}`}
+          alt={alt}
           className="aspect-[4/5] w-full object-cover transition duration-700 group-hover:scale-[1.03]"
         />
         <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/50 to-transparent p-3 opacity-0 transition group-hover:opacity-100">

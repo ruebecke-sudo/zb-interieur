@@ -12,6 +12,7 @@ import { OutdoorPage } from './pages/OutdoorPage'
 import { PlanungPage } from './pages/PlanungPage'
 import { ServicePage } from './pages/ServicePage'
 import { TerminPage } from './pages/TerminPage'
+import { ProduktUploadPage } from './pages/ProduktUploadPage'
 
 const router = createBrowserRouter([
   {
@@ -22,6 +23,7 @@ const router = createBrowserRouter([
       { path: 'beratung', element: <BeratungPage /> },
       { path: 'planung', element: <PlanungPage /> },
       { path: 'marken', element: <MarkenPage /> },
+      { path: 'verwaltung/produkte', element: <ProduktUploadPage /> },
       { path: 'magazin', element: <MagazinPage /> },
       { path: 'blog', element: <BlogPage /> },
       { path: 'blog/:slug', element: <BlogPostPage /> },

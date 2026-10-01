@@ -6,6 +6,8 @@ Blog und Galerie-Kategorien entfallen bewusst – Fokus auf Beratung, Planung, k
 
 Die Seite **Marken** (`/marken`) zeigt Logos, Produktheadlines und Produktbilder der Designermarken aus dem [STILPUNKTE-Eintrag](https://www.stilpunkte.de/saarland/eintraege/zb-interieur/) (ohne Lambert und Sifas). Produktbilder öffnen per Klick in Originalgröße.
 
+Über **Produktverwaltung** (`/verwaltung/produkte`) können neue Produktbilder hochgeladen werden: Produktname und Marke werden aus dem Dateinamen abgeleitet (z. B. `FINE_Aria_Sofa_3-Sitzer.jpg` → „FINE Aria Sofa 3-Sitzer“ / Marke Fine), vor dem Speichern kontrolliert und lokal (IndexedDB + localStorage) an die Produktauswahl angehängt. Bestehende Katalogprodukte bleiben unverändert.
+
 ## Live auf Netlify
 
 Letzter anonymer Drop (Passwort-geschützt, zeitlich begrenzt):

@@ -320,73 +320,73 @@ export const markenwelten: MarkenweltCategory[] = [
       {
         "brand": "Fine",
         "title": "Embrace",
-        "caption": "Fine Embrace.",,
+        "caption": "Fine Embrace.",
         "image": "/images/fine/01.jpg"
       },
       {
         "brand": "Fine",
         "title": "Lean on me",
-        "caption": "Fine Lean on me.",,
+        "caption": "Fine Lean on me.",
         "image": "/images/fine/02.jpg"
       },
       {
         "brand": "Fine",
         "title": "Daybed",
-        "caption": "Fine Daybed.",,
+        "caption": "Fine Daybed.",
         "image": "/images/fine/03.jpg"
       },
       {
         "brand": "Fine",
         "title": "Embrace",
-        "caption": "Fine Embrace.",,
+        "caption": "Fine Embrace.",
         "image": "/images/fine/04.jpg"
       },
       {
         "brand": "Fine",
         "title": "Fluff",
-        "caption": "Fine Fluff.",,
+        "caption": "Fine Fluff.",
         "image": "/images/fine/05.jpg"
       },
       {
         "brand": "Fine",
         "title": "Kira",
-        "caption": "Fine Kira.",,
+        "caption": "Fine Kira.",
         "image": "/images/fine/06.jpg"
       },
       {
         "brand": "Fine",
         "title": "Kira",
-        "caption": "Fine Kira.",,
+        "caption": "Fine Kira.",
         "image": "/images/fine/07.jpg"
       },
       {
         "brand": "Fine",
         "title": "Lean on me",
-        "caption": "Fine Lean on me.",,
+        "caption": "Fine Lean on me.",
         "image": "/images/fine/08.jpg"
       },
       {
         "brand": "Fine",
         "title": "Lean on me",
-        "caption": "Fine Lean on me.",,
+        "caption": "Fine Lean on me.",
         "image": "/images/fine/09.jpg"
       },
       {
         "brand": "Fine",
         "title": "Phase",
-        "caption": "Fine Phase.",,
+        "caption": "Fine Phase.",
         "image": "/images/fine/10.jpg"
       },
       {
         "brand": "Fine",
         "title": "Daybed",
-        "caption": "Fine Daybed.",,
+        "caption": "Fine Daybed.",
         "image": "/images/fine/11.jpg"
       },
       {
         "brand": "Fine",
         "title": "Embrace",
-        "caption": "Fine Embrace.",,
+        "caption": "Fine Embrace.",
         "image": "/images/fine/12.jpg"
       }
     ]
