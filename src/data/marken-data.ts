@@ -797,5 +797,77 @@ export const markenProducts = [
     "price": "Preis auf Anfrage",
     "stilpunkteUrl": "/marken#produktauswahl-al2-01",
     "image": "/images/al2/01.jpg"
+  },
+  {
+    "brandSlug": "fine",
+    "brandName": "Fine",
+    "headline": "Daybed",
+    "price": "Preis auf Anfrage",
+    "stilpunkteUrl": "/marken#produktauswahl-fine-01",
+    "image": "/images/fine/auswahl-01.jpg"
+  },
+  {
+    "brandSlug": "fine",
+    "brandName": "Fine",
+    "headline": "Bett",
+    "price": "Preis auf Anfrage",
+    "stilpunkteUrl": "/marken#produktauswahl-fine-02",
+    "image": "/images/fine/auswahl-02.jpg"
+  },
+  {
+    "brandSlug": "fine",
+    "brandName": "Fine",
+    "headline": "Bett",
+    "price": "Preis auf Anfrage",
+    "stilpunkteUrl": "/marken#produktauswahl-fine-03",
+    "image": "/images/fine/auswahl-03.jpg"
+  },
+  {
+    "brandSlug": "fine",
+    "brandName": "Fine",
+    "headline": "Bett",
+    "price": "Preis auf Anfrage",
+    "stilpunkteUrl": "/marken#produktauswahl-fine-04",
+    "image": "/images/fine/auswahl-04.jpg"
+  },
+  {
+    "brandSlug": "fine",
+    "brandName": "Fine",
+    "headline": "Bett",
+    "price": "Preis auf Anfrage",
+    "stilpunkteUrl": "/marken#produktauswahl-fine-05",
+    "image": "/images/fine/auswahl-05.jpg"
+  },
+  {
+    "brandSlug": "fine",
+    "brandName": "Fine",
+    "headline": "Bett",
+    "price": "Preis auf Anfrage",
+    "stilpunkteUrl": "/marken#produktauswahl-fine-06",
+    "image": "/images/fine/auswahl-06.jpg"
+  },
+  {
+    "brandSlug": "fine",
+    "brandName": "Fine",
+    "headline": "Bett",
+    "price": "Preis auf Anfrage",
+    "stilpunkteUrl": "/marken#produktauswahl-fine-07",
+    "image": "/images/fine/auswahl-07.jpg"
+  },
+  {
+    "brandSlug": "fine",
+    "brandName": "Fine",
+    "headline": "Bett",
+    "price": "Preis auf Anfrage",
+    "stilpunkteUrl": "/marken#produktauswahl-fine-08",
+    "image": "/images/fine/auswahl-08.jpg"
+  },
+  {
+    "brandSlug": "fine",
+    "brandName": "Fine",
+    "headline": "Bett",
+    "price": "Preis auf Anfrage",
+    "stilpunkteUrl": "/marken#produktauswahl-fine-09",
+    "image": "/images/fine/auswahl-09.jpg"
   }
 ] as const
