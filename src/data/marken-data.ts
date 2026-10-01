@@ -825,7 +825,7 @@ export const markenProducts = [
   {
     "brandSlug": "fine",
     "brandName": "Fine",
-    "headline": "Soft",
+    "headline": "Fluff",
     "price": "Preis auf Anfrage",
     "stilpunkteUrl": "/marken#produktauswahl-fine-04",
     "image": "/images/fine/auswahl-04.jpg"
@@ -849,7 +849,7 @@ export const markenProducts = [
   {
     "brandSlug": "fine",
     "brandName": "Fine",
-    "headline": "Nest",
+    "headline": "Lean on me",
     "price": "Preis auf Anfrage",
     "stilpunkteUrl": "/marken#produktauswahl-fine-07",
     "image": "/images/fine/auswahl-07.jpg"
@@ -857,7 +857,7 @@ export const markenProducts = [
   {
     "brandSlug": "fine",
     "brandName": "Fine",
-    "headline": "Nest",
+    "headline": "Lean on me",
     "price": "Preis auf Anfrage",
     "stilpunkteUrl": "/marken#produktauswahl-fine-08",
     "image": "/images/fine/auswahl-08.jpg"
@@ -897,7 +897,7 @@ export const markenProducts = [
   {
     "brandSlug": "fine",
     "brandName": "Fine",
-    "headline": "Soft",
+    "headline": "Fluff",
     "price": "Preis auf Anfrage",
     "stilpunkteUrl": "/marken#produktauswahl-fine-13",
     "image": "/images/fine/auswahl-13.jpg"
@@ -921,7 +921,7 @@ export const markenProducts = [
   {
     "brandSlug": "fine",
     "brandName": "Fine",
-    "headline": "Nest",
+    "headline": "Lean on me",
     "price": "Preis auf Anfrage",
     "stilpunkteUrl": "/marken#produktauswahl-fine-16",
     "image": "/images/fine/auswahl-16.jpg"
@@ -929,7 +929,7 @@ export const markenProducts = [
   {
     "brandSlug": "fine",
     "brandName": "Fine",
-    "headline": "Nest",
+    "headline": "Lean on me",
     "price": "Preis auf Anfrage",
     "stilpunkteUrl": "/marken#produktauswahl-fine-17",
     "image": "/images/fine/auswahl-17.jpg"

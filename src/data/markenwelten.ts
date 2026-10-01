@@ -325,8 +325,8 @@ export const markenwelten: MarkenweltCategory[] = [
       },
       {
         "brand": "Fine",
-        "title": "Nest",
-        "caption": "Fine Nest.",,
+        "title": "Lean on me",
+        "caption": "Fine Lean on me.",,
         "image": "/images/fine/02.jpg"
       },
       {
@@ -343,8 +343,8 @@ export const markenwelten: MarkenweltCategory[] = [
       },
       {
         "brand": "Fine",
-        "title": "Soft",
-        "caption": "Fine Soft.",,
+        "title": "Fluff",
+        "caption": "Fine Fluff.",,
         "image": "/images/fine/05.jpg"
       },
       {
@@ -361,14 +361,14 @@ export const markenwelten: MarkenweltCategory[] = [
       },
       {
         "brand": "Fine",
-        "title": "Nest",
-        "caption": "Fine Nest.",,
+        "title": "Lean on me",
+        "caption": "Fine Lean on me.",,
         "image": "/images/fine/08.jpg"
       },
       {
         "brand": "Fine",
-        "title": "Nest",
-        "caption": "Fine Nest.",,
+        "title": "Lean on me",
+        "caption": "Fine Lean on me.",,
         "image": "/images/fine/09.jpg"
       },
       {
