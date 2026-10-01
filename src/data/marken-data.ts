@@ -801,7 +801,7 @@ export const markenProducts = [
   {
     "brandSlug": "fine",
     "brandName": "Fine",
-    "headline": "Daybed",
+    "headline": "Fine Daybed",
     "price": "Preis auf Anfrage",
     "stilpunkteUrl": "/marken#produktauswahl-fine-01",
     "image": "/images/fine/auswahl-01.jpg"
@@ -809,7 +809,7 @@ export const markenProducts = [
   {
     "brandSlug": "fine",
     "brandName": "Fine",
-    "headline": "Bett",
+    "headline": "Fine Bett",
     "price": "Preis auf Anfrage",
     "stilpunkteUrl": "/marken#produktauswahl-fine-02",
     "image": "/images/fine/auswahl-02.jpg"
@@ -817,7 +817,7 @@ export const markenProducts = [
   {
     "brandSlug": "fine",
     "brandName": "Fine",
-    "headline": "Bett",
+    "headline": "Fine Bett",
     "price": "Preis auf Anfrage",
     "stilpunkteUrl": "/marken#produktauswahl-fine-03",
     "image": "/images/fine/auswahl-03.jpg"
@@ -825,7 +825,7 @@ export const markenProducts = [
   {
     "brandSlug": "fine",
     "brandName": "Fine",
-    "headline": "Bett",
+    "headline": "Fine Bett",
     "price": "Preis auf Anfrage",
     "stilpunkteUrl": "/marken#produktauswahl-fine-04",
     "image": "/images/fine/auswahl-04.jpg"
@@ -833,7 +833,7 @@ export const markenProducts = [
   {
     "brandSlug": "fine",
     "brandName": "Fine",
-    "headline": "Bett",
+    "headline": "Fine Bett",
     "price": "Preis auf Anfrage",
     "stilpunkteUrl": "/marken#produktauswahl-fine-05",
     "image": "/images/fine/auswahl-05.jpg"
@@ -841,7 +841,7 @@ export const markenProducts = [
   {
     "brandSlug": "fine",
     "brandName": "Fine",
-    "headline": "Bett",
+    "headline": "Fine Bett",
     "price": "Preis auf Anfrage",
     "stilpunkteUrl": "/marken#produktauswahl-fine-06",
     "image": "/images/fine/auswahl-06.jpg"
@@ -849,7 +849,7 @@ export const markenProducts = [
   {
     "brandSlug": "fine",
     "brandName": "Fine",
-    "headline": "Bett",
+    "headline": "Fine Bett",
     "price": "Preis auf Anfrage",
     "stilpunkteUrl": "/marken#produktauswahl-fine-07",
     "image": "/images/fine/auswahl-07.jpg"
@@ -857,7 +857,7 @@ export const markenProducts = [
   {
     "brandSlug": "fine",
     "brandName": "Fine",
-    "headline": "Bett",
+    "headline": "Fine Bett",
     "price": "Preis auf Anfrage",
     "stilpunkteUrl": "/marken#produktauswahl-fine-08",
     "image": "/images/fine/auswahl-08.jpg"
@@ -865,7 +865,7 @@ export const markenProducts = [
   {
     "brandSlug": "fine",
     "brandName": "Fine",
-    "headline": "Bett",
+    "headline": "Fine Bett",
     "price": "Preis auf Anfrage",
     "stilpunkteUrl": "/marken#produktauswahl-fine-09",
     "image": "/images/fine/auswahl-09.jpg"
@@ -873,7 +873,7 @@ export const markenProducts = [
   {
     "brandSlug": "fine",
     "brandName": "Fine",
-    "headline": "Daybed",
+    "headline": "Fine Daybed",
     "price": "Preis auf Anfrage",
     "stilpunkteUrl": "/marken#produktauswahl-fine-10",
     "image": "/images/fine/auswahl-10.jpg"
@@ -881,7 +881,7 @@ export const markenProducts = [
   {
     "brandSlug": "fine",
     "brandName": "Fine",
-    "headline": "Bett",
+    "headline": "Fine Bett",
     "price": "Preis auf Anfrage",
     "stilpunkteUrl": "/marken#produktauswahl-fine-11",
     "image": "/images/fine/auswahl-11.jpg"
@@ -889,7 +889,7 @@ export const markenProducts = [
   {
     "brandSlug": "fine",
     "brandName": "Fine",
-    "headline": "Bett",
+    "headline": "Fine Bett",
     "price": "Preis auf Anfrage",
     "stilpunkteUrl": "/marken#produktauswahl-fine-12",
     "image": "/images/fine/auswahl-12.jpg"
@@ -897,7 +897,7 @@ export const markenProducts = [
   {
     "brandSlug": "fine",
     "brandName": "Fine",
-    "headline": "Bett",
+    "headline": "Fine Bett",
     "price": "Preis auf Anfrage",
     "stilpunkteUrl": "/marken#produktauswahl-fine-13",
     "image": "/images/fine/auswahl-13.jpg"
@@ -905,7 +905,7 @@ export const markenProducts = [
   {
     "brandSlug": "fine",
     "brandName": "Fine",
-    "headline": "Bett",
+    "headline": "Fine Bett",
     "price": "Preis auf Anfrage",
     "stilpunkteUrl": "/marken#produktauswahl-fine-14",
     "image": "/images/fine/auswahl-14.jpg"
@@ -913,7 +913,7 @@ export const markenProducts = [
   {
     "brandSlug": "fine",
     "brandName": "Fine",
-    "headline": "Bett",
+    "headline": "Fine Bett",
     "price": "Preis auf Anfrage",
     "stilpunkteUrl": "/marken#produktauswahl-fine-15",
     "image": "/images/fine/auswahl-15.jpg"
@@ -921,7 +921,7 @@ export const markenProducts = [
   {
     "brandSlug": "fine",
     "brandName": "Fine",
-    "headline": "Bett",
+    "headline": "Fine Bett",
     "price": "Preis auf Anfrage",
     "stilpunkteUrl": "/marken#produktauswahl-fine-16",
     "image": "/images/fine/auswahl-16.jpg"
@@ -929,7 +929,7 @@ export const markenProducts = [
   {
     "brandSlug": "fine",
     "brandName": "Fine",
-    "headline": "Bett",
+    "headline": "Fine Bett",
     "price": "Preis auf Anfrage",
     "stilpunkteUrl": "/marken#produktauswahl-fine-17",
     "image": "/images/fine/auswahl-17.jpg"
@@ -937,7 +937,7 @@ export const markenProducts = [
   {
     "brandSlug": "fine",
     "brandName": "Fine",
-    "headline": "Bett",
+    "headline": "Fine Bett",
     "price": "Preis auf Anfrage",
     "stilpunkteUrl": "/marken#produktauswahl-fine-18",
     "image": "/images/fine/auswahl-18.jpg"
