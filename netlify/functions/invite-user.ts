@@ -109,10 +109,35 @@ export default async (req: Request) => {
     options: { redirectTo, data: { workspace_name: tenant.brand_name || tenant.name, invited_role: role } },
   })
 
-  if (inviteError || !invite?.properties?.action_link) {
+  if (inviteError || !invite?.properties?.action_link || !invite.user) {
     await admin.from('image_manager_invitations').delete().eq('tenant_id', membership.tenant_id).eq('email', email)
     return json({ error: inviteError?.message || 'Einladungslink konnte nicht erstellt werden.' }, 400)
   }
+
+  const invitedUserId = invite.user.id
+  const { error: membershipInsertError } = await admin
+    .from('memberships')
+    .upsert({ tenant_id: membership.tenant_id, user_id: invitedUserId, role }, { onConflict: 'tenant_id,user_id' })
+
+  if (membershipInsertError) {
+    await admin.from('image_manager_invitations').delete().eq('tenant_id', membership.tenant_id).eq('email', email)
+    return json({ error: 'Benutzer konnte dem Arbeitsbereich nicht zugeordnet werden: ' + membershipInsertError.message }, 500)
+  }
+
+  await admin
+    .from('image_manager_invitations')
+    .update({ invited_user_id: invitedUserId, accepted_at: null })
+    .eq('tenant_id', membership.tenant_id)
+    .eq('email', email)
+    .is('accepted_at', null)
+
+  await admin.from('audit_logs').insert({
+    tenant_id: membership.tenant_id,
+    user_id: invitedUserId,
+    action: 'member.invited',
+    entity_type: 'membership',
+    metadata: { source: 'resend_invitation', role },
+  })
 
   const workspaceName = tenant.brand_name || tenant.name || 'Image Manager Pro'
   const roleLabels: Record<string, string> = { admin: 'Administrator', member: 'Mitarbeiter', viewer: 'Betrachter' }
