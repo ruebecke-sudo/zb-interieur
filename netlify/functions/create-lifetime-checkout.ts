@@ -1,4 +1,3 @@
-import Stripe from 'stripe'
 import { createClient } from '@supabase/supabase-js'
 
 export default async (req: Request) => {
@@ -26,17 +25,26 @@ export default async (req: Request) => {
   if (!tenant) return new Response(JSON.stringify({ error: 'Workspace nicht gefunden.' }), { status: 404, headers: { 'Content-Type': 'application/json' } })
   if (tenant.plan === 'lifetime') return new Response(JSON.stringify({ error: 'Lifetime ist bereits aktiviert.' }), { status: 409, headers: { 'Content-Type': 'application/json' } })
 
-  const stripe = new Stripe(secret)
-  const origin = req.headers.get('origin') || process.env.PUBLIC_SITE_URL || 'http://localhost:5173'
-  const session = await stripe.checkout.sessions.create({
-    mode: 'payment',
-    line_items: [{ price: priceId, quantity: 1 }],
-    customer_email: userData.user.email || undefined,
-    success_url: origin.replace(/\/$/, '') + '/image-manager/app?payment=success',
-    cancel_url: origin.replace(/\/$/, '') + '/image-manager/app?payment=cancelled',
-    metadata: { tenant_id: tenant.id, user_id: userData.user.id, product: 'image-manager-lifetime' },
-    allow_promotion_codes: true,
+    const origin = req.headers.get('origin') || process.env.PUBLIC_SITE_URL || 'http://localhost:5173'
+  const params = new URLSearchParams()
+  params.set('mode', 'payment')
+  params.set('line_items[0][price]', priceId)
+  params.set('line_items[0][quantity]', '1')
+  params.set('customer_email', userData.user.email || '')
+  params.set('success_url', origin.replace(/\/$/, '') + '/image-manager/app?payment=success')
+  params.set('cancel_url', origin.replace(/\/$/, '') + '/image-manager/app?payment=cancelled')
+  params.set('metadata[tenant_id]', tenant.id)
+  params.set('metadata[user_id]', userData.user.id)
+  params.set('metadata[product]', 'image-manager-lifetime')
+  params.set('allow_promotion_codes', 'true')
+
+  const response = await fetch('https://api.stripe.com/v1/checkout/sessions', {
+    method: 'POST',
+    headers: { Authorization: 'Basic ' + Buffer.from(secret + ':').toString('base64'), 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: params.toString(),
   })
+  const session = await response.json() as { url?: string; error?: { message?: string } }
+  if (!response.ok || !session.url) throw new Error(session.error?.message || 'Stripe Checkout konnte nicht erstellt werden.')
 
   return new Response(JSON.stringify({ url: session.url }), { status: 200, headers: { 'Content-Type': 'application/json' } })
 }
