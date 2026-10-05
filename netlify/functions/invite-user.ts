@@ -33,8 +33,11 @@ export default async (req: Request) => {
   if (!membership || !['owner','admin'].includes(membership.role)) return new Response(JSON.stringify({ error: 'Keine Berechtigung.' }), { status: 403, headers: { ...cors, 'Content-Type': 'application/json' } })
 
   const admin = createClient(url, secret, { auth: { persistSession: false, autoRefreshToken: false } })
-  const { data: invite, error: inviteError } = await admin.auth.admin.inviteUserByEmail(email, { redirectTo: `${new URL(req.url).origin}/image-manager/app` })
+  const { data: invite, error: inviteError } = await admin.auth.admin.inviteUserByEmail(email, { redirectTo: `${new URL(req.url).origin}/image-manager/app`, data: { image_manager_invited: true } })
   if (inviteError || !invite.user) return new Response(JSON.stringify({ error: inviteError?.message || 'Einladung konnte nicht versendet werden.' }), { status: 400, headers: { ...cors, 'Content-Type': 'application/json' } })
+
+  const { error: metadataError } = await admin.auth.admin.updateUserById(invite.user.id, { app_metadata: { image_manager_invited: 'true' } })
+  if (metadataError) return new Response(JSON.stringify({ error: 'Einladung wurde erstellt, aber die Benutzerkennzeichnung konnte nicht gesetzt werden.' }), { status: 500, headers: { ...cors, 'Content-Type': 'application/json' } })
 
   const { error: membershipError } = await admin.from('memberships').insert({ tenant_id: membership.tenant_id, user_id: invite.user.id, role })
   if (membershipError) return new Response(JSON.stringify({ error: 'Einladung wurde versendet, aber die Workspace-Zuordnung konnte nicht gespeichert werden.' }), { status: 500, headers: { ...cors, 'Content-Type': 'application/json' } })
