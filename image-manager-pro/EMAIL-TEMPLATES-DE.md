@@ -14,7 +14,9 @@ Einladung zu Image Manager Pro
 
 <p>Hallo,</p>
 
-<p>Sie wurden eingeladen, einen Benutzerzugang für <strong>Image Manager Pro</strong> zu erstellen.</p>
+<p>Sie wurden eingeladen, einen Benutzerzugang für <strong>{{ .Data.workspace_name }}</strong> in Image Manager Pro zu erstellen.</p>
+
+<p>Vorgesehene Rolle: <strong>{{ .Data.invited_role }}</strong></p>
 
 <p>Über den folgenden Button können Sie Ihre Einladung annehmen und Ihr persönliches Passwort festlegen.</p>
 
@@ -131,6 +133,8 @@ Für die Auth-E-Mails sind insbesondere diese Supabase-Platzhalter relevant:
 - `{{ .ConfirmationURL }}` – persönlicher Bestätigungs-/Einladungs-Link
 - `{{ .Email }}` – E-Mail-Adresse des Empfängers
 - `{{ .Data }}` – Benutzerdaten/Metadaten
+- `{{ .Data.workspace_name }}` – Name des eingeladenen Workspaces
+- `{{ .Data.invited_role }}` – vorgesehene Benutzerrolle
 
 ## Aktueller Einladungsablauf
 
