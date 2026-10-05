@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 import { ImageManagerActions } from '../components/ImageManagerActions'
 import { ImageManagerWebsites } from '../components/ImageManagerWebsites'
 import { ImageManagerCategories } from '../components/ImageManagerCategories'
+import { ImageManagerMembers } from '../components/ImageManagerMembers'
 import { supabase } from '../lib/supabase'
 
 type ImageItem = {
@@ -115,6 +116,7 @@ export function ImageManagerDashboardPage() {
   const activeCount = images.length
   const isWebsites = active === 'Websites'
   const isCategories = active === 'Kategorien'
+  const isSettings = active === 'Einstellungen'
   const canManage = userRole === 'owner' || userRole === 'admin'
 
   const nav = [
@@ -153,7 +155,7 @@ export function ImageManagerDashboardPage() {
           </div>
         </header>
 
-        <div className="mx-auto max-w-7xl space-y-7 p-5 md:p-8">{isWebsites ? <ImageManagerWebsites /> : isCategories ? <ImageManagerCategories /> : <>
+        <div className="mx-auto max-w-7xl space-y-7 p-5 md:p-8">{isWebsites ? <ImageManagerWebsites /> : isCategories ? <ImageManagerCategories /> : isSettings ? <ImageManagerMembers /> : <>
           <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             {[
               [`${images.length.toLocaleString('de-DE')}`, 'Bilder', loading ? 'Lade Bestand …' : 'Live aus ZB-Media-API', '▧'],
