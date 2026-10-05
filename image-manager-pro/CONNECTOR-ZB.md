@@ -34,3 +34,16 @@ The connector API uses a bearer/API key. The key belongs on the server-side conn
 
 ## Product direction
 The SaaS should treat this connector as one implementation of a generic connector interface. Future connectors can include WordPress, Shopify, custom REST APIs and native Image Manager Pro storage.
+
+
+## Produktions-Synchronisierung
+
+Der zentrale Image Manager verwendet für den ZB-Pilot einen serverseitigen Netlify-Proxy:
+- /.netlify/functions/sync-image-to-zb
+- ZB_IMAGE_MANAGER_API_KEY wird ausschließlich als serverseitiges Netlify Secret gespeichert.
+- Der Browser erhält diesen Schlüssel niemals.
+- Bilder werden anhand ihrer zentral gespeicherten URL geladen und als Multipart-Upload an /api/images/upload übertragen.
+- Erfolgreiche Übertragung setzt sync_status=synced.
+- Fehler setzen sync_status=error und speichern sync_error.
+
+Für weitere Kunden werden die Connector-Secrets später pro Website verschlüsselt bzw. über einen dedizierten Secret Store verwaltet; der ZB-Pilot nutzt zunächst das serverseitige Secret.
