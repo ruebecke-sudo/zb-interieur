@@ -186,13 +186,13 @@ export function ImageManagerDashboardPage() {
           <div className="mb-3 px-3 text-xs font-semibold uppercase tracking-wider text-slate-500">Arbeitsbereich</div>
           <div className="mb-5 flex items-center gap-3 rounded-2xl bg-white/10 p-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-xl font-bold" style={{ backgroundColor: primaryColor }}>{ArbeitsbereichName.slice(0, 2).toUpperCase()}</div>
-            <div><div className="text-sm font-semibold">{ArbeitsbereichName}</div><div className="text-xs text-slate-400">{userEmail || "Pilot Arbeitsbereich"}</div></div>
+            <div><div className="text-sm font-semibold">{ArbeitsbereichName}</div><div className="text-xs text-slate-400">{userEmail || "Pilot-Arbeitsbereich"}</div></div>
           </div>
           <nav className="space-y-1">
             {nav.map(([label, icon]) => <button key={label} onClick={() => setActive(label)} className={`flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm transition ${active === label ? 'bg-white text-slate-900 font-semibold' : 'text-slate-300 hover:bg-white/10'}`}><span className="w-6 text-center">{icon}</span>{label}</button>)}
           </nav>
         </div>
-        <div className="mt-auto border-t border-white/10 p-5 text-xs text-slate-500">Image Manager Pro · SaaS Arbeitsbereich</div>
+        <div className="mt-auto border-t border-white/10 p-5 text-xs text-slate-500">Image Manager Pro · SaaS-Arbeitsbereich</div>
       </aside>
 
       <main className="lg:ml-64">
@@ -253,7 +253,7 @@ export function ImageManagerDashboardPage() {
 
           <section className="grid gap-5 lg:grid-cols-2">
             <div className="rounded-2xl bg-[#111318] p-6 text-white"><div className="flex items-center gap-3"><Icon>⌘</Icon><div><div className="font-bold">Website-Verbindungen</div><div className="text-sm text-slate-400">Zentrale Verwaltung deiner angeschlossenen Websites</div></div></div><div className="mt-6 flex items-center justify-between rounded-xl border border-white/10 bg-white/5 p-4"><div><div className="font-semibold">Website-Verbindung</div><div className="mt-1 text-xs text-slate-400">REST-Schnittstelle · zentral verwaltet</div></div><span className="rounded-full bg-emerald-400/10 px-3 py-1 text-xs font-semibold text-emerald-300">Online</span></div></div>
-            <div className="rounded-2xl border border-slate-200 bg-white p-6"><div className="font-bold">Nächster Schritt</div><p className="mt-2 text-sm leading-6 text-slate-500">Media Library, Rollen, Eigener Markenauftritt, Connectoren und Abrechnung sind vorbereitet. Vor dem öffentlichen Verkauf fehlen nur externe Stripe-/Auth-Konfiguration und der finale End-to-End-Test.</p><button className="mt-5 rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-semibold hover:bg-slate-50">Produktionsstatus</button></div>
+            <div className="rounded-2xl border border-slate-200 bg-white p-6"><div className="font-bold">Nächster Schritt</div><p className="mt-2 text-sm leading-6 text-slate-500">Medienbibliothek, Rollen, Eigener Markenauftritt, Connectoren und Abrechnung sind vorbereitet. Vor dem öffentlichen Verkauf fehlen nur externe Stripe-/Auth-Konfiguration und der finale abschließende Gesamttest.</p><button className="mt-5 rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-semibold hover:bg-slate-50">Produktionsstatus</button></div>
           </section>
             </>
           )}
