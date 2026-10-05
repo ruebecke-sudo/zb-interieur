@@ -54,12 +54,33 @@ export function BildverwaltungPage() {
   const [editing, setEditing] = useState<MediaImage | null>(null)
   const [replaceTargetId, setReplaceTargetId] = useState<string | null>(null)
   const [newCat, setNewCat] = useState({ slot: 'category1' as keyof MediaCategories, value: '' })
+  const [catalogSynced, setCatalogSynced] = useState(false)
+  const [editSaving, setEditSaving] = useState(false)
+
+  const syncCatalogOnce = useCallback(async () => {
+    if (catalogSynced || !getMediaApiKey()) return
+    const payload = markenProdukte.map((p) => ({
+      name: p.headline,
+      text: p.altText || p.headline,
+      category1: p.brandName,
+      url: p.image,
+      originalFilename: p.image.split('/').pop() || p.headline,
+    }))
+    try {
+      await importCatalogImages(payload)
+    } catch {
+      // Non-fatal: list may still load uploaded images
+    } finally {
+      setCatalogSynced(true)
+    }
+  }, [catalogSynced])
 
   const load = useCallback(async () => {
     if (!getMediaApiKey()) return
     setLoading(true)
     setError('')
     try {
+      await syncCatalogOnce()
       const [cats, list] = await Promise.all([
         fetchCategories(),
         listMedia({ q, category1: f1, category2: f2, category3: f3, category4: f4 }),
@@ -74,7 +95,7 @@ export function BildverwaltungPage() {
     } finally {
       setLoading(false)
     }
-  }, [q, f1, f2, f3, f4])
+  }, [q, f1, f2, f3, f4, syncCatalogOnce])
 
   useEffect(() => {
     if (authed) void load()
@@ -87,6 +108,7 @@ export function BildverwaltungPage() {
     setStatus('')
     try {
       await loginWithPassword(password)
+      setCatalogSynced(false)
       setAuthed(true)
       setPassword('')
     } catch (err) {
@@ -102,6 +124,7 @@ export function BildverwaltungPage() {
     setAuthed(false)
     setItems([])
     setPassword('')
+    setCatalogSynced(false)
   }
 
   function addFiles(list: FileList | File[]) {
@@ -164,6 +187,7 @@ export function BildverwaltungPage() {
 
   async function saveEdit() {
     if (!editing) return
+    setEditSaving(true)
     setError('')
     try {
       await updateMediaMeta(editing.id, {
@@ -175,10 +199,12 @@ export function BildverwaltungPage() {
         category4: editing.category4,
       })
       setEditing(null)
-      setStatus('Metadaten gespeichert.')
+      setStatus('Gespeichert. Die Änderung ist in der Marken-Produktauswahl sichtbar (Seite ggf. neu laden).')
       await load()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Speichern fehlgeschlagen.')
+    } finally {
+      setEditSaving(false)
     }
   }
 
@@ -197,38 +223,15 @@ export function BildverwaltungPage() {
   }
 
   async function handleDelete(id: string) {
-    if (!confirm('Bild wirklich löschen?')) return
+    if (!confirm('Diesen Eintrag aus der Bildverwaltung entfernen? (Die Originaldatei auf der Website bleibt erhalten.)')) return
     try {
       await deleteMedia(id)
       if (editing?.id === id) setEditing(null)
-      setStatus('Bild gelöscht.')
+      setStatus('Eintrag entfernt.')
+      setCatalogSynced(false)
       await load()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Löschen fehlgeschlagen.')
-    }
-  }
-
-  async function handleImportCatalog() {
-    setError('')
-    setStatus('Bestehende Markenbilder werden übernommen …')
-    try {
-      const payload = markenProdukte.map((p) => ({
-        name: p.headline,
-        text: p.altText || p.headline,
-        category1: p.brandName,
-        url: p.image,
-        originalFilename: p.image.split('/').pop() || p.headline,
-      }))
-      const result = await importCatalogImages(payload)
-      setStatus(
-        `${result.imported} bestehende Bild${result.imported === 1 ? '' : 'er'} übernommen` +
-          (result.skipped ? ` · ${result.skipped} bereits vorhanden` : '') +
-          '. Jetzt über „Bearbeiten“ änderbar.',
-      )
-      await load()
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Import fehlgeschlagen.')
-      setStatus('')
     }
   }
 
@@ -318,13 +321,13 @@ export function BildverwaltungPage() {
               Bildverwaltung
             </h1>
             <p className="mt-3 max-w-2xl text-sm text-muted md:text-base">
-              Bilder hochladen, Metadaten pflegen und nach Marke, Produktart, Bereich und Stil filtern.
-              Mit gesetzter <strong className="font-semibold text-ink">Kategorie 1 (Marke)</strong> erscheinen
-              die Bilder automatisch in der öffentlichen{' '}
+              Namen, Beschreibungen und Hersteller der bereits auf der Website sichtbaren Bilder
+              korrigieren – <span className="text-ink">ohne erneutes Hochladen</span>. Änderungen
+              erscheinen in der{' '}
               <Link to="/marken" className="text-brand underline">
                 Marken-Produktauswahl
               </Link>
-              . Bestehende Katalogprodukte bleiben unverändert.
+              .
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -365,18 +368,11 @@ export function BildverwaltungPage() {
             onClick={() => fileRef.current?.click()}
             className="inline-flex bg-brand px-6 py-3 text-sm font-bold tracking-[0.08em] text-white uppercase hover:brightness-95"
           >
-            Bilder auswählen
-          </button>
-          <button
-            type="button"
-            onClick={() => void handleImportCatalog()}
-            className="ml-3 inline-flex border border-brand px-6 py-3 text-sm font-semibold tracking-[0.08em] text-brand uppercase"
-          >
-            Bestehende Markenbilder übernehmen
+            Neue Bilder hochladen
           </button>
           <p className="mt-3 text-sm text-muted">
-            Neue Bilder hochladen oder vorhandene Produktbilder aus der Markenwelt in die Bibliothek
-            übernehmen – danach Name, Beschreibung, Hersteller und Datei bearbeiten.
+            Unten sehen Sie alle bestehenden Website-Bilder. Mit <strong className="font-semibold text-ink">Bearbeiten</strong> ändern
+            Sie Bildname, Beschreibung oder Hersteller. Ein Neu-Upload ist dafür nicht nötig.
           </p>
         </div>
 
@@ -493,11 +489,14 @@ export function BildverwaltungPage() {
         <div className="mt-10 mb-4 flex flex-wrap items-end justify-between gap-3">
           <div>
             <p className="text-[11px] font-semibold tracking-[0.16em] text-brand uppercase">
-              Bestehende Bilder
+              Website-Bilder
             </p>
             <h2 className="mt-1 font-sans text-xl font-extrabold tracking-tight">
-              {items.length} Bild{items.length === 1 ? '' : 'er'} bearbeiten
+              Namen &amp; Bezeichnungen korrigieren
             </h2>
+            <p className="mt-1 text-sm text-muted">
+              {items.length} Bild{items.length === 1 ? '' : 'er'} – tippen Sie auf Bearbeiten, ändern Sie den Text, speichern.
+            </p>
           </div>
         </div>
 
@@ -540,9 +539,9 @@ export function BildverwaltungPage() {
         {editing ? (
           <div className="fixed inset-0 z-50 flex items-end justify-center bg-ink/50 p-4 sm:items-center">
             <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto bg-white p-6 shadow-lg">
-              <h2 className="font-sans text-xl font-extrabold">Bild bearbeiten</h2>
-              <p className="mt-1 text-xs text-muted">
-                Name, Beschreibung und Hersteller ändern – optional die Bilddatei ersetzen.
+              <h2 className="font-sans text-xl font-extrabold">Bezeichnung ändern</h2>
+              <p className="mt-1 text-sm text-muted">
+                Korrigieren Sie Bildname, Beschreibung oder Hersteller. Das Bild selbst bleibt erhalten.
               </p>
               <div className="mt-4 grid gap-6 md:grid-cols-[10rem_1fr]">
                 <div className="bg-fog">
@@ -570,30 +569,39 @@ export function BildverwaltungPage() {
                     options={categories?.category1 || []}
                     onChange={(v) => setEditing({ ...editing, category1: v })}
                   />
-                  <SelectField label="Produktart" value={editing.category2} options={categories?.category2 || []} onChange={(v) => setEditing({ ...editing, category2: v })} />
-                  <SelectField label="Bereich" value={editing.category3} options={categories?.category3 || []} onChange={(v) => setEditing({ ...editing, category3: v })} />
-                  <SelectField label="Stil" value={editing.category4} options={categories?.category4 || []} onChange={(v) => setEditing({ ...editing, category4: v })} />
-                  <div>
-                    <p className="text-sm font-medium">Bilddatei ersetzen</p>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setReplaceTargetId(editing.id)
-                        replaceRef.current?.click()
-                      }}
-                      className="mt-2 border border-brand px-4 py-2 text-sm font-semibold text-brand uppercase"
-                    >
-                      Neue Datei wählen
-                    </button>
-                    <p className="mt-1 text-xs text-muted">
-                      Ersetzt nur die Datei; Name und Beschreibung bleiben erhalten, bis Sie speichern.
-                    </p>
-                  </div>
+                  <details className="text-sm">
+                    <summary className="cursor-pointer text-muted">Weitere Kategorien (optional)</summary>
+                    <div className="mt-3 grid gap-3">
+                      <SelectField label="Produktart" value={editing.category2} options={categories?.category2 || []} onChange={(v) => setEditing({ ...editing, category2: v })} />
+                      <SelectField label="Bereich" value={editing.category3} options={categories?.category3 || []} onChange={(v) => setEditing({ ...editing, category3: v })} />
+                      <SelectField label="Stil" value={editing.category4} options={categories?.category4 || []} onChange={(v) => setEditing({ ...editing, category4: v })} />
+                    </div>
+                  </details>
+                  <details className="text-sm">
+                    <summary className="cursor-pointer text-muted">Bilddatei ersetzen (nur wenn nötig)</summary>
+                    <div className="mt-3">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setReplaceTargetId(editing.id)
+                          replaceRef.current?.click()
+                        }}
+                        className="border border-brand px-4 py-2 text-sm font-semibold text-brand uppercase"
+                      >
+                        Neue Datei wählen
+                      </button>
+                    </div>
+                  </details>
                 </div>
               </div>
               <div className="mt-6 flex flex-wrap gap-3">
-                <button type="button" onClick={() => void saveEdit()} className="bg-accent px-5 py-2.5 text-sm font-bold text-white uppercase">
-                  Änderungen speichern
+                <button
+                  type="button"
+                  disabled={editSaving}
+                  onClick={() => void saveEdit()}
+                  className="bg-accent px-5 py-2.5 text-sm font-bold text-white uppercase disabled:opacity-50"
+                >
+                  {editSaving ? 'Speichern …' : 'Speichern'}
                 </button>
                 <button type="button" onClick={() => setEditing(null)} className="border border-line px-5 py-2.5 text-sm">
                   Abbrechen
