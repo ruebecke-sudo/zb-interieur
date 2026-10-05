@@ -54,9 +54,36 @@ export function ImageManagerWebsites() {
       const base = site.base_url.replace(/\/$/, '')
       const response = await fetch(`${base}/api/images`)
       if (!response.ok) throw new Error(`HTTP ${response.status}`)
-      const data = await response.json() as { items?: unknown[]; total?: number }
-      const count = Array.isArray(data.items) ? data.items.length : Number(data.total || 0)
-      setMessage(`${site.name}: ${count.toLocaleString('de-DE')} Bilder aus dem Connector geladen.`)
+      const data = await response.json() as { items?: Array<Record<string, unknown>>; total?: number }
+      const remoteItems = Array.isArray(data.items) ? data.items : []
+      const { data: userData } = await supabase!.auth.getUser()
+      if (!userData.user) throw new Error('Bitte zuerst anmelden.')
+      const { data: membership } = await supabase!.from('memberships').select('tenant_id').eq('user_id', userData.user.id).limit(1).maybeSingle()
+      if (!membership?.tenant_id) throw new Error('Kein Workspace gefunden.')
+      const rows = remoteItems.map((item) => ({
+        tenant_id: membership.tenant_id,
+        website_id: site.id,
+        external_id: String(item.id ?? item.externalId ?? item.external_id ?? item.url ?? ''),
+        filename: String(item.originalFilename ?? item.filename ?? ''),
+        name: String(item.name ?? ''),
+        text: String(item.text ?? ''),
+        category1: String(item.category1 ?? ''),
+        category2: String(item.category2 ?? ''),
+        category3: String(item.category3 ?? ''),
+        category4: String(item.category4 ?? ''),
+        width: Number(item.width ?? 0) || null,
+        height: Number(item.height ?? 0) || null,
+        color_space: String(item.colorSpace ?? item.color_space ?? ''),
+        format: String(item.format ?? ''),
+        file_size: Number(item.fileSize ?? item.file_size ?? 0) || null,
+        url: String(item.url ?? ''),
+        status: 'active',
+      })).filter((row) => row.external_id)
+      if (rows.length) {
+        const { error: upsertError } = await supabase!.from('images').upsert(rows, { onConflict: 'website_id,external_id' })
+        if (upsertError) throw new Error(upsertError.message)
+      }
+      setMessage(`${site.name}: ${rows.length.toLocaleString('de-DE')} Bilder synchronisiert und im Workspace gespeichert.`)
     } catch {
       setMessage(`${site.name}: Synchronisation fehlgeschlagen. Der Connector ist erreichbar, aber die Bild-API konnte nicht gelesen werden.`)
     } finally { setSyncing(null) }
