@@ -21,7 +21,7 @@ export default async (req: Request) => {
   const { data: membership } = await supabase.from('memberships').select('tenant_id,role').eq('user_id', userData.user.id).limit(1).maybeSingle()
   if (!membership || !['owner','admin'].includes(membership.role)) return new Response(JSON.stringify({ error: 'Nur Workspace-Inhaber oder Admins können den Tarif kaufen.' }), { status: 403, headers: { 'Content-Type': 'application/json' } })
 
-  const { data: tenant } = await supabase.from('tenants').select('id,name,plan').eq('id', membership.tenant_id).single()
+  const { data: tenant } = await supabase.from('tenants').select('id,name,plan,stripe_customer_id').eq('id', membership.tenant_id).single()
   if (!tenant) return new Response(JSON.stringify({ error: 'Workspace nicht gefunden.' }), { status: 404, headers: { 'Content-Type': 'application/json' } })
   if (tenant.plan === 'lifetime') return new Response(JSON.stringify({ error: 'Lifetime ist bereits aktiviert.' }), { status: 409, headers: { 'Content-Type': 'application/json' } })
 
@@ -30,7 +30,8 @@ export default async (req: Request) => {
   params.set('mode', 'payment')
   params.set('line_items[0][price]', priceId)
   params.set('line_items[0][quantity]', '1')
-  params.set('customer_email', userData.user.email || '')
+  if (tenant.stripe_customer_id) params.set('customer', tenant.stripe_customer_id)
+  else params.set('customer_email', userData.user.email || '')
   params.set('success_url', origin.replace(/\/$/, '') + '/image-manager/app?payment=success')
   params.set('cancel_url', origin.replace(/\/$/, '') + '/image-manager/app?payment=cancelled')
   params.set('metadata[tenant_id]', tenant.id)
