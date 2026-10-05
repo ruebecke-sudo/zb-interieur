@@ -32,3 +32,20 @@ Die Freischaltung erfolgt ausschließlich nach verifiziertem Webhook.
 
 ## Noch offen
 Die echten Stripe Price IDs und ein Stripe-Konto müssen hinterlegt werden. Erst danach kann der Checkout produktiv geschaltet werden.
+
+## Lifetime Checkout – technische Integration
+
+Der Lifetime-Kauf ist jetzt über Netlify Functions vorbereitet.
+
+Benötigte serverseitige Variablen:
+- STRIPE_SECRET_KEY
+- STRIPE_PRICE_LIFETIME
+- STRIPE_WEBHOOK_SECRET
+- SUPABASE_URL
+- SUPABASE_PUBLISHABLE_KEY
+- SUPABASE_SECRET_KEY
+
+Checkout-Endpunkt: /.netlify/functions/create-lifetime-checkout
+Webhook-Endpunkt: /.netlify/functions/stripe-webhook
+
+Der Checkout verwendet Stripe Checkout im Einmalzahlungsmodus. Nach bestätigter Zahlung setzt der Webhook den Workspace-Tarif auf lifetime und speichert Kaufzeitpunkt sowie Stripe-Checkout-ID.
