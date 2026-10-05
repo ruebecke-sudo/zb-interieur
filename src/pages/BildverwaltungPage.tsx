@@ -35,6 +35,7 @@ export function BildverwaltungPage() {
   const fileRef = useRef<HTMLInputElement>(null)
   const replaceRef = useRef<HTMLInputElement>(null)
   const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(true)
   const [loginPending, setLoginPending] = useState(false)
   const [authed, setAuthed] = useState(Boolean(getMediaApiKey()))
   const [categories, setCategories] = useState<MediaCategories | null>(null)
@@ -245,13 +246,21 @@ export function BildverwaltungPage() {
             <label className="block text-sm font-medium">
               Passwort
               <input
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="mt-2 w-full border border-line px-3 py-2"
+                className="mt-2 w-full border border-line px-3 py-2 font-mono tracking-wide"
                 autoComplete="current-password"
                 required
               />
+            </label>
+            <label className="flex items-center gap-2 text-sm font-normal text-muted">
+              <input
+                type="checkbox"
+                checked={showPassword}
+                onChange={(e) => setShowPassword(e.target.checked)}
+              />
+              Passwort anzeigen
             </label>
             {error ? <p className="text-sm text-red-700">{error}</p> : null}
             <button
