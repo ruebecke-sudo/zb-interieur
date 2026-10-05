@@ -15,8 +15,9 @@ export function ImageManagerWebsites() {
   const [pushing, setPushing] = useState<string | null>(null)
 
   const load = async () => {
-    if (!supabase) return
-    const { data, error } = await supabase.from('websites').select('id,name,base_url,connector_type,status').order('created_at', { ascending: false })
+    const db = supabase
+    if (!db) return
+    const { data, error } = await db.from('websites').select('id,name,base_url,connector_type,status').order('created_at', { ascending: false })
     if (error) setMessage(error.message)
     else setItems(data || [])
   }
