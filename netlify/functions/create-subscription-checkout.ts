@@ -33,7 +33,7 @@ export default async (req: Request) => {
   const { data: membership } = await userClient.from('memberships').select('tenant_id,role').eq('user_id', userData.user.id).limit(1).maybeSingle()
   if (!membership || !['owner', 'admin'].includes(membership.role)) return json({ error: 'Nur Owner oder Admin können den Tarif ändern.' }, 403)
 
-  const { data: tenant } = await userClient.from('tenants').select('id,plan').eq('id', membership.tenant_id).single()
+  const { data: tenant } = await userClient.from('tenants').select('id,plan,stripe_customer_id').eq('id', membership.tenant_id).single()
   if (!tenant) return json({ error: 'Workspace nicht gefunden.' }, 404)
   if (tenant.plan === 'lifetime') return json({ error: 'Lifetime ist bereits aktiviert.' }, 409)
 
@@ -42,7 +42,8 @@ export default async (req: Request) => {
   params.set('mode', 'subscription')
   params.set('line_items[0][price]', priceId)
   params.set('line_items[0][quantity]', '1')
-  params.set('customer_email', userData.user.email || '')
+  if (tenant.stripe_customer_id) params.set('customer', tenant.stripe_customer_id)
+  else params.set('customer_email', userData.user.email || '')
   params.set('success_url', origin.replace(/\/$/, '') + '/image-manager/app?payment=success')
   params.set('cancel_url', origin.replace(/\/$/, '') + '/image-manager/app?payment=cancelled')
   params.set('metadata[tenant_id]', tenant.id)
