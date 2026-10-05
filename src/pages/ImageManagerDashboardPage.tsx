@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
+import { ImageManagerActions } from '../components/ImageManagerActions'
 
 type ImageItem = {
   id: string
@@ -40,25 +41,31 @@ export function ImageManagerDashboardPage() {
   const [images, setImages] = useState<ImageItem[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [categories, setCategories] = useState({ category1: [] as string[], category2: [] as string[], category3: [] as string[], category4: [] as string[] })
 
-  useEffect(() => {
-    let cancelled = false
-    fetch('/api/images')
-      .then(async (response) => {
-        if (!response.ok) throw new Error('Bilddaten konnten nicht geladen werden.')
-        return response.json() as Promise<{ items?: ImageItem[] }>
+  const loadData = async () => {
+    setLoading(true)
+    setError('')
+    try {
+      const [imageResponse, categoryResponse] = await Promise.all([fetch('/api/images'), fetch('/api/images/categories')])
+      if (!imageResponse.ok) throw new Error('Bilddaten konnten nicht geladen werden.')
+      const imageData = await imageResponse.json() as { items?: ImageItem[] }
+      const categoryData = categoryResponse.ok ? await categoryResponse.json() : categories
+      setImages(Array.isArray(imageData.items) ? imageData.items : [])
+      setCategories({
+        category1: Array.isArray(categoryData.category1) ? categoryData.category1 : [],
+        category2: Array.isArray(categoryData.category2) ? categoryData.category2 : [],
+        category3: Array.isArray(categoryData.category3) ? categoryData.category3 : [],
+        category4: Array.isArray(categoryData.category4) ? categoryData.category4 : [],
       })
-      .then((data) => {
-        if (!cancelled) setImages(Array.isArray(data.items) ? data.items : [])
-      })
-      .catch((err) => {
-        if (!cancelled) setError(err instanceof Error ? err.message : 'Fehler beim Laden.')
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false)
-      })
-    return () => { cancelled = true }
-  }, [])
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Fehler beim Laden.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => { void loadData() }, [])
   const [active, setActive] = useState('Übersicht')
   const filtered = useMemo(() => images.filter((item) => {
     const haystack = [item.name, item.text, item.category1, item.category2, item.category3, item.category4].join(' ').toLowerCase()
@@ -99,7 +106,7 @@ export function ImageManagerDashboardPage() {
         <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/90 px-5 py-4 backdrop-blur md:px-8">
           <div className="flex items-center justify-between gap-4">
             <div><div className="text-sm text-slate-500">ZB Interieur / Image Manager</div><h1 className="mt-1 text-2xl font-bold tracking-tight">{active}</h1></div>
-            <button className="rounded-xl bg-[#0E675A] px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-[#09564b]">+ Bild hochladen</button>
+            <ImageManagerActions primary categories={categories} onChanged={loadData} />
           </div>
         </header>
 
