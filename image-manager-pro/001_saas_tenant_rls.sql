@@ -209,3 +209,39 @@ using (is_tenant_member(id) and exists (
 with check (is_tenant_member(id) and exists (
   select 1 from public.memberships m where m.tenant_id = tenants.id and m.user_id = auth.uid() and m.role in ('owner','admin')
 ));
+
+create table if not exists public.plan_limits (
+  plan text primary key check (plan in ('starter','professional','business','agency')),
+  max_images integer not null,
+  max_members integer not null,
+  max_websites integer not null
+);
+
+insert into public.plan_limits(plan,max_images,max_members,max_websites) values
+('starter',500,2,1),
+('professional',5000,10,5),
+('business',25000,50,20),
+('agency',100000,200,100)
+on conflict (plan) do update set max_images=excluded.max_images,max_members=excluded.max_members,max_websites=excluded.max_websites;
+
+alter table public.plan_limits enable row level security;
+
+create policy "authenticated users can read plan limits"
+on public.plan_limits for select
+to authenticated
+using (true);
+
+create or replace function public.get_tenant_usage(target_tenant uuid)
+returns table(plan text, image_count bigint, member_count bigint, website_count bigint, max_images integer, max_members integer, max_websites integer)
+language sql
+security definer
+set search_path = public
+as $$
+  select t.plan,
+    (select count(*) from public.images i where i.tenant_id = t.id),
+    (select count(*) from public.memberships m where m.tenant_id = t.id),
+    (select count(*) from public.websites w where w.tenant_id = t.id),
+    p.max_images, p.max_members, p.max_websites
+  from public.tenants t join public.plan_limits p on p.plan=t.plan
+  where t.id=target_tenant and public.is_tenant_member(t.id);
+$$;
