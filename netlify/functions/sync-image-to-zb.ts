@@ -7,15 +7,24 @@ export default async (req: Request) => {
   if (req.method !== 'POST') return new Response(JSON.stringify({ error: 'Method not allowed' }), { status: 405, headers })
 
   const supabaseUrl = process.env.SUPABASE_URL
-  const publishable = process.env.SUPABASE_PUBLISHABLE_KEY
   const secret = process.env.SUPABASE_SECRET_KEY
   const zbKey = process.env.ZB_IMAGE_MANAGER_API_KEY
-  if (!supabaseUrl || !publishable || !secret || !zbKey) return new Response(JSON.stringify({ error: 'Connector server configuration missing.' }), { status: 500, headers })
+  const missing = [
+    !supabaseUrl ? 'SUPABASE_URL' : '',
+    !secret ? 'SUPABASE_SECRET_KEY' : '',
+    !zbKey ? 'ZB_IMAGE_MANAGER_API_KEY' : '',
+  ].filter(Boolean)
+  if (missing.length) {
+    return new Response(JSON.stringify({
+      error: 'Connector server configuration missing.',
+      missing,
+    }), { status: 500, headers })
+  }
 
   const auth = req.headers.get('authorization') || ''
   if (!auth.startsWith('Bearer ')) return new Response(JSON.stringify({ error: 'Authentication required.' }), { status: 401, headers })
   const token = auth.slice(7)
-  const client = createClient(supabaseUrl, publishable, { global: { headers: { Authorization: `Bearer ${token}` } }, auth: { persistSession: false, autoRefreshToken: false } })
+  const client = createClient(supabaseUrl, secret, { global: { headers: { Authorization: `Bearer ${token}` } }, auth: { persistSession: false, autoRefreshToken: false } })
   const { data: userData } = await client.auth.getUser()
   if (!userData.user) return new Response(JSON.stringify({ error: 'Invalid session.' }), { status: 401, headers })
 
