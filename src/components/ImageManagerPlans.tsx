@@ -8,7 +8,7 @@ export function ImageManagerPlans() {
   const [message,setMessage]=useState('')
   const checkout = async (plan:string) => {
     setMessage('')
-    if (plan !== 'lifetime' || !supabase) return
+    if (!supabase) return
     try {
       const { data: sessionData } = await supabase.auth.getSession()
       const token = sessionData.session?.access_token
@@ -45,6 +45,6 @@ export function ImageManagerPlans() {
       </div>
       <div className="mt-5 rounded-xl border border-slate-200 p-4"><div className="text-xs uppercase tracking-wider text-slate-400">Aktueller Tarif</div><div className="mt-1 text-lg font-bold capitalize">{usage.plan}</div>{usage.plan!=='lifetime' && <button onClick={()=>checkout('lifetime')} className="mt-4 rounded-xl bg-[#0E675A] px-4 py-2.5 text-sm font-semibold text-white">Lifetime-Lizenz kaufen</button>}</div>
     </div>
-    <div className="grid gap-4 md:grid-cols-4">{plans.map(([id,name,price])=><div key={id} className={`rounded-2xl border p-5 ${usage.plan===id?'border-[#0E675A] ring-2 ring-[#0E675A]/10':'border-slate-200'} bg-white`}><div className="font-bold">{name}</div><div className="mt-1 text-sm text-slate-500">{price}</div><div className="mt-5 text-xs text-slate-500">Bilder, Benutzer und Websites gemäß Tariflimit.</div>{id==='lifetime' && <div className="mt-4 rounded-xl bg-emerald-50 p-3 text-xs font-semibold text-emerald-800">Einmal zahlen · dauerhaft nutzen · keine monatliche Grundgebühr</div>}</div>)}</div>
+    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">{plans.map(([id,name,price])=><div key={id} className={`rounded-2xl border p-5 ${usage.plan===id?'border-[#0E675A] ring-2 ring-[#0E675A]/10':'border-slate-200'} bg-white`}><div className="font-bold">{name}</div><div className="mt-1 text-sm text-slate-500">{price}</div><div className="mt-5 text-xs text-slate-500">Bilder, Benutzer und Websites gemäß Tariflimit.</div>{id==='lifetime' ? <div className="mt-4 rounded-xl bg-emerald-50 p-3 text-xs font-semibold text-emerald-800">Einmal zahlen · dauerhaft nutzen · keine monatliche Grundgebühr</div> : <button onClick={()=>void checkout(id)} disabled={usage.plan===id} className="mt-4 w-full rounded-xl bg-[#0E675A] px-3 py-2.5 text-xs font-semibold text-white disabled:opacity-50">{usage.plan===id ? 'Aktueller Tarif' : 'Tarif wählen'}</button>}</div>)}</div>
   </section>
 }
