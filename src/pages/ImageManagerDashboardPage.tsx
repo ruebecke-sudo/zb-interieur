@@ -51,22 +51,42 @@ export function ImageManagerDashboardPage() {
     setLoading(true)
     setError('')
     try {
+      if (supabase) {
+        const { data: userData } = await supabase.auth.getUser()
+        if (!userData.user) throw new Error('Bitte zuerst anmelden.')
+        const { data: membership, error: membershipError } = await supabase.from('memberships').select('tenant_id').eq('user_id', userData.user.id).limit(1).maybeSingle()
+        if (membershipError) throw new Error(membershipError.message)
+        if (!membership?.tenant_id) throw new Error('Kein Workspace gefunden.')
+        const [{ data: imageRows, error: imageError }, { data: categoryRows, error: categoryError }] = await Promise.all([
+          supabase.from('images').select('*').eq('tenant_id', membership.tenant_id).order('updated_at', { ascending: false }),
+          supabase.from('categories').select('slot,name').eq('tenant_id', membership.tenant_id).eq('active', true).order('sort_order'),
+        ])
+        if (imageError) throw new Error(imageError.message)
+        if (categoryError) throw new Error(categoryError.message)
+        const mapped: ImageItem[] = (imageRows || []).map((row) => ({
+          id: row.id, name: row.name || row.filename || 'Ohne Namen', text: row.text || '',
+          category1: row.category1 || '', category2: row.category2 || '', category3: row.category3 || '', category4: row.category4 || '',
+          format: row.format || '–', fileSize: Number(row.file_size || 0), url: row.url || '', updatedAt: row.updated_at,
+          width: Number(row.width || 0), height: Number(row.height || 0), status: row.status === 'active' ? 'Aktiv' : 'Entwurf',
+        }))
+        setImages(mapped)
+        setCategories({
+          category1: (categoryRows || []).filter((r) => r.slot === 1).map((r) => r.name),
+          category2: (categoryRows || []).filter((r) => r.slot === 2).map((r) => r.name),
+          category3: (categoryRows || []).filter((r) => r.slot === 3).map((r) => r.name),
+          category4: (categoryRows || []).filter((r) => r.slot === 4).map((r) => r.name),
+        })
+        return
+      }
       const [imageResponse, categoryResponse] = await Promise.all([fetch('/api/images'), fetch('/api/images/categories')])
       if (!imageResponse.ok) throw new Error('Bilddaten konnten nicht geladen werden.')
       const imageData = await imageResponse.json() as { items?: ImageItem[] }
       const categoryData = categoryResponse.ok ? await categoryResponse.json() : categories
       setImages(Array.isArray(imageData.items) ? imageData.items : [])
-      setCategories({
-        category1: Array.isArray(categoryData.category1) ? categoryData.category1 : [],
-        category2: Array.isArray(categoryData.category2) ? categoryData.category2 : [],
-        category3: Array.isArray(categoryData.category3) ? categoryData.category3 : [],
-        category4: Array.isArray(categoryData.category4) ? categoryData.category4 : [],
-      })
+      setCategories({ category1: categoryData.category1 || [], category2: categoryData.category2 || [], category3: categoryData.category3 || [], category4: categoryData.category4 || [] })
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Fehler beim Laden.')
-    } finally {
-      setLoading(false)
-    }
+    } finally { setLoading(false) }
   }
 
   useEffect(() => {
