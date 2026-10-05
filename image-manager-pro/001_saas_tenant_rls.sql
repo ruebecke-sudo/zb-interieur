@@ -9,7 +9,9 @@ create table if not exists public.tenants (
   slug text not null unique,
   logo_url text,
   primary_color text,
-  plan text not null default 'starter' check (plan in ('starter','professional','business','agency')),
+  plan text not null default 'starter' check (plan in ('starter','professional','business','agency','lifetime')),
+  lifetime_purchased_at timestamptz,
+  lifetime_order_id text,
   status text not null default 'active' check (status in ('active','suspended','trial')),
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
@@ -221,7 +223,8 @@ insert into public.plan_limits(plan,max_images,max_members,max_websites) values
 ('starter',500,2,1),
 ('professional',5000,10,5),
 ('business',25000,50,20),
-('agency',100000,200,100)
+('agency',100000,200,100),
+('lifetime',100000,200,100)
 on conflict (plan) do update set max_images=excluded.max_images,max_members=excluded.max_members,max_websites=excluded.max_websites;
 
 alter table public.plan_limits enable row level security;
