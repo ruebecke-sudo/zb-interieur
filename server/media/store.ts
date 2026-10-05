@@ -100,20 +100,36 @@ async function writeIndex(items: MediaImage[]): Promise<void> {
 export async function getCategories(): Promise<MediaCategories> {
   const blobs = await getBlobs()
   if (blobs) {
-    const data = (await blobs.get('categories', { type: 'json' })) as MediaCategories | null
-    const cleaned = sanitizeCategories(data?.category1 ? data : DEFAULT_CATEGORIES)
-    await blobs.setJSON('categories', cleaned)
-    return cleaned
+    try {
+      const data = (await blobs.get('categories', { type: 'json' })) as MediaCategories | null
+      const cleaned = sanitizeCategories(data?.category1?.length ? data : DEFAULT_CATEGORIES)
+      try {
+        await blobs.setJSON('categories', cleaned)
+      } catch {
+        // Read-only or Blobs write unavailable — still serve cleaned defaults
+      }
+      return cleaned
+    } catch {
+      return structuredClone(DEFAULT_CATEGORIES)
+    }
   }
   await ensureDirs()
   try {
     const raw = await fs.readFile(CATEGORIES_PATH, 'utf8')
     const parsed = JSON.parse(raw) as MediaCategories
     const cleaned = sanitizeCategories(parsed)
-    await fs.writeFile(CATEGORIES_PATH, JSON.stringify(cleaned, null, 2), 'utf8')
+    try {
+      await fs.writeFile(CATEGORIES_PATH, JSON.stringify(cleaned, null, 2), 'utf8')
+    } catch {
+      // ignore write failures
+    }
     return cleaned
   } catch {
-    await fs.writeFile(CATEGORIES_PATH, JSON.stringify(DEFAULT_CATEGORIES, null, 2), 'utf8')
+    try {
+      await fs.writeFile(CATEGORIES_PATH, JSON.stringify(DEFAULT_CATEGORIES, null, 2), 'utf8')
+    } catch {
+      // ignore
+    }
     return structuredClone(DEFAULT_CATEGORIES)
   }
 }

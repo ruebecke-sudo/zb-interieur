@@ -14,6 +14,7 @@ import {
   saveCategories,
   updateImageMeta,
 } from './store.js'
+import { DEFAULT_CATEGORIES } from './categories.js'
 import type { MediaCategories, MediaImageInput } from './types.js'
 
 type Env = {
@@ -109,7 +110,12 @@ export function createMediaApp() {
   )
 
   app.get('/api/images/categories', async (c) => {
-    return c.json(await getCategories())
+    try {
+      return c.json(await getCategories())
+    } catch (err) {
+      console.error('getCategories failed', err)
+      return c.json(structuredClone(DEFAULT_CATEGORIES))
+    }
   })
 
   app.put('/api/images/categories', async (c) => {
