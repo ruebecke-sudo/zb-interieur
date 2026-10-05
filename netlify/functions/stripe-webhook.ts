@@ -44,6 +44,30 @@ export default async (req: Request) => {
     if (error) return new Response('Database update failed.', { status: 500 })
   }
 
+  if (event.type === 'customer.subscription.updated') {
+    const subscription = event.data.object as {
+      id: string
+      status?: string
+      metadata?: { tenant_id?: string; plan?: string }
+      customer?: string
+    }
+    const tenantId = subscription.metadata?.tenant_id
+    const plan = subscription.metadata?.plan
+    if (tenantId && ['starter', 'professional', 'business'].includes(plan || '')) {
+      const activeStatuses = ['active', 'trialing']
+      const patch: Record<string, unknown> = {
+        subscription_id: subscription.id,
+        stripe_customer_id: subscription.customer || null,
+        status: activeStatuses.includes(subscription.status || '') ? 'active' : 'inactive',
+      }
+      if (!activeStatuses.includes(subscription.status || '')) patch.plan = 'starter'
+      else patch.plan = plan
+
+      const { error } = await supabase.from('tenants').update(patch).eq('id', tenantId).neq('plan', 'lifetime')
+      if (error) return new Response('Database update failed.', { status: 500 })
+    }
+  }
+
   if (event.type === 'customer.subscription.deleted') {
     const subscription = event.data.object as { id: string; metadata?: { tenant_id?: string }; customer?: string }
     const tenantId = subscription.metadata?.tenant_id
