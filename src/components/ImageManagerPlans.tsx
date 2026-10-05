@@ -13,7 +13,8 @@ export function ImageManagerPlans() {
       const { data: sessionData } = await supabase.auth.getSession()
       const token = sessionData.session?.access_token
       if (!token) throw new Error('Sitzung abgelaufen. Bitte neu anmelden.')
-      const response = await fetch('/.netlify/functions/create-lifetime-checkout', { method:'POST', headers:{'Content-Type':'application/json', Authorization:'Bearer '+token} })
+      const endpoint = plan === 'lifetime' ? '/.netlify/functions/create-lifetime-checkout' : '/.netlify/functions/create-subscription-checkout'
+      const response = await fetch(endpoint, { method:'POST', headers:{'Content-Type':'application/json', Authorization:'Bearer '+token}, body: JSON.stringify({ plan }) })
       const data = await response.json() as { url?: string; error?: string }
       if (!response.ok || !data.url) throw new Error(data.error || 'Checkout konnte nicht gestartet werden.')
       window.location.href = data.url
