@@ -64,7 +64,7 @@ export function ImageManagerMembers() {
     <div className="mt-5 divide-y divide-slate-100 rounded-2xl border border-slate-200">
       {members.map(member => <div key={member.id} className="flex flex-col gap-3 p-4 md:flex-row md:items-center md:justify-between">
         <div><div className="font-semibold">{member.user_id}</div><div className="mt-1 text-xs text-slate-500">Mitglied seit {new Date(member.created_at).toLocaleDateString('de-DE')}</div></div>
-        <select value={member.role} onChange={e => void changeRole(member.id, e.target.value as Member['role'])} disabled={member.role === 'owner' || !['owner','admin'].includes(currentRole)} className="rounded-xl border border-slate-300 px-3 py-2 text-sm"><option value="owner">Owner</option><option value="admin">Admin</option><option value="member">Mitarbeiter</option><option value="viewer">Nur Lesen</option></select>
+        <select value={member.role} onChange={e => void changeRole(member.id, e.target.value as Member['role'])} disabled={member.role === 'owner' || !['owner','admin'].includes(currentRole)} className="rounded-xl border border-slate-300 px-3 py-2 text-sm"><option value="owner">Inhaber</option><option value="admin">Admin</option><option value="member">Mitarbeiter</option><option value="viewer">Nur Lesen</option></select>
       </div>)}
       {!members.length && <div className="p-6 text-center text-sm text-slate-500">Noch keine Mitglieder vorhanden.</div>}
     </div>
