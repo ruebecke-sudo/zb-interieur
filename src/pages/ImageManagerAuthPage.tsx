@@ -4,6 +4,7 @@ import { supabase, supabaseConfigured } from '../lib/supabase'
 export function ImageManagerAuthPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [companyName, setCompanyName] = useState('')
   const [mode, setMode] = useState<'login' | 'signup'>('login')
   const [message, setMessage] = useState('')
   const [busy, setBusy] = useState(false)
@@ -25,7 +26,7 @@ export function ImageManagerAuthPage() {
     setMessage('')
     const result = mode === 'login'
       ? await supabase.auth.signInWithPassword({ email, password })
-      : await supabase.auth.signUp({ email, password })
+      : await supabase.auth.signUp({ email, password, options: { data: { company_name: companyName } } })
     if (result.error) setMessage(result.error.message)
     else if (mode === 'signup') setMessage('Konto erstellt. Bitte bestätige ggf. deine E-Mail-Adresse.')
     else window.location.href = '/image-manager'
@@ -39,7 +40,7 @@ export function ImageManagerAuthPage() {
         <h1 className="text-xl font-bold">{mode === 'login' ? 'Anmelden' : 'Konto erstellen'}</h1>
         <div className="mt-5 space-y-4">
           <label className="block"><span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">E-Mail</span><input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className="w-full rounded-xl border border-slate-300 px-3 py-2.5 outline-none focus:border-[#0E675A]" /></label>
-          <label className="block"><span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">Passwort</span><input type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} className="w-full rounded-xl border border-slate-300 px-3 py-2.5 outline-none focus:border-[#0E675A]" /></label>
+          {mode === 'signup' && <label className="block"><span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">Unternehmen</span><input required value={companyName} onChange={(e) => setCompanyName(e.target.value)} placeholder="z. B. ZB Interieur" className="w-full rounded-xl border border-slate-300 px-3 py-2.5 outline-none focus:border-[#0E675A]" /></label>}<label className="block"><span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">Passwort</span><input type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} className="w-full rounded-xl border border-slate-300 px-3 py-2.5 outline-none focus:border-[#0E675A]" /></label>
         </div>
         {!supabaseConfigured && <div className="mt-4 rounded-xl bg-amber-50 p-3 text-xs text-amber-800">SaaS-Auth noch nicht konfiguriert.</div>}
         {message && <div className="mt-4 rounded-xl bg-slate-100 p-3 text-sm">{message}</div>}
