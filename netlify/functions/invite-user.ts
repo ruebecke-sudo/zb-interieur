@@ -79,6 +79,42 @@ export default async (req: Request) => {
     return json({ error: 'Keine Berechtigung.' }, 403)
   }
 
+  const { data: existingUser } = await admin
+    .from('users')
+    .select('id')
+    .eq('email', email)
+    .maybeSingle()
+
+  if (existingUser?.id) {
+    const { data: existingMembership, error: existingMembershipError } = await admin
+      .from('memberships')
+      .select('tenant_id,role')
+      .eq('user_id', existingUser.id)
+      .eq('tenant_id', membership.tenant_id)
+      .maybeSingle()
+
+    if (existingMembershipError) {
+      return json({ error: 'Bestehende Mitgliedschaft konnte nicht geprüft werden: ' + existingMembershipError.message }, 500)
+    }
+
+    if (existingMembership) {
+      return json({ error: 'Dieser Benutzer ist bereits Mitglied dieses Arbeitsbereichs.' }, 409)
+    }
+  }
+
+  const { data: pendingInvitation } = await admin
+    .from('image_manager_invitations')
+    .select('id')
+    .eq('tenant_id', membership.tenant_id)
+    .eq('email', email)
+    .is('accepted_at', null)
+    .limit(1)
+    .maybeSingle()
+
+  if (pendingInvitation) {
+    return json({ error: 'Für diese E-Mail-Adresse besteht bereits eine offene Einladung.' }, 409)
+  }
+
   const { error: pendingError } = await admin
     .from('image_manager_invitations')
     .insert({ tenant_id: membership.tenant_id, email, role })
