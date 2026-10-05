@@ -31,6 +31,9 @@ create table if not exists public.websites (
   base_url text not null,
   connector_type text not null default 'rest',
   status text not null default 'active',
+  sync_status text not null default 'synced' check (sync_status in ('synced','pending','error')),
+  sync_error text,
+  last_synced_at timestamptz,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
