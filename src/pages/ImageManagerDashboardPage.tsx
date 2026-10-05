@@ -167,6 +167,14 @@ export function ImageManagerDashboardPage() {
   const isSettings = active === 'Einstellungen'
   const isPlans = active === 'Tarif'
 
+  const roleLabel = userRole === 'owner' ? 'Inhaber' : userRole === 'admin' ? 'Administrator' : userRole === 'member' ? 'Mitarbeiter' : 'Nur Lesen'
+
+  const signOut = async () => {
+    if (!supabase) return
+    await supabase.auth.signOut()
+    window.location.href = '/image-manager/login'
+  }
+
   const nav = [
     ['Übersicht', '▦'],
     ['Bildverwaltung', '▣'],
@@ -196,10 +204,23 @@ export function ImageManagerDashboardPage() {
       </aside>
 
       <main className="lg:ml-64">
-        <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/90 px-5 py-4 backdrop-blur md:px-8">
-          <div className="flex items-center justify-between gap-4">
-            <div><div className="text-sm text-slate-500">{ArbeitsbereichName} / Image Manager</div><h1 className="mt-1 text-2xl font-bold tracking-tight">{active}</h1></div>
-            {userRole !== 'viewer' && <ImageManagerActions primary categories={categories} onChanged={loadData} />}
+        <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/95 px-5 py-4 backdrop-blur md:px-8">
+          <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
+            <div>
+              <div className="text-sm text-slate-500">{ArbeitsbereichName} / Image Manager</div>
+              <h1 className="mt-1 text-2xl font-bold tracking-tight">{active}</h1>
+            </div>
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="flex items-center gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2">
+                <span className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
+                <div className="leading-tight">
+                  <div className="text-xs font-bold text-emerald-800">Angemeldet</div>
+                  <div className="text-xs text-emerald-700">{userEmail || 'Sitzung aktiv'} · {roleLabel}</div>
+                </div>
+              </div>
+              <button type="button" onClick={() => void signOut()} className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50">Abmelden</button>
+              {userRole !== 'viewer' && <ImageManagerActions primary categories={categories} onChanged={loadData} />}
+            </div>
           </div>
         </header>
 
