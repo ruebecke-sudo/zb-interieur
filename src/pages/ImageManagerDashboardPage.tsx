@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
 import { ImageManagerActions } from '../components/ImageManagerActions'
+import { supabase } from '../lib/supabase'
 
 type ImageItem = {
   id: string
@@ -42,6 +43,8 @@ export function ImageManagerDashboardPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [categories, setCategories] = useState({ category1: [] as string[], category2: [] as string[], category3: [] as string[], category4: [] as string[] })
+  const [workspaceName, setWorkspaceName] = useState('ZB Interieur')
+  const [userEmail, setUserEmail] = useState('')
 
   const loadData = async () => {
     setLoading(true)
@@ -65,7 +68,20 @@ export function ImageManagerDashboardPage() {
     }
   }
 
-  useEffect(() => { void loadData() }, [])
+  useEffect(() => {
+    void loadData()
+    if (supabase) {
+      void supabase.auth.getUser().then(async ({ data }) => {
+        if (!data.user) return
+        setUserEmail(data.user.email || '')
+        const { data: membership } = await supabase.from('memberships').select('tenant_id').eq('user_id', data.user.id).limit(1).maybeSingle()
+        if (membership?.tenant_id) {
+          const { data: tenant } = await supabase.from('tenants').select('name').eq('id', membership.tenant_id).single()
+          if (tenant?.name) setWorkspaceName(tenant.name)
+        }
+      })
+    }
+  }, [])
   const [active, setActive] = useState('Übersicht')
   const filtered = useMemo(() => images.filter((item) => {
     const haystack = [item.name, item.text, item.category1, item.category2, item.category3, item.category4].join(' ').toLowerCase()
@@ -92,8 +108,8 @@ export function ImageManagerDashboardPage() {
         <div className="px-4 py-5">
           <div className="mb-3 px-3 text-xs font-semibold uppercase tracking-wider text-slate-500">Workspace</div>
           <div className="mb-5 flex items-center gap-3 rounded-2xl bg-white/10 p-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#0E675A] font-bold">ZB</div>
-            <div><div className="text-sm font-semibold">ZB Interieur</div><div className="text-xs text-slate-400">Pilot Workspace</div></div>
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#0E675A] font-bold">{workspaceName.slice(0, 2).toUpperCase()}</div>
+            <div><div className="text-sm font-semibold">{workspaceName}</div><div className="text-xs text-slate-400">{userEmail || "Pilot Workspace"}</div></div>
           </div>
           <nav className="space-y-1">
             {nav.map(([label, icon]) => <button key={label} onClick={() => setActive(label)} className={`flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm transition ${active === label ? 'bg-white text-slate-900 font-semibold' : 'text-slate-300 hover:bg-white/10'}`}><span className="w-6 text-center">{icon}</span>{label}</button>)}
