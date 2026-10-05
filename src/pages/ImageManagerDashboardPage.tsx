@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import type { ReactNode } from 'react'
 
 type ImageItem = {
   name: string
@@ -9,21 +10,70 @@ type ImageItem = {
   status: 'Aktiv' | 'Entwurf'
 }
 
-const demoImages: ImageItem[] = [
-  { name: 'FINE Aria Sofa 3-Sitzer', category: 'Fine · Sofa · Wohnen · Modern', format: 'JPG', size: '2,4 MB', updated: 'Heute', status: 'Aktiv' },
-  { name: 'AL2 Catifa Lounge', category: 'AL2 · Sessel · Wohnen · Design', format: 'WEBP', size: '1,8 MB', updated: 'Heute', status: 'Aktiv' },
-  { name: 'Gyform Designer Sofa', category: 'Gyform · Sofa · Wohnen · Klassisch', format: 'JPG', size: '3,1 MB', updated: 'Gestern', status: 'Aktiv' },
-  { name: 'Outdoor Lounge Collection', category: 'Marke · Outdoor · Terrasse · Modern', format: 'AVIF', size: '980 KB', updated: 'Gestern', status: 'Aktiv' },
-]
+type ImageItem = {
+  id: string
+  name: string
+  text: string
+  category1: string
+  category2: string
+  category3: string
+  category4: string
+  format: string
+  fileSize: number
+  url: string
+  updatedAt: string
+  width: number
+  height: number
+}
 
-function Icon({ children }: { children: React.ReactNode }) {
+function formatBytes(bytes: number) {
+  if (!bytes) return '–'
+  if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`
+  return `${(bytes / 1024 / 1024).toFixed(1)} MB`
+}
+
+function formatDate(value: string) {
+  if (!value) return '–'
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return '–'
+  return new Intl.DateTimeFormat('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(date)
+}
+
+function Icon({ children }: { children: ReactNode }) {
   return <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/10 text-white">{children}</span>
 }
 
 export function ImageManagerDashboardPage() {
   const [query, setQuery] = useState('')
+  const [images, setImages] = useState<ImageItem[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    let cancelled = false
+    fetch('/api/images')
+      .then(async (response) => {
+        if (!response.ok) throw new Error('Bilddaten konnten nicht geladen werden.')
+        return response.json() as Promise<{ items?: ImageItem[] }>
+      })
+      .then((data) => {
+        if (!cancelled) setImages(Array.isArray(data.items) ? data.items : [])
+      })
+      .catch((err) => {
+        if (!cancelled) setError(err instanceof Error ? err.message : 'Fehler beim Laden.')
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false)
+      })
+    return () => { cancelled = true }
+  }, [])
   const [active, setActive] = useState('Übersicht')
-  const filtered = useMemo(() => demoImages.filter((item) => item.name.toLowerCase().includes(query.toLowerCase()) || item.category.toLowerCase().includes(query.toLowerCase())), [query])
+  const filtered = useMemo(() => images.filter((item) => {
+    const haystack = [item.name, item.text, item.category1, item.category2, item.category3, item.category4].join(' ').toLowerCase()
+    return haystack.includes(query.toLowerCase())
+  }), [images, query])
+  const categoryCount = new Set(images.flatMap((item) => [item.category1, item.category2, item.category3, item.category4].filter(Boolean))).size
+  const activeCount = images.length
 
   const nav = [
     ['Übersicht', '▦'],
@@ -64,9 +114,9 @@ export function ImageManagerDashboardPage() {
         <div className="mx-auto max-w-7xl space-y-7 p-5 md:p-8">
           <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             {[
-              ['1.248', 'Bilder', 'Gesamtbestand', '▧'],
-              ['1.183', 'Aktive Bilder', 'Auf Websites verfügbar', '✓'],
-              ['4', 'Kategorien', 'Konfigurierbare Felder', '≡'],
+              [`${images.length.toLocaleString('de-DE')}`, 'Bilder', loading ? 'Lade Bestand …' : 'Live aus ZB-Media-API', '▧'],
+              [`${activeCount.toLocaleString('de-DE')}`, 'Aktive Bilder', 'Auf Websites verfügbar', '✓'],
+              [`${categoryCount}`, 'Kategorien', 'Aktuell belegte Werte', '≡'],
               ['1', 'Website', 'Verbunden', '⌘'],
             ].map(([value,label,sub,icon]) => <div key={label} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"><div className="flex items-start justify-between"><div><div className="text-3xl font-bold">{value}</div><div className="mt-1 font-semibold">{label}</div><div className="mt-1 text-xs text-slate-500">{sub}</div></div><div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-600">{icon}</div></div></div>)}
           </section>
@@ -77,10 +127,13 @@ export function ImageManagerDashboardPage() {
               <div className="relative"><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Bilder suchen …" className="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-2.5 text-sm outline-none md:w-72" /></div>
             </div>
             <div className="divide-y divide-slate-100">
-              {filtered.map((item) => <div key={item.name} className="flex flex-col gap-4 p-5 md:flex-row md:items-center">
-                <div className="h-16 w-16 shrink-0 rounded-xl bg-gradient-to-br from-slate-200 via-slate-100 to-slate-300" />
-                <div className="min-w-0 flex-1"><div className="font-semibold">{item.name}</div><div className="mt-1 text-sm text-slate-500">{item.category}</div></div>
-                <div className="grid grid-cols-3 gap-5 text-xs text-slate-500 md:text-right"><div><div className="font-semibold text-slate-700">{item.format}</div><div>Format</div></div><div><div className="font-semibold text-slate-700">{item.size}</div><div>Größe</div></div><div><div className="font-semibold text-slate-700">{item.updated}</div><div>Aktualisiert</div></div></div>
+              {loading && <div className="p-8 text-center text-sm text-slate-500">Bildbibliothek wird geladen …</div>}
+              {!loading && error && <div className="p-8 text-center text-sm text-red-600">{error}</div>}
+              {!loading && !error && filtered.length === 0 && <div className="p-8 text-center text-sm text-slate-500">Keine Bilder gefunden.</div>}
+              {filtered.map((item) => <div key={item.id} className="flex flex-col gap-4 p-5 md:flex-row md:items-center">
+                <img src={item.url} alt={item.name} className="h-16 w-16 shrink-0 rounded-xl bg-slate-100 object-cover" />
+                <div className="min-w-0 flex-1"><div className="font-semibold">{item.name}</div><div className="mt-1 text-sm text-slate-500">{[item.category1, item.category2, item.category3, item.category4].filter(Boolean).join(" · ") || "Keine Kategorien"}</div></div>
+                <div className="grid grid-cols-3 gap-5 text-xs text-slate-500 md:text-right"><div><div className="font-semibold text-slate-700">{item.format}</div><div>{item.width && item.height ? `${item.width} × ${item.height}` : "Format"}</div></div><div><div className="font-semibold text-slate-700">{formatBytes(item.fileSize)}</div><div>Größe</div></div><div><div className="font-semibold text-slate-700">{formatDate(item.updatedAt)}</div><div>Aktualisiert</div></div></div>
                 <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">{item.status}</span>
               </div>)}
             </div>
