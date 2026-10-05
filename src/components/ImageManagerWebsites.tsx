@@ -100,7 +100,6 @@ export function ImageManagerWebsites() {
       const pending = rows || []
       let pushed = 0
       for (const row of pending) {
-        const base = site.base_url.replace(/\/$/, '')
         const session = await supabase.auth.getSession()
         const token = session.data.session?.access_token
         if (!token) throw new Error('Sitzung abgelaufen.')
