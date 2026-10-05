@@ -50,6 +50,9 @@ export function ImageManagerDashboardPage() {
   const [error, setError] = useState('')
   const [categories, setCategories] = useState({ category1: [] as string[], category2: [] as string[], category3: [] as string[], category4: [] as string[] })
   const [workspaceName, setWorkspaceName] = useState('ZB Interieur')
+  const [brandName, setBrandName] = useState('Image Manager PRO')
+  const [logoUrl, setLogoUrl] = useState('')
+  const [primaryColor, setPrimaryColor] = useState('#0E675A')
   const [userEmail, setUserEmail] = useState('')
   const [userRole, setUserRole] = useState<'owner' | 'admin' | 'member' | 'viewer'>('member')
   const [filterCategory1, setFilterCategory1] = useState('')
@@ -113,8 +116,11 @@ export function ImageManagerDashboardPage() {
         const { data: membership } = await db.from('memberships').select('tenant_id,role').eq('user_id', data.user.id).limit(1).maybeSingle()
         if (membership?.tenant_id) {
           setUserRole((membership as { role?: 'owner' | 'admin' | 'member' | 'viewer' }).role || 'member')
-          const { data: tenant } = await db.from('tenants').select('name').eq('id', membership.tenant_id).single()
+          const { data: tenant } = await db.from('tenants').select('name,brand_name,logo_url,primary_color').eq('id', membership.tenant_id).single()
           if (tenant?.name) setWorkspaceName(tenant.name)
+          if (tenant?.brand_name) setBrandName(tenant.brand_name)
+          if (tenant?.logo_url) setLogoUrl(tenant.logo_url)
+          if (tenant?.primary_color) setPrimaryColor(tenant.primary_color)
         }
       })
     }
@@ -174,20 +180,19 @@ export function ImageManagerDashboardPage() {
     <div className="min-h-screen bg-[#f5f6f8] text-slate-900">
       <aside className="fixed inset-y-0 left-0 hidden w-64 flex-col bg-[#111318] text-white lg:flex">
         <div className="border-b border-white/10 px-6 py-6">
-          <div className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">Image Manager</div>
-          <div className="mt-1 text-xl font-bold tracking-tight">PRO</div>
+          <div className="flex items-center gap-3">{logoUrl ? <img src={logoUrl} alt="Logo" className="h-9 w-9 rounded-xl bg-white object-contain" /> : <div className="flex h-9 w-9 items-center justify-center rounded-xl font-bold text-white" style={{ backgroundColor: primaryColor }}>{workspaceName.slice(0, 1).toUpperCase()}</div>}<div><div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">{brandName}</div><div className="mt-1 text-lg font-bold tracking-tight">Media Manager</div></div></div>
         </div>
         <div className="px-4 py-5">
           <div className="mb-3 px-3 text-xs font-semibold uppercase tracking-wider text-slate-500">Workspace</div>
           <div className="mb-5 flex items-center gap-3 rounded-2xl bg-white/10 p-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#0E675A] font-bold">{workspaceName.slice(0, 2).toUpperCase()}</div>
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl font-bold" style={{ backgroundColor: primaryColor }}>{workspaceName.slice(0, 2).toUpperCase()}</div>
             <div><div className="text-sm font-semibold">{workspaceName}</div><div className="text-xs text-slate-400">{userEmail || "Pilot Workspace"}</div></div>
           </div>
           <nav className="space-y-1">
             {nav.map(([label, icon]) => <button key={label} onClick={() => setActive(label)} className={`flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm transition ${active === label ? 'bg-white text-slate-900 font-semibold' : 'text-slate-300 hover:bg-white/10'}`}><span className="w-6 text-center">{icon}</span>{label}</button>)}
           </nav>
         </div>
-        <div className="mt-auto border-t border-white/10 p-5 text-xs text-slate-500">Image Manager Pro · Foundation MVP</div>
+        <div className="mt-auto border-t border-white/10 p-5 text-xs text-slate-500">Image Manager Pro · SaaS Workspace</div>
       </aside>
 
       <main className="lg:ml-64">
