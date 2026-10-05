@@ -1,0 +1,1 @@
+-- Store the central storage object path so files can be cleaned up safely.\n\nalter table public.images add column if not exists storage_path text;\ncreate index if not exists images_storage_path_idx on public.images(storage_path);\n
