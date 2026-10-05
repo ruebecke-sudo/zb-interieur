@@ -19,15 +19,15 @@ export default async (req: Request) => {
   const url = process.env.SUPABASE_URL
   const secret = process.env.SUPABASE_SECRET_KEY
   const resendApiKey = process.env.RESEND_API_KEY
-  const fromEmail = process.env.RESEND_FROM_EMAIL || 'Image Manager Pro <noreply@my-digital-world.de>'
+  const fromEmail = process.env.RESEND_FROM_EMAIL
 
   // The publishable key is not needed server-side. The authenticated user's
   // access token is verified with Supabase Auth using the server secret key.
   if (!url || !secret) {
     return json({ error: 'Supabase server configuration missing.' }, 500)
   }
-  if (!resendApiKey) {
-    return json({ error: 'E-Mail-Versand ist noch nicht konfiguriert (RESEND_API_KEY).' }, 500)
+  if (!resendApiKey || !fromEmail) {
+    return json({ error: 'E-Mail-Versand ist noch nicht vollständig konfiguriert (RESEND_API_KEY / RESEND_FROM_EMAIL).' }, 500)
   }
 
   const authorization = req.headers.get('authorization') || ''
