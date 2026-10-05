@@ -12,7 +12,7 @@ export function ImageManagerAuthPage() {
   useEffect(() => {
     if (!supabase) return
     void supabase.auth.getSession().then(({ data }) => {
-      if (data.session) window.location.href = '/image-manager'
+      if (data.session) window.location.href = '/image-manager/app'
     })
   }, [])
 
@@ -29,7 +29,7 @@ export function ImageManagerAuthPage() {
       : await supabase.auth.signUp({ email, password, options: { data: { company_name: companyName } } })
     if (result.error) setMessage(result.error.message)
     else if (mode === 'signup') setMessage('Konto erstellt. Bitte bestätige ggf. deine E-Mail-Adresse.')
-    else window.location.href = '/image-manager'
+    else window.location.href = '/image-manager/app'
     setBusy(false)
   }
 
