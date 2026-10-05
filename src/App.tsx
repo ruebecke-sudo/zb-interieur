@@ -14,6 +14,8 @@ import { ServicePage } from './pages/ServicePage'
 import { TerminPage } from './pages/TerminPage'
 import { ProduktUploadPage } from './pages/ProduktUploadPage'
 import { BildverwaltungPage } from './pages/BildverwaltungPage'
+import { ImageManagerDashboardPage } from './pages/ImageManagerDashboardPage'
+import { ImageManagerAuthPage } from './pages/ImageManagerAuthPage'
 
 const router = createBrowserRouter([
   {
@@ -26,6 +28,8 @@ const router = createBrowserRouter([
       { path: 'marken', element: <MarkenPage /> },
       { path: 'verwaltung/produkte', element: <ProduktUploadPage /> },
       { path: 'verwaltung/bilder', element: <BildverwaltungPage /> },
+      { path: 'image-manager/login', element: <ImageManagerAuthPage /> },
+      { path: 'image-manager', element: <ImageManagerDashboardPage /> },
       { path: 'magazin', element: <MagazinPage /> },
       { path: 'blog', element: <BlogPage /> },
       { path: 'blog/:slug', element: <BlogPostPage /> },
