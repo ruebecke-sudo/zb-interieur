@@ -12,8 +12,11 @@ export function ImageManagerPlans() {
     const token = sessionData.session?.access_token
     if (!token) return setMessage('Sitzung abgelaufen. Bitte neu anmelden.')
     const response = await fetch('/.netlify/functions/create-customer-portal', { method:'POST', headers:{ Authorization:'Bearer '+token } })
-    const data = await response.json() as { url?: string; error?: string }
-    if (!response.ok || !data.url) return setMessage(data.error || 'Abrechnungsbereich konnte nicht geöffnet werden.')
+    const data = await response.json() as { url?: string; error?: string; missing?: string[] }
+    if (!response.ok || !data.url) {
+      const detail = data.missing?.length ? ` Fehlende Server-Konfiguration: ${data.missing.join(', ')}.` : ''
+      return setMessage((data.error || 'Abrechnungsbereich konnte nicht geöffnet werden.') + detail)
+    }
     window.location.href = data.url
   }
 
@@ -26,8 +29,11 @@ export function ImageManagerPlans() {
       if (!token) throw new Error('Sitzung abgelaufen. Bitte neu anmelden.')
       const endpoint = plan === 'lifetime' ? '/.netlify/functions/create-lifetime-checkout' : '/.netlify/functions/create-subscription-checkout'
       const response = await fetch(endpoint, { method:'POST', headers:{'Content-Type':'application/json', Authorization:'Bearer '+token}, body: JSON.stringify({ plan }) })
-      const data = await response.json() as { url?: string; error?: string }
-      if (!response.ok || !data.url) throw new Error(data.error || 'Zahlungsvorgang konnte nicht gestartet werden.')
+      const data = await response.json() as { url?: string; error?: string; missing?: string[] }
+      if (!response.ok || !data.url) {
+        const detail = data.missing?.length ? ` Fehlende Server-Konfiguration: ${data.missing.join(', ')}.` : ''
+        throw new Error((data.error || 'Zahlungsvorgang konnte nicht gestartet werden.') + detail)
+      }
       window.location.href = data.url
     } catch (error) {
       setMessage(error instanceof Error ? error.message : 'Zahlungsvorgang konnte nicht gestartet werden.')
