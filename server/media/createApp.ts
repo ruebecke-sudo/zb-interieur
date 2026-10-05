@@ -190,6 +190,58 @@ export function createMediaApp() {
     }
   })
 
+  app.post('/api/images/upload-from-url', async (c) => {
+    try {
+      const body = (await c.req.json()) as {
+        source_url?: string
+        filename?: string
+        name?: string
+        text?: string
+        category1?: string
+        category2?: string
+        category3?: string
+        category4?: string
+        overwrite?: boolean | string
+        id?: string
+      }
+      const sourceUrl = String(body.source_url || '').trim()
+      if (!sourceUrl) return c.json({ error: 'source_url erforderlich.' }, 400)
+
+      const parsed = new URL(sourceUrl)
+      if (parsed.protocol !== 'https:') return c.json({ error: 'Nur HTTPS-Quellen sind erlaubt.' }, 400)
+
+      const source = await fetch(sourceUrl)
+      if (!source.ok) throw new Error(`Quellbild HTTP ${source.status}`)
+      const contentType = source.headers.get('content-type') || 'image/jpeg'
+      const filename = String(body.filename || parsed.pathname.split('/').pop() || 'image.jpg')
+      const buffer = Buffer.from(await source.arrayBuffer())
+
+      const overwrite =
+        String(body.overwrite || '').toLowerCase() === 'true' || body.overwrite === '1'
+
+      const record = await createImage({
+        buffer,
+        filename,
+        mimeType: contentType.split(';')[0].trim(),
+        meta: {
+          name: str(body.name),
+          text: str(body.text),
+          category1: str(body.category1),
+          category2: str(body.category2),
+          category3: str(body.category3),
+          category4: str(body.category4),
+        },
+        overwriteId: overwrite ? str(body.id) || undefined : undefined,
+      })
+
+      return c.json({ items: [record], total: 1 }, 201)
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Upload von URL fehlgeschlagen.'
+      const status = /nicht erlaubt|zu groß|Ungültig|HTTPS|Quellbild HTTP/i.test(message) ? 400 : 500
+      return c.json({ error: message }, status)
+    }
+  })
+
   app.post('/api/images/upload', async (c) => {
     try {
       const body = await c.req.parseBody({ all: true })
