@@ -2,15 +2,6 @@ import { useEffect, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
 
 type ImageItem = {
-  name: string
-  category: string
-  format: string
-  size: string
-  updated: string
-  status: 'Aktiv' | 'Entwurf'
-}
-
-type ImageItem = {
   id: string
   name: string
   text: string
@@ -24,6 +15,7 @@ type ImageItem = {
   updatedAt: string
   width: number
   height: number
+  status?: 'Aktiv' | 'Entwurf'
 }
 
 function formatBytes(bytes: number) {
