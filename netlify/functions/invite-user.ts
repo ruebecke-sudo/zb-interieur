@@ -82,8 +82,29 @@ export default async (req: Request) => {
     return json({ error: 'Einladung konnte nicht vorbereitet werden: ' + pendingError.message }, 500)
   }
 
+  const { data: tenant, error: tenantError } = await admin
+    .from('tenants')
+    .select('name,brand_name')
+    .eq('id', membership.tenant_id)
+    .single()
+
+  if (tenantError) {
+    await admin
+      .from('image_manager_invitations')
+      .delete()
+      .eq('tenant_id', membership.tenant_id)
+      .eq('email', email)
+    return json({ error: 'Workspace-Daten konnten nicht geladen werden: ' + tenantError.message }, 500)
+  }
+
   const redirectTo = `${new URL(req.url).origin}/image-manager/app`
-  const { data: invite, error: inviteError } = await admin.auth.admin.inviteUserByEmail(email, { redirectTo })
+  const { data: invite, error: inviteError } = await admin.auth.admin.inviteUserByEmail(email, {
+    redirectTo,
+    data: {
+      workspace_name: tenant.brand_name || tenant.name,
+      invited_role: role,
+    },
+  })
 
   if (inviteError || !invite.user) {
     // Do not leave an unusable pending invitation behind when Supabase Auth
