@@ -26,6 +26,10 @@ export type MediaImage = {
   originalFilename: string
   mimeType: string
   storageKey: string
+  /** True when the file lives outside the media library folder (e.g. catalog /images/…). */
+  external?: boolean
+  /** Original public URL this record overrides (catalog merge). */
+  sourceUrl?: string
 }
 
 export type MediaImageInput = {

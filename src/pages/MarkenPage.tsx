@@ -18,6 +18,9 @@ export function MarkenPage() {
   const [active, setActive] = useState<string>('alle')
   const [uploaded, setUploaded] = useState<MarkenProdukt[]>([])
   const [library, setLibrary] = useState<MarkenProdukt[]>([])
+  const [catalogOverrides, setCatalogOverrides] = useState<Map<string, MarkenProdukt>>(
+    () => new Map(),
+  )
 
   useEffect(() => {
     let cancelled = false
@@ -25,11 +28,15 @@ export function MarkenPage() {
       hydrateUploadedProducts().catch(() => [] as MarkenProdukt[]),
       listMediaPublic()
         .then((res) => mediaImagesToMarkenProdukte(res.items))
-        .catch(() => [] as MarkenProdukt[]),
-    ]).then(([localUploads, libraryItems]) => {
+        .catch(() => ({
+          products: [] as MarkenProdukt[],
+          overridesByCatalogImage: new Map<string, MarkenProdukt>(),
+        })),
+    ]).then(([localUploads, libraryResult]) => {
       if (cancelled) return
       setUploaded(localUploads)
-      setLibrary(libraryItems)
+      setLibrary(libraryResult.products)
+      setCatalogOverrides(libraryResult.overridesByCatalogImage)
     })
     return () => {
       cancelled = true
@@ -37,8 +44,8 @@ export function MarkenPage() {
   }, [])
 
   const allProdukte = useMemo(
-    () => mergeMarkenProdukte([...library, ...uploaded]),
-    [library, uploaded],
+    () => mergeMarkenProdukte([...library, ...uploaded], catalogOverrides),
+    [library, uploaded, catalogOverrides],
   )
   const brandsWithProducts = useMemo(
     () => markenMitProduktenFrom(allProdukte),

@@ -7,6 +7,7 @@ import {
   deleteImage,
   getCategories,
   getImage,
+  importExternalImages,
   listImages,
   readBinary,
   replaceImageFile,
@@ -157,6 +158,36 @@ export function createMediaApp() {
     const item = await getImage(c.req.param('id'))
     if (!item) return c.json({ error: 'Bild nicht gefunden.' }, 404)
     return c.json(item)
+  })
+
+  app.post('/api/images/import', async (c) => {
+    try {
+      const body = (await c.req.json()) as {
+        items?: Array<{
+          name: string
+          text?: string
+          category1?: string
+          category2?: string
+          category3?: string
+          category4?: string
+          url: string
+          originalFilename?: string
+        }>
+      }
+      if (!Array.isArray(body.items) || body.items.length === 0) {
+        return c.json({ error: 'Keine Einträge zum Importieren.' }, 400)
+      }
+      const result = await importExternalImages(body.items)
+      return c.json({
+        items: result.imported,
+        imported: result.imported.length,
+        skipped: result.skipped,
+        total: result.imported.length,
+      }, 201)
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Import fehlgeschlagen.'
+      return c.json({ error: message }, 400)
+    }
   })
 
   app.post('/api/images/upload', async (c) => {

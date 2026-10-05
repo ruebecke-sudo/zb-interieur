@@ -19,6 +19,8 @@ export type MediaImage = {
   originalFilename: string
   mimeType: string
   storageKey: string
+  external?: boolean
+  sourceUrl?: string
 }
 
 export type MediaCategories = {
@@ -147,6 +149,27 @@ export async function uploadMedia(
     uploaded.push(...data.items)
   }
   return uploaded
+}
+
+export async function importCatalogImages(
+  items: Array<{
+    name: string
+    text?: string
+    category1?: string
+    category2?: string
+    category3?: string
+    category4?: string
+    url: string
+    originalFilename?: string
+  }>,
+): Promise<{ imported: number; skipped: number; items: MediaImage[] }> {
+  const res = await mediaFetch('/api/images/import', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ items }),
+  })
+  if (!res.ok) throw new Error(await errorMessage(res))
+  return res.json()
 }
 
 export async function updateMediaMeta(

@@ -1,8 +1,8 @@
 /** Map media-library images to Marken Produktauswahl entries. */
 
 import { marken, type MarkenProdukt } from '../data/marken'
-import { matchBrand, parseProductFilename } from './productNameFromFilename'
 import type { MediaImage } from './mediaApi'
+import { matchBrand, parseProductFilename } from './productNameFromFilename'
 
 const brandLookup = marken.map((m) => ({ name: m.name, slug: m.slug }))
 
@@ -33,11 +33,21 @@ export function mediaImageToMarkenProdukt(img: MediaImage): MarkenProdukt | null
   }
 }
 
-export function mediaImagesToMarkenProdukte(items: MediaImage[]): MarkenProdukt[] {
-  const out: MarkenProdukt[] = []
+export function mediaOverrideKey(img: MediaImage): string {
+  return img.sourceUrl || img.url
+}
+
+export function mediaImagesToMarkenProdukte(items: MediaImage[]): {
+  products: MarkenProdukt[]
+  overridesByCatalogImage: Map<string, MarkenProdukt>
+} {
+  const products: MarkenProdukt[] = []
+  const overridesByCatalogImage = new Map<string, MarkenProdukt>()
   for (const item of items) {
     const mapped = mediaImageToMarkenProdukt(item)
-    if (mapped) out.push(mapped)
+    if (!mapped) continue
+    products.push(mapped)
+    overridesByCatalogImage.set(mediaOverrideKey(item), mapped)
   }
-  return out
+  return { products, overridesByCatalogImage }
 }

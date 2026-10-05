@@ -27,10 +27,33 @@ export const markenProdukte: MarkenProdukt[] = markenProducts
   .filter((p) => p.image && p.headline)
   .map((p) => ({ ...p, price: 'Preis auf Anfrage' }))
 
-/** Merge static catalog with optional runtime uploads (uploads appended, catalog untouched). */
-export function mergeMarkenProdukte(uploaded: MarkenProdukt[] = []): MarkenProdukt[] {
-  if (uploaded.length === 0) return markenProdukte
-  return [...markenProdukte, ...uploaded]
+/** Merge static catalog with runtime library/uploads.
+ * `overridesByCatalogImage` maps original catalog image paths → edited library products.
+ */
+export function mergeMarkenProdukte(
+  runtime: MarkenProdukt[] = [],
+  overridesByCatalogImage: Map<string, MarkenProdukt> = new Map(),
+): MarkenProdukt[] {
+  if (runtime.length === 0 && overridesByCatalogImage.size === 0) return markenProdukte
+
+  const covered = new Set<string>()
+  const merged = markenProdukte.map((p) => {
+    const override = overridesByCatalogImage.get(p.image)
+    if (!override) return p
+    covered.add(override.stilpunkteUrl)
+    return {
+      ...p,
+      headline: override.headline || p.headline,
+      altText: override.altText || p.altText,
+      brandName: override.brandName || p.brandName,
+      brandSlug: override.brandSlug || p.brandSlug,
+      image: override.image || p.image,
+      stilpunkteUrl: override.stilpunkteUrl || p.stilpunkteUrl,
+    }
+  })
+
+  const extras = runtime.filter((p) => !covered.has(p.stilpunkteUrl))
+  return [...merged, ...extras]
 }
 
 export function markenMitProduktenFrom(produkte: MarkenProdukt[]) {

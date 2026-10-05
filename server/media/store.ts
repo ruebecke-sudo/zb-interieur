@@ -186,6 +186,7 @@ async function writeBinary(storageKey: string, buffer: Buffer, _mimeType: string
 }
 
 async function deleteBinary(storageKey: string): Promise<void> {
+  if (!storageKey || storageKey.startsWith('external:')) return
   const blobs = await getBlobs()
   if (blobs) {
     try {
@@ -288,6 +289,7 @@ export async function createImage(params: {
 
   const url = await writeBinary(storageKey, params.buffer, analysis.mimeType)
   const meta = params.meta || {}
+  const previous = params.overwriteId ? items.find((i) => i.id === id) : undefined
   const record: MediaImage = {
     id,
     name: (meta.name || '').trim() || filenameToDefaultName(safeName),
@@ -302,11 +304,13 @@ export async function createImage(params: {
     format: analysis.format,
     fileSize: params.buffer.length,
     url,
-    uploadedAt: params.overwriteId ? items.find((i) => i.id === id)?.uploadedAt || now : now,
+    uploadedAt: previous?.uploadedAt || now,
     updatedAt: now,
     originalFilename: safeName,
     mimeType: analysis.mimeType,
     storageKey,
+    external: false,
+    sourceUrl: previous?.sourceUrl || previous?.url,
   }
 
   let next: MediaImage[]
@@ -362,6 +366,69 @@ export async function replaceImageFile(
       category4: existing.category4,
     },
   })
+}
+
+/** Register existing site images (e.g. Marken catalog) so they can be edited in the library. */
+export async function importExternalImages(
+  entries: Array<{
+    name: string
+    text?: string
+    category1?: string
+    category2?: string
+    category3?: string
+    category4?: string
+    url: string
+    originalFilename?: string
+  }>,
+): Promise<{ imported: MediaImage[]; skipped: number }> {
+  const items = await readIndex()
+  const existingUrls = new Set(items.map((i) => i.url))
+  const imported: MediaImage[] = []
+  let skipped = 0
+  const now = new Date().toISOString()
+
+  for (const entry of entries) {
+    const url = String(entry.url || '').trim()
+    if (!url || !url.startsWith('/')) {
+      skipped += 1
+      continue
+    }
+    if (existingUrls.has(url)) {
+      skipped += 1
+      continue
+    }
+    const name = String(entry.name || '').trim() || filenameToDefaultName(url)
+    const id = randomUUID()
+    const record: MediaImage = {
+      id,
+      name,
+      text: String(entry.text || '').trim() || name,
+      category1: String(entry.category1 || '').trim(),
+      category2: String(entry.category2 || '').trim(),
+      category3: String(entry.category3 || '').trim(),
+      category4: String(entry.category4 || '').trim(),
+      width: 0,
+      height: 0,
+      colorSpace: 'unbekannt',
+      format: (path.extname(url).replace('.', '') || 'jpeg').toUpperCase(),
+      fileSize: 0,
+      url,
+      uploadedAt: now,
+      updatedAt: now,
+      originalFilename: entry.originalFilename || path.basename(url),
+      mimeType: 'image/jpeg',
+      storageKey: `external:${url}`,
+      external: true,
+      sourceUrl: url,
+    }
+    imported.push(record)
+    existingUrls.add(url)
+  }
+
+  if (imported.length) {
+    await writeIndex([...imported, ...items])
+  }
+  return { imported, skipped }
 }
 
 export async function deleteImage(id: string): Promise<void> {
