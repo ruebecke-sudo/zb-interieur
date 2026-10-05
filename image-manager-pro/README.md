@@ -42,3 +42,21 @@ Business: 79 €/month
 Agency: custom
 
 These are initial commercial placeholders and can be changed before launch.
+
+
+## SaaS-Auth Foundation
+
+Der Branch enthält jetzt:
+- Supabase Client über `VITE_SUPABASE_URL` und `VITE_SUPABASE_PUBLISHABLE_KEY`
+- Login/Registrierung unter `/image-manager/login`
+- Tenant-/Membership-/Website-/Kategorie-/Bild-Schema
+- PostgreSQL Row Level Security (RLS) zur Mandantentrennung
+- ZB Interieur bleibt der erste REST-Connector
+
+### Noch vor dem Produktivstart
+
+1. Ein dediziertes Supabase-Produktionsprojekt für Image Manager Pro auswählen/erstellen.
+2. Migration `001_saas_tenant_rls.sql` dort anwenden.
+3. Netlify Environment Variables setzen.
+4. Onboarding-Funktion für den ersten Tenant/Owner ergänzen.
+5. Website-Connector-Secrets ausschließlich serverseitig speichern.
