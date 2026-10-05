@@ -48,7 +48,7 @@ export function ImageManagerCategories() {
 
   return <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
     <h2 className="text-xl font-bold">Kategorien</h2>
-    <p className="mt-1 text-sm text-slate-500">Jeder Workspace kann Bezeichnungen und Kategorienwerte selbst verwalten.</p>
+    <p className="mt-1 text-sm text-slate-500">Jeder Arbeitsbereich kann Bezeichnungen und Kategorienwerte selbst verwalten.</p>
     {message && <div className="mt-4 rounded-xl bg-slate-100 p-3 text-sm">{message}</div>}
     <div className="mt-6 grid gap-4 md:grid-cols-2">
       {slots.map(slot => <div key={slot.slot} className="rounded-2xl border border-slate-200 p-5">
