@@ -18,6 +18,7 @@ Zentrale Bildverwaltung unter [`/verwaltung/bilder`](http://127.0.0.1:43127/verw
 - Suche + Mehrfachfilter, Thumbnails, Bearbeiten/Löschen
 - Metadaten und Bilddatei getrennt änderbar
 - API für das ChatGPT-Plugin „Web Image Manager“
+- Einbindung in die öffentliche **Marken-Produktauswahl** (`/marken`), sobald Kategorie 1 (Marke) gesetzt ist
 
 ### Lokal starten
 

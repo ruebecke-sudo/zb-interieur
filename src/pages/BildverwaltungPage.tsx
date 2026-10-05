@@ -292,7 +292,12 @@ export function BildverwaltungPage() {
             </h1>
             <p className="mt-3 max-w-2xl text-sm text-muted md:text-base">
               Bilder hochladen, Metadaten pflegen und nach Marke, Produktart, Bereich und Stil filtern.
-              Bestehende Produktseiten bleiben unverändert.
+              Mit gesetzter <strong className="font-semibold text-ink">Kategorie 1 (Marke)</strong> erscheinen
+              die Bilder automatisch in der öffentlichen{' '}
+              <Link to="/marken" className="text-brand underline">
+                Marken-Produktauswahl
+              </Link>
+              . Bestehende Katalogprodukte bleiben unverändert.
             </p>
           </div>
           <div className="flex flex-wrap gap-2">

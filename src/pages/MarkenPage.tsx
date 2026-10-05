@@ -7,6 +7,8 @@ import {
   mergeMarkenProdukte,
   type MarkenProdukt,
 } from '../data/marken'
+import { listMediaPublic } from '../lib/mediaApi'
+import { mediaImagesToMarkenProdukte } from '../lib/mediaToMarkenProdukt'
 import {
   getUploadedAltText,
   hydrateUploadedProducts,
@@ -15,18 +17,29 @@ import {
 export function MarkenPage() {
   const [active, setActive] = useState<string>('alle')
   const [uploaded, setUploaded] = useState<MarkenProdukt[]>([])
+  const [library, setLibrary] = useState<MarkenProdukt[]>([])
 
   useEffect(() => {
     let cancelled = false
-    void hydrateUploadedProducts().then((items) => {
-      if (!cancelled) setUploaded(items)
+    void Promise.all([
+      hydrateUploadedProducts().catch(() => [] as MarkenProdukt[]),
+      listMediaPublic()
+        .then((res) => mediaImagesToMarkenProdukte(res.items))
+        .catch(() => [] as MarkenProdukt[]),
+    ]).then(([localUploads, libraryItems]) => {
+      if (cancelled) return
+      setUploaded(localUploads)
+      setLibrary(libraryItems)
     })
     return () => {
       cancelled = true
     }
   }, [])
 
-  const allProdukte = useMemo(() => mergeMarkenProdukte(uploaded), [uploaded])
+  const allProdukte = useMemo(
+    () => mergeMarkenProdukte([...library, ...uploaded]),
+    [library, uploaded],
+  )
   const brandsWithProducts = useMemo(
     () => markenMitProduktenFrom(allProdukte),
     [allProdukte],

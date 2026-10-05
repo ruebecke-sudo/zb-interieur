@@ -99,6 +99,25 @@ export async function listMedia(params: {
   return res.json()
 }
 
+/** Public catalog read — no auth required (Markenwelt). */
+export async function listMediaPublic(params: {
+  q?: string
+  category1?: string[]
+  category2?: string[]
+  category3?: string[]
+  category4?: string[]
+} = {}): Promise<{ items: MediaImage[]; total: number }> {
+  const url = new URL('/api/images', window.location.origin)
+  if (params.q) url.searchParams.set('q', params.q)
+  for (const c of params.category1 || []) url.searchParams.append('category1', c)
+  for (const c of params.category2 || []) url.searchParams.append('category2', c)
+  for (const c of params.category3 || []) url.searchParams.append('category3', c)
+  for (const c of params.category4 || []) url.searchParams.append('category4', c)
+  const res = await fetch(url.pathname + url.search)
+  if (!res.ok) throw new Error(await errorMessage(res))
+  return res.json()
+}
+
 export async function uploadMedia(
   files: File[],
   metaByIndex?: Array<{

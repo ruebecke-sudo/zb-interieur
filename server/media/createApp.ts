@@ -33,12 +33,14 @@ function expectedPassword(): string {
 function isPublicPath(path: string, method: string): boolean {
   if (path === '/api/auth/login' && method === 'POST') return true
   if (method !== 'GET') return false
-  return (
-    path === '/api/health' ||
-    path === '/api/images/openapi.json' ||
-    path === '/.well-known/ai-plugin.json' ||
-    path.startsWith('/api/images/file/')
-  )
+  // Public read access so Markenwelt can show library images without login.
+  if (path === '/api/images' || path === '/api/images/categories') return true
+  if (path === '/api/health' || path === '/api/images/openapi.json') return true
+  if (path === '/.well-known/ai-plugin.json') return true
+  if (path.startsWith('/api/images/file/')) return true
+  // GET /api/images/:id — single image metadata
+  if (/^\/api\/images\/[^/]+$/.test(path) && path !== '/api/images/openapi.json') return true
+  return false
 }
 
 export function createMediaApp() {

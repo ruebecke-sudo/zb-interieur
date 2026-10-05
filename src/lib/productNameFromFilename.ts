@@ -35,6 +35,20 @@ function normalizeBrandKey(value: string): string {
     .replace(/[^a-z0-9]+/g, '')
 }
 
+/** Match a brand label (e.g. category or filename token) to a catalog brand. */
+export function matchBrand(
+  value: string,
+  brands: readonly BrandLookup[],
+): BrandLookup | null {
+  const key = normalizeBrandKey(value || '')
+  if (!key || brands.length === 0) return null
+  return (
+    brands.find(
+      (b) => normalizeBrandKey(b.name) === key || normalizeBrandKey(b.slug) === key,
+    ) ?? null
+  )
+}
+
 /**
  * Derive product name + brand from a filename.
  * Brand is taken only from the filename prefix matching known brands — never from image content.
@@ -53,11 +67,7 @@ export function parseProductFilename(
     return { productName, brandToken: null, brandSlug: null, brandName: null }
   }
 
-  const key = normalizeBrandKey(firstToken)
-  const match = brands.find(
-    (b) => normalizeBrandKey(b.name) === key || normalizeBrandKey(b.slug) === key,
-  )
-
+  const match = matchBrand(firstToken, brands)
   if (!match) {
     return { productName, brandToken: null, brandSlug: null, brandName: null }
   }
