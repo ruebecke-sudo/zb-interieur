@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
 import { ImageManagerActions } from '../components/ImageManagerActions'
+import { ImageManagerWebsites } from '../components/ImageManagerWebsites'
 import { supabase } from '../lib/supabase'
 
 type ImageItem = {
@@ -89,6 +90,7 @@ export function ImageManagerDashboardPage() {
   }), [images, query])
   const categoryCount = new Set(images.flatMap((item) => [item.category1, item.category2, item.category3, item.category4].filter(Boolean))).size
   const activeCount = images.length
+  const isWebsites = active === 'Websites'
 
   const nav = [
     ['Übersicht', '▦'],
@@ -126,7 +128,7 @@ export function ImageManagerDashboardPage() {
           </div>
         </header>
 
-        <div className="mx-auto max-w-7xl space-y-7 p-5 md:p-8">
+        <div className="mx-auto max-w-7xl space-y-7 p-5 md:p-8">{isWebsites ? <ImageManagerWebsites /> : <>
           <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             {[
               [`${images.length.toLocaleString('de-DE')}`, 'Bilder', loading ? 'Lade Bestand …' : 'Live aus ZB-Media-API', '▧'],
@@ -160,6 +162,7 @@ export function ImageManagerDashboardPage() {
             <div className="rounded-2xl border border-slate-200 bg-white p-6"><div className="font-bold">Nächster Schritt</div><p className="mt-2 text-sm leading-6 text-slate-500">Supabase Auth, echte Kundenkonten und Tenant-Isolation ergänzen. Danach kann derselbe Image Manager für weitere Kunden verwendet werden.</p><button className="mt-5 rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-semibold hover:bg-slate-50">Projektstatus ansehen</button></div>
           </section>
         </div>
+        </>}
       </main>
     </div>
   )
