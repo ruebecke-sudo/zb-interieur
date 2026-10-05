@@ -48,8 +48,8 @@ function CategoryField({ label, value, values, onChange }: { label: string; valu
 
 function Modal({ children }: { children: ReactNode }) {
   return (
-    <div className="fixed inset-0 z-50 bg-slate-950/60">
-      <div className="absolute left-0 right-0 top-[165px] bottom-0 overflow-y-auto p-4">
+    <div className="fixed inset-0 z-[9999] bg-slate-950/60">
+      <div className="absolute inset-x-0 bottom-0 top-0 overflow-y-auto p-4 pt-[185px]">
         <div className="flex min-h-full items-start justify-center">
           {children}
         </div>
