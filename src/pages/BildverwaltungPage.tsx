@@ -463,15 +463,11 @@ export function BildverwaltungPage() {
                 <img src={item.url} alt={item.text || item.name} className="aspect-[4/5] w-full object-cover" />
               </div>
               <div className="flex flex-1 flex-col p-4">
-                <h2 className="font-sans text-lg font-bold leading-snug">{item.name}</h2>
-                <p className="mt-1 line-clamp-2 text-sm text-muted">{item.text}</p>
-                <dl className="mt-3 space-y-1 text-[11px] text-muted">
-                  <div>{item.width}×{item.height}px · {item.format} · {item.colorSpace}</div>
-                  <div>{formatBytes(item.fileSize)} · {new Date(item.uploadedAt).toLocaleString('de-DE')}</div>
-                  <div className="pt-1">
-                    {[item.category1, item.category2, item.category3, item.category4].filter(Boolean).join(' · ') || 'Ohne Kategorien'}
-                  </div>
-                </dl>
+                <p className="text-[11px] font-semibold tracking-[0.16em] text-brand uppercase">
+                  {item.category1 || 'Ohne Hersteller'}
+                </p>
+                <h2 className="mt-2 font-sans text-lg font-bold leading-snug">{item.name}</h2>
+                {item.text ? <p className="mt-1 line-clamp-3 text-sm text-muted">{item.text}</p> : null}
                 <div className="mt-4 flex flex-wrap gap-2">
                   <button type="button" onClick={() => setEditing(item)} className="bg-brand px-3 py-1.5 text-[11px] font-semibold tracking-wide text-white uppercase">
                     Metadaten
@@ -506,17 +502,11 @@ export function BildverwaltungPage() {
               <p className="mt-1 text-xs text-muted">Bilddatei bleibt unverändert — nur Textfelder.</p>
               <div className="mt-4 grid gap-3">
                 <Field label="Bildname" value={editing.name} onChange={(v) => setEditing({ ...editing, name: v })} />
-                <Field label="Bildtext" value={editing.text} onChange={(v) => setEditing({ ...editing, text: v })} />
-                <SelectField label="Kategorie 1 · Marke" value={editing.category1} options={categories?.category1 || []} onChange={(v) => setEditing({ ...editing, category1: v })} />
+                <Field label="Bildbeschreibung" value={editing.text} onChange={(v) => setEditing({ ...editing, text: v })} />
+                <SelectField label="Hersteller (Marke)" value={editing.category1} options={categories?.category1 || []} onChange={(v) => setEditing({ ...editing, category1: v })} />
                 <SelectField label="Kategorie 2 · Produktart" value={editing.category2} options={categories?.category2 || []} onChange={(v) => setEditing({ ...editing, category2: v })} />
                 <SelectField label="Kategorie 3 · Bereich" value={editing.category3} options={categories?.category3 || []} onChange={(v) => setEditing({ ...editing, category3: v })} />
                 <SelectField label="Kategorie 4 · Stil" value={editing.category4} options={categories?.category4 || []} onChange={(v) => setEditing({ ...editing, category4: v })} />
-                <dl className="text-xs text-muted">
-                  <div>Auflösung: {editing.width}×{editing.height}</div>
-                  <div>Farbraum: {editing.colorSpace}</div>
-                  <div>Format: {editing.format}</div>
-                  <div>URL: {editing.url}</div>
-                </dl>
               </div>
               <div className="mt-6 flex gap-3">
                 <button type="button" onClick={() => void saveEdit()} className="bg-accent px-5 py-2.5 text-sm font-bold text-white uppercase">

@@ -216,14 +216,12 @@ export function MarkenPage() {
                 <h3 className="mt-5 font-sans text-2xl leading-snug font-extrabold tracking-tight text-ink md:text-3xl">
                   {featured.headline}
                 </h3>
-                {featured.price ? (
-                  <p className="mt-5 text-sm font-medium tracking-wide text-muted uppercase">
-                    {featured.price}
+                {(featured.altText || getUploadedAltText(featured.stilpunkteUrl)) &&
+                (featured.altText || getUploadedAltText(featured.stilpunkteUrl)) !== featured.headline ? (
+                  <p className="mt-4 text-sm leading-relaxed text-muted md:text-base">
+                    {featured.altText || getUploadedAltText(featured.stilpunkteUrl)}
                   </p>
                 ) : null}
-                <p className="mt-6 text-sm leading-relaxed text-muted">
-                  Exklusiv im Showroom erlebbar – Materialien und Varianten besprechen wir vor Ort.
-                </p>
               </div>
             </article>
           ) : null}
@@ -391,8 +389,8 @@ function ProductCard({ product, index }: { product: MarkenProdukt; index: number
       <div className="flex flex-1 flex-col p-5">
         <BrandMark product={product} />
         <h3 className="mt-3 font-sans text-lg leading-snug font-bold text-ink">{product.headline}</h3>
-        {product.price ? (
-          <p className="mt-3 text-sm font-medium text-muted">{product.price}</p>
+        {product.altText && product.altText !== product.headline ? (
+          <p className="mt-2 text-sm leading-relaxed text-muted">{product.altText}</p>
         ) : null}
       </div>
     </article>
