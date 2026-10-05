@@ -7,7 +7,7 @@ export function ImageManagerMembers() {
   const [members, setMembers] = useState<Member[]>([])
   const [tenantId, setTenantId] = useState('')
   const [role, setRole] = useState<'owner' | 'admin' | 'member' | 'viewer'>('member')
-  const [userId, setUserId] = useState('')
+  const [email, setEmail] = useState('')
   const [message, setMessage] = useState('')
 
   const load = async () => {
@@ -31,11 +31,20 @@ export function ImageManagerMembers() {
     if (!error) await load()
   }
 
-  const addExistingUser = async () => {
-    if (!supabase || !tenantId || !userId.trim()) return
-    const { error } = await supabase.from('memberships').insert({ tenant_id: tenantId, user_id: userId.trim(), role })
-    setMessage(error ? error.message : 'Mitarbeiter hinzugefügt.')
-    if (!error) { setUserId(''); await load() }
+  const inviteUser = async () => {
+    if (!supabase || !email.trim()) return
+    setMessage('Einladung wird versendet …')
+    const { data: sessionData } = await supabase.auth.getSession()
+    const token = sessionData.session?.access_token
+    if (!token) { setMessage('Sitzung abgelaufen. Bitte erneut anmelden.'); return }
+    const response = await fetch('/.netlify/functions/invite-user', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ email: email.trim(), role }),
+    })
+    const result = await response.json().catch(() => ({}))
+    setMessage(response.ok ? result.message : (result.error || 'Einladung fehlgeschlagen.'))
+    if (response.ok) { setEmail(''); await load() }
   }
 
   return <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -44,11 +53,11 @@ export function ImageManagerMembers() {
     <div className="mt-6 rounded-2xl bg-slate-50 p-4">
       <div className="text-sm font-semibold">Benutzer zu Workspace hinzufügen</div>
       <div className="mt-3 grid gap-3 md:grid-cols-[1fr_180px_auto]">
-        <input value={userId} onChange={e => setUserId(e.target.value)} placeholder="Supabase User-ID" className="rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm" />
+        <input value={email} onChange={e => setEmail(e.target.value)} placeholder="E-Mail-Adresse des Mitarbeiters" className="rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm" />
         <select value={role} onChange={e => setRole(e.target.value as Member['role'])} className="rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm"><option value="member">Mitarbeiter</option><option value="viewer">Nur Lesen</option><option value="admin">Admin</option></select>
-        <button onClick={() => void addExistingUser()} className="rounded-xl bg-[#0E675A] px-4 py-2.5 text-sm font-semibold text-white">Hinzufügen</button>
+        <button onClick={() => void inviteUser()} className="rounded-xl bg-[#0E675A] px-4 py-2.5 text-sm font-semibold text-white">Einladung senden</button>
       </div>
-      <p className="mt-2 text-xs text-slate-500">Die eigentliche E-Mail-Einladung wird im nächsten Auth-Schritt über Supabase verschickt; hier wird bewusst keine Passwortverwaltung eingebaut.</p>
+      <p className="mt-2 text-xs text-slate-500">Die Einladung wird serverseitig über Supabase Auth verschickt. Der Empfänger legt sein Passwort selbst über den Einladungslink fest.</p>
     </div>
     <div className="mt-5 divide-y divide-slate-100 rounded-2xl border border-slate-200">
       {members.map(member => <div key={member.id} className="flex flex-col gap-3 p-4 md:flex-row md:items-center md:justify-between">
