@@ -39,7 +39,7 @@ export function ImageManagerWebsites() {
   const testConnection = async (site: Website) => {
     setTesting(site.id); setMessage('')
     try {
-      const response = await fetch(`${site.base_url.replace(/\\/$/, '')}/api/health`, { method: 'GET' })
+      const response = await fetch(`${site.base_url.replace(/\/$/, '')}/api/health`, { method: 'GET' })
       if (!response.ok) throw new Error(`HTTP ${response.status}`)
       setMessage(`${site.name}: Verbindung erfolgreich.`)
     } catch {
