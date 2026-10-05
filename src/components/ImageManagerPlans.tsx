@@ -6,7 +6,21 @@ type Usage = { plan:string; image_count:number; member_count:number; website_cou
 export function ImageManagerPlans() {
   const [usage,setUsage]=useState<Usage|null>(null)
   const [message,setMessage]=useState('')
-  const checkout = (plan:string) => { setMessage(plan === 'lifetime' ? 'Lifetime-Checkout wird vorbereitet. Nach Hinterlegung der Stripe-Price-ID kann die Zahlung direkt gestartet werden.' : 'Checkout wird vorbereitet.') }
+  const checkout = async (plan:string) => {
+    setMessage('')
+    if (plan !== 'lifetime' || !supabase) return
+    try {
+      const { data: sessionData } = await supabase.auth.getSession()
+      const token = sessionData.session?.access_token
+      if (!token) throw new Error('Sitzung abgelaufen. Bitte neu anmelden.')
+      const response = await fetch('/.netlify/functions/create-lifetime-checkout', { method:'POST', headers:{'Content-Type':'application/json', Authorization:'Bearer '+token} })
+      const data = await response.json() as { url?: string; error?: string }
+      if (!response.ok || !data.url) throw new Error(data.error || 'Checkout konnte nicht gestartet werden.')
+      window.location.href = data.url
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : 'Checkout konnte nicht gestartet werden.')
+    }
+  }
   useEffect(()=>{void (async()=>{
     if(!supabase)return
     const {data:u}=await supabase.auth.getUser()
