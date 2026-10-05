@@ -79,11 +79,12 @@ export default async (req: Request) => {
     return json({ error: 'Keine Berechtigung.' }, 403)
   }
 
-  const { data: existingUser } = await admin
-    .from('users')
-    .select('id')
-    .eq('email', email)
-    .maybeSingle()
+  const { data: userList, error: userListError } = await admin.auth.admin.listUsers({ perPage: 1000 })
+  if (userListError) {
+    return json({ error: 'Benutzer konnte nicht geprüft werden: ' + userListError.message }, 500)
+  }
+
+  const existingUser = userList.users.find((user) => user.email?.toLowerCase() === email)
 
   if (existingUser?.id) {
     const { data: existingMembership, error: existingMembershipError } = await admin
