@@ -12,7 +12,15 @@ export default async (req: Request) => {
   const secret = process.env.STRIPE_SECRET_KEY
   const supabaseUrl = process.env.SUPABASE_URL
   const publishable = process.env.SUPABASE_PUBLISHABLE_KEY
-  if (!secret || !supabaseUrl || !publishable) return json({ error: 'Stripe/Supabase server configuration missing.' }, 500)
+  if (!['starter', 'professional', 'business'].includes(plan)) return json({ error: 'Ungültiger Tarif.' }, 400)
+  const required: Array<[string, string | undefined]> = [
+    ['STRIPE_SECRET_KEY', secret],
+    ['SUPABASE_URL', supabaseUrl],
+    ['SUPABASE_PUBLISHABLE_KEY', publishable],
+    [plan === 'starter' ? 'STRIPE_PRICE_STARTER' : plan === 'professional' ? 'STRIPE_PRICE_PROFESSIONAL' : plan === 'business' ? 'STRIPE_PRICE_BUSINESS' : 'STRIPE_PRICE_' + plan.toUpperCase(), priceId],
+  ]
+  const missing = required.filter(([, value]) => !value).map(([name]) => name)
+  if (missing.length) return json({ error: 'Stripe/Supabase Server-Konfiguration unvollständig.', missing }, 500)
 
   const auth = req.headers.get('authorization') || ''
   if (!auth.startsWith('Bearer ')) return json({ error: 'Authentication required.' }, 401)
