@@ -58,14 +58,15 @@ export function ImageManagerDashboardPage() {
     setError('')
     try {
       if (supabase) {
-        const { data: userData } = await supabase.auth.getUser()
+        const db = supabase
+        const { data: userData } = await db.auth.getUser()
         if (!userData.user) throw new Error('Bitte zuerst anmelden.')
-        const { data: membership, error: membershipError } = await supabase.from('memberships').select('tenant_id').eq('user_id', userData.user.id).limit(1).maybeSingle()
+        const { data: membership, error: membershipError } = await db.from('memberships').select('tenant_id').eq('user_id', userData.user.id).limit(1).maybeSingle()
         if (membershipError) throw new Error(membershipError.message)
         if (!membership?.tenant_id) throw new Error('Kein Workspace gefunden.')
         const [{ data: imageRows, error: imageError }, { data: categoryRows, error: categoryError }] = await Promise.all([
-          supabase.from('images').select('*').eq('tenant_id', membership.tenant_id).order('updated_at', { ascending: false }),
-          supabase.from('categories').select('slot,name').eq('tenant_id', membership.tenant_id).eq('active', true).order('sort_order'),
+          db.from('images').select('*').eq('tenant_id', membership.tenant_id).order('updated_at', { ascending: false }),
+          db.from('categories').select('slot,name').eq('tenant_id', membership.tenant_id).eq('active', true).order('sort_order'),
         ])
         if (imageError) throw new Error(imageError.message)
         if (categoryError) throw new Error(categoryError.message)
@@ -121,7 +122,6 @@ export function ImageManagerDashboardPage() {
   const isCategories = active === 'Kategorien'
   const isSettings = active === 'Einstellungen'
   const isPlans = active === 'Tarif'
-  const canManage = userRole === 'owner' || userRole === 'admin'
 
   const nav = [
     ['Übersicht', '▦'],
