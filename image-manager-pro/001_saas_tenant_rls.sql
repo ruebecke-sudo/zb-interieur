@@ -122,6 +122,21 @@ create policy "users can read own memberships"
 on public.memberships for select
 using (user_id = auth.uid());
 
+create policy "tenant admins can manage memberships"
+on public.memberships for update
+using (
+  exists (select 1 from public.memberships actor where actor.tenant_id = memberships.tenant_id and actor.user_id = auth.uid() and actor.role in ('owner','admin'))
+)
+with check (
+  exists (select 1 from public.memberships actor where actor.tenant_id = memberships.tenant_id and actor.user_id = auth.uid() and actor.role in ('owner','admin'))
+);
+
+create policy "tenant admins can add memberships"
+on public.memberships for insert
+with check (
+  exists (select 1 from public.memberships actor where actor.tenant_id = memberships.tenant_id and actor.user_id = auth.uid() and actor.role in ('owner','admin'))
+);
+
 create policy "tenant members can read websites"
 on public.websites for select
 using (public.is_tenant_member(tenant_id));
