@@ -49,7 +49,7 @@ export function ImageManagerDashboardPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [categories, setCategories] = useState({ category1: [] as string[], category2: [] as string[], category3: [] as string[], category4: [] as string[] })
-  const [workspaceName, setWorkspaceName] = useState('ZB Interieur')
+  const [ArbeitsbereichName, setArbeitsbereichName] = useState('ZB Interieur')
   const [brandName, setBrandName] = useState('Image Manager PRO')
   const [logoUrl, setLogoUrl] = useState('')
   const [primaryColor, setPrimaryColor] = useState('#0E675A')
@@ -73,7 +73,7 @@ export function ImageManagerDashboardPage() {
         if (!userData.user) throw new Error('Bitte zuerst anmelden.')
         const { data: membership, error: membershipError } = await db.from('memberships').select('tenant_id').eq('user_id', userData.user.id).limit(1).maybeSingle()
         if (membershipError) throw new Error(membershipError.message)
-        if (!membership?.tenant_id) throw new Error('Kein Workspace gefunden.')
+        if (!membership?.tenant_id) throw new Error('Kein Arbeitsbereich gefunden.')
         const [{ data: imageRows, error: imageError }, { data: categoryRows, error: categoryError }] = await Promise.all([
           db.from('images').select('*').eq('tenant_id', membership.tenant_id).order('updated_at', { ascending: false }),
           db.from('categories').select('slot,name').eq('tenant_id', membership.tenant_id).eq('active', true).order('sort_order'),
@@ -117,7 +117,7 @@ export function ImageManagerDashboardPage() {
         if (membership?.tenant_id) {
           setUserRole((membership as { role?: 'owner' | 'admin' | 'member' | 'viewer' }).role || 'member')
           const { data: tenant } = await db.from('tenants').select('name,brand_name,logo_url,primary_color').eq('id', membership.tenant_id).single()
-          if (tenant?.name) setWorkspaceName(tenant.name)
+          if (tenant?.name) setArbeitsbereichName(tenant.name)
           if (tenant?.brand_name) setBrandName(tenant.brand_name)
           if (tenant?.logo_url) setLogoUrl(tenant.logo_url)
           if (tenant?.primary_color) setPrimaryColor(tenant.primary_color)
@@ -180,25 +180,25 @@ export function ImageManagerDashboardPage() {
     <div className="min-h-screen bg-[#f5f6f8] text-slate-900">
       <aside className="fixed inset-y-0 left-0 hidden w-64 flex-col bg-[#111318] text-white lg:flex">
         <div className="border-b border-white/10 px-6 py-6">
-          <div className="flex items-center gap-3">{logoUrl ? <img src={logoUrl} alt="Logo" className="h-9 w-9 rounded-xl bg-white object-contain" /> : <div className="flex h-9 w-9 items-center justify-center rounded-xl font-bold text-white" style={{ backgroundColor: primaryColor }}>{workspaceName.slice(0, 1).toUpperCase()}</div>}<div><div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">{brandName}</div><div className="mt-1 text-lg font-bold tracking-tight">Media Manager</div></div></div>
+          <div className="flex items-center gap-3">{logoUrl ? <img src={logoUrl} alt="Logo" className="h-9 w-9 rounded-xl bg-white object-contain" /> : <div className="flex h-9 w-9 items-center justify-center rounded-xl font-bold text-white" style={{ backgroundColor: primaryColor }}>{ArbeitsbereichName.slice(0, 1).toUpperCase()}</div>}<div><div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">{brandName}</div><div className="mt-1 text-lg font-bold tracking-tight">Bildverwaltung</div></div></div>
         </div>
         <div className="px-4 py-5">
-          <div className="mb-3 px-3 text-xs font-semibold uppercase tracking-wider text-slate-500">Workspace</div>
+          <div className="mb-3 px-3 text-xs font-semibold uppercase tracking-wider text-slate-500">Arbeitsbereich</div>
           <div className="mb-5 flex items-center gap-3 rounded-2xl bg-white/10 p-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl font-bold" style={{ backgroundColor: primaryColor }}>{workspaceName.slice(0, 2).toUpperCase()}</div>
-            <div><div className="text-sm font-semibold">{workspaceName}</div><div className="text-xs text-slate-400">{userEmail || "Pilot Workspace"}</div></div>
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl font-bold" style={{ backgroundColor: primaryColor }}>{ArbeitsbereichName.slice(0, 2).toUpperCase()}</div>
+            <div><div className="text-sm font-semibold">{ArbeitsbereichName}</div><div className="text-xs text-slate-400">{userEmail || "Pilot Arbeitsbereich"}</div></div>
           </div>
           <nav className="space-y-1">
             {nav.map(([label, icon]) => <button key={label} onClick={() => setActive(label)} className={`flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm transition ${active === label ? 'bg-white text-slate-900 font-semibold' : 'text-slate-300 hover:bg-white/10'}`}><span className="w-6 text-center">{icon}</span>{label}</button>)}
           </nav>
         </div>
-        <div className="mt-auto border-t border-white/10 p-5 text-xs text-slate-500">Image Manager Pro · SaaS Workspace</div>
+        <div className="mt-auto border-t border-white/10 p-5 text-xs text-slate-500">Image Manager Pro · SaaS Arbeitsbereich</div>
       </aside>
 
       <main className="lg:ml-64">
         <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/90 px-5 py-4 backdrop-blur md:px-8">
           <div className="flex items-center justify-between gap-4">
-            <div><div className="text-sm text-slate-500">{workspaceName} / Image Manager</div><h1 className="mt-1 text-2xl font-bold tracking-tight">{active}</h1></div>
+            <div><div className="text-sm text-slate-500">{ArbeitsbereichName} / Image Manager</div><h1 className="mt-1 text-2xl font-bold tracking-tight">{active}</h1></div>
             {userRole !== 'viewer' && <ImageManagerActions primary categories={categories} onChanged={loadData} />}
           </div>
         </header>
@@ -213,7 +213,7 @@ export function ImageManagerDashboardPage() {
             <>
           <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             {[
-              [`${images.length.toLocaleString('de-DE')}`, 'Bilder', loading ? 'Lade Bestand …' : 'Live aus ZB-Media-API', '▧'],
+              [`${images.length.toLocaleString('de-DE')}`, 'Bilder', loading ? 'Lade Bestand …' : 'Live aus ZB-Medien-API', '▧'],
               [`${activeCount.toLocaleString('de-DE')}`, 'Aktive Bilder', 'Auf Websites verfügbar', '✓'],
               [`${categoryCount}`, 'Kategorien', 'Aktuell belegte Werte', '≡'],
               [`${images.length ? '1' : '0'}`, 'Website', 'Verbunden', '⌘'],
@@ -252,8 +252,8 @@ export function ImageManagerDashboardPage() {
           </section>
 
           <section className="grid gap-5 lg:grid-cols-2">
-            <div className="rounded-2xl bg-[#111318] p-6 text-white"><div className="flex items-center gap-3"><Icon>⌘</Icon><div><div className="font-bold">Website-Verbindungen</div><div className="text-sm text-slate-400">Zentrale Verwaltung deiner angeschlossenen Websites</div></div></div><div className="mt-6 flex items-center justify-between rounded-xl border border-white/10 bg-white/5 p-4"><div><div className="font-semibold">Website-Verbindung</div><div className="mt-1 text-xs text-slate-400">REST Connector · zentral verwaltet</div></div><span className="rounded-full bg-emerald-400/10 px-3 py-1 text-xs font-semibold text-emerald-300">Online</span></div></div>
-            <div className="rounded-2xl border border-slate-200 bg-white p-6"><div className="font-bold">Nächster Schritt</div><p className="mt-2 text-sm leading-6 text-slate-500">Media Library, Rollen, White-Label, Connectoren und Billing sind vorbereitet. Vor dem öffentlichen Verkauf fehlen nur externe Stripe-/Auth-Konfiguration und der finale End-to-End-Test.</p><button className="mt-5 rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-semibold hover:bg-slate-50">Produktionsstatus</button></div>
+            <div className="rounded-2xl bg-[#111318] p-6 text-white"><div className="flex items-center gap-3"><Icon>⌘</Icon><div><div className="font-bold">Website-Verbindungen</div><div className="text-sm text-slate-400">Zentrale Verwaltung deiner angeschlossenen Websites</div></div></div><div className="mt-6 flex items-center justify-between rounded-xl border border-white/10 bg-white/5 p-4"><div><div className="font-semibold">Website-Verbindung</div><div className="mt-1 text-xs text-slate-400">REST-Schnittstelle · zentral verwaltet</div></div><span className="rounded-full bg-emerald-400/10 px-3 py-1 text-xs font-semibold text-emerald-300">Online</span></div></div>
+            <div className="rounded-2xl border border-slate-200 bg-white p-6"><div className="font-bold">Nächster Schritt</div><p className="mt-2 text-sm leading-6 text-slate-500">Media Library, Rollen, Eigener Markenauftritt, Connectoren und Abrechnung sind vorbereitet. Vor dem öffentlichen Verkauf fehlen nur externe Stripe-/Auth-Konfiguration und der finale End-to-End-Test.</p><button className="mt-5 rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-semibold hover:bg-slate-50">Produktionsstatus</button></div>
           </section>
             </>
           )}
