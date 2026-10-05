@@ -1,30 +1,44 @@
-/** Default ZB Interieur media categories (extensible via API / categories.json). */
+/** Default ZB Interieur media categories — category1 = real catalog brands only. */
 
 import type { MediaCategories } from './types.js'
 
+/** Hersteller / Marke — only brands that exist in marken-data. */
+export const CATALOG_BRANDS = [
+  'AL2',
+  'ASA',
+  'Biohort',
+  'Bonaldo',
+  'Brink & Campman',
+  'Clarke & Clarke',
+  'Fine',
+  'fleuresse',
+  'Form exclusiv',
+  'Fürstenberg',
+  'Giellesse',
+  'Gyform',
+  'Harlequin',
+  'JAB Anstoetz',
+  'Kolini',
+  'La Vida',
+  'Lema',
+  'Limited Edition',
+  'Lüönd',
+  'Marchetti',
+  'Mogg',
+  'Möller Design',
+  'naos',
+  'Nature Design',
+  'Papadatos',
+  'Pozzebon',
+  'Res Italia',
+  'Rohleder',
+  'Sitzwerk',
+  'Unopiu',
+  'Varaschin',
+] as const
+
 export const DEFAULT_CATEGORIES: MediaCategories = {
-  category1: [
-    'FÍNE',
-    'Fine',
-    'AL2',
-    'Gyform',
-    'Giorgetti',
-    'Gervasoni',
-    'Kristalia',
-    'Varaschin',
-    'Möller Design',
-    'Papadatos',
-    'Bonaldo',
-    'Marchetti',
-    'Mogg',
-    'Form exclusiv',
-    'Piure',
-    'Rohleder',
-    'Nature Design',
-    'Kolini',
-    'Lema',
-    'Limited Edition',
-  ],
+  category1: [...CATALOG_BRANDS],
   category2: [
     'Sofa',
     'Sessel',
@@ -35,10 +49,6 @@ export const DEFAULT_CATEGORIES: MediaCategories = {
     'Leuchte',
     'Accessoire',
     'Outdoor',
-    'Daybed',
-    'Sideboard',
-    'Teppich',
-    'Sonstiges',
   ],
   category3: [
     'Wohnzimmer',
@@ -47,9 +57,6 @@ export const DEFAULT_CATEGORIES: MediaCategories = {
     'Büro',
     'Outdoor',
     'Objekte',
-    'Bad',
-    'Flur',
-    'Showroom',
   ],
   category4: [
     'Designklassiker',
@@ -59,7 +66,5 @@ export const DEFAULT_CATEGORIES: MediaCategories = {
     'Outdoor',
     'Neuheiten',
     'Bestseller',
-    'Zeitlos',
-    'Skulptural',
   ],
 }

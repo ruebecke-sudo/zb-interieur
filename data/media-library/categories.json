@@ -1,25 +1,36 @@
 {
   "category1": [
-    "FÍNE",
-    "Fine",
     "AL2",
-    "Gyform",
-    "Giorgetti",
-    "Gervasoni",
-    "Kristalia",
-    "Varaschin",
-    "Möller Design",
-    "Papadatos",
+    "ASA",
+    "Biohort",
     "Bonaldo",
+    "Brink & Campman",
+    "Clarke & Clarke",
+    "Fine",
+    "fleuresse",
+    "Form exclusiv",
+    "Fürstenberg",
+    "Giellesse",
+    "Gyform",
+    "Harlequin",
+    "JAB Anstoetz",
+    "Kolini",
+    "La Vida",
+    "Lema",
+    "Limited Edition",
+    "Lüönd",
     "Marchetti",
     "Mogg",
-    "Form exclusiv",
-    "Piure",
-    "Rohleder",
+    "Möller Design",
+    "naos",
     "Nature Design",
-    "Kolini",
-    "Lema",
-    "Limited Edition"
+    "Papadatos",
+    "Pozzebon",
+    "Res Italia",
+    "Rohleder",
+    "Sitzwerk",
+    "Unopiu",
+    "Varaschin"
   ],
   "category2": [
     "Sofa",
@@ -30,11 +41,7 @@
     "Schrank",
     "Leuchte",
     "Accessoire",
-    "Outdoor",
-    "Daybed",
-    "Sideboard",
-    "Teppich",
-    "Sonstiges"
+    "Outdoor"
   ],
   "category3": [
     "Wohnzimmer",
@@ -42,10 +49,7 @@
     "Schlafzimmer",
     "Büro",
     "Outdoor",
-    "Objekte",
-    "Bad",
-    "Flur",
-    "Showroom"
+    "Objekte"
   ],
   "category4": [
     "Designklassiker",
@@ -54,8 +58,6 @@
     "Luxus",
     "Outdoor",
     "Neuheiten",
-    "Bestseller",
-    "Zeitlos",
-    "Skulptural"
+    "Bestseller"
   ]
 }
