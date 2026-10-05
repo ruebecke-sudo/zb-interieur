@@ -8,11 +8,11 @@ import {
   formatBytes,
   getMediaApiKey,
   listMedia,
+  loginWithPassword,
   type MediaCategories,
   type MediaImage,
   replaceMediaFile,
   saveCategories,
-  setMediaApiKey,
   updateMediaMeta,
   uploadMedia,
 } from '../lib/mediaApi'
@@ -34,7 +34,8 @@ const ACCEPT = 'image/jpeg,image/png,image/webp,image/gif,image/avif'
 export function BildverwaltungPage() {
   const fileRef = useRef<HTMLInputElement>(null)
   const replaceRef = useRef<HTMLInputElement>(null)
-  const [apiKey, setApiKeyState] = useState(() => getMediaApiKey())
+  const [password, setPassword] = useState('')
+  const [loginPending, setLoginPending] = useState(false)
   const [authed, setAuthed] = useState(Boolean(getMediaApiKey()))
   const [categories, setCategories] = useState<MediaCategories | null>(null)
   const [items, setItems] = useState<MediaImage[]>([])
@@ -76,18 +77,28 @@ export function BildverwaltungPage() {
     if (authed) void load()
   }, [authed, load])
 
-  function handleLogin(e: FormEvent) {
+  async function handleLogin(e: FormEvent) {
     e.preventDefault()
-    setMediaApiKey(apiKey.trim())
-    setAuthed(true)
+    setLoginPending(true)
+    setError('')
     setStatus('')
+    try {
+      await loginWithPassword(password)
+      setAuthed(true)
+      setPassword('')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Login fehlgeschlagen.')
+      setAuthed(false)
+    } finally {
+      setLoginPending(false)
+    }
   }
 
   function handleLogout() {
     clearMediaApiKey()
     setAuthed(false)
     setItems([])
-    setApiKeyState('')
+    setPassword('')
   }
 
   function addFiles(list: FileList | File[]) {
@@ -228,28 +239,34 @@ export function BildverwaltungPage() {
           <p className="text-[11px] font-semibold tracking-[0.22em] text-brand uppercase">Verwaltung</p>
           <h1 className="mt-2 font-sans text-3xl font-extrabold tracking-tight">Bildverwaltung</h1>
           <p className="mt-3 text-sm text-muted">
-            Anmeldung mit API-Schlüssel (Bearer). Lokal Standard:{' '}
-            <code className="text-ink">zb-interieur-dev-key</code>
+            Bitte mit dem Verwaltungs-Passwort anmelden. Nur für autorisierte Nutzer von ZB Interieur.
           </p>
-          <form onSubmit={handleLogin} className="mt-8 space-y-4 border border-line bg-white p-6">
+          <form onSubmit={(e) => void handleLogin(e)} className="mt-8 space-y-4 border border-line bg-white p-6">
             <label className="block text-sm font-medium">
-              API-Schlüssel
+              Passwort
               <input
                 type="password"
-                value={apiKey}
-                onChange={(e) => setApiKeyState(e.target.value)}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 className="mt-2 w-full border border-line px-3 py-2"
                 autoComplete="current-password"
                 required
               />
             </label>
+            {error ? <p className="text-sm text-red-700">{error}</p> : null}
             <button
               type="submit"
-              className="inline-flex bg-brand px-6 py-3 text-sm font-bold tracking-[0.08em] text-white uppercase"
+              disabled={loginPending}
+              className="inline-flex bg-brand px-6 py-3 text-sm font-bold tracking-[0.08em] text-white uppercase disabled:opacity-50"
             >
-              Anmelden
+              {loginPending ? 'Prüfen …' : 'Anmelden'}
             </button>
           </form>
+          <p className="mt-6 text-sm text-muted">
+            <Link to="/" className="underline hover:text-brand">
+              Zurück zur Website
+            </Link>
+          </p>
         </div>
       </section>
     )

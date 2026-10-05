@@ -42,6 +42,21 @@ export function clearMediaApiKey(): void {
   sessionStorage.removeItem(KEY_STORAGE)
 }
 
+/** Login with site password; stores bearer token for subsequent API calls. */
+export async function loginWithPassword(password: string): Promise<void> {
+  const res = await fetch('/api/auth/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ password }),
+  })
+  if (!res.ok) {
+    throw new Error(await errorMessage(res))
+  }
+  const data = (await res.json()) as { token?: string }
+  if (!data.token) throw new Error('Login fehlgeschlagen.')
+  setMediaApiKey(data.token)
+}
+
 async function mediaFetch(path: string, init: RequestInit = {}): Promise<Response> {
   const key = getMediaApiKey()
   const headers = new Headers(init.headers || {})

@@ -27,8 +27,9 @@ cp .env.example .env   # optional
 npm run dev            # Vite :43127 + Media-API :43128
 ```
 
-API-Schlüssel (Standard): `zb-interieur-dev-key`  
-UI-Login: denselben Schlüssel unter `/verwaltung/bilder` eintragen.
+API-Schlüssel (Standard lokal): `zb-interieur-dev-key`  
+UI-Login-Passwort: Env `IMAGE_MANAGER_PASSWORD` (Standard lokal: gleich dem API-Schlüssel, oder z. B. `zb-interieur-admin` laut `.env.example`).  
+Zugang über Footer-Link **Bildverwaltung** → `/verwaltung/bilder`.
 
 ### API-Endpunkte
 

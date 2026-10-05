@@ -25,7 +25,13 @@ function expectedApiKey(): string {
   return process.env.IMAGE_MANAGER_API_KEY || 'zb-interieur-dev-key'
 }
 
-function isPublicGet(path: string, method: string): boolean {
+/** Human login password for the admin UI (defaults to the API key). */
+function expectedPassword(): string {
+  return process.env.IMAGE_MANAGER_PASSWORD || expectedApiKey()
+}
+
+function isPublicPath(path: string, method: string): boolean {
+  if (path === '/api/auth/login' && method === 'POST') return true
   if (method !== 'GET') return false
   return (
     path === '/api/health' ||
@@ -50,7 +56,7 @@ export function createMediaApp() {
   app.use('/api/*', async (c, next) => {
     if (c.req.method === 'OPTIONS') return next()
     const path = new URL(c.req.url).pathname
-    if (isPublicGet(path, c.req.method)) {
+    if (isPublicPath(path, c.req.method)) {
       c.set('authenticated', false)
       return next()
     }
@@ -66,6 +72,29 @@ export function createMediaApp() {
     }
     c.set('authenticated', true)
     return next()
+  })
+
+  app.post('/api/auth/login', async (c) => {
+    let password = ''
+    const contentType = c.req.header('content-type') || ''
+    try {
+      if (contentType.includes('application/json')) {
+        const body = (await c.req.json()) as { password?: string }
+        password = String(body.password || '')
+      } else {
+        const body = await c.req.parseBody()
+        password = String(body.password || '')
+      }
+    } catch {
+      return c.json({ error: 'Ungültige Anfrage.' }, 400)
+    }
+
+    const ok = password === expectedPassword() || password === expectedApiKey()
+    if (!ok) {
+      return c.json({ error: 'Passwort falsch.' }, 401)
+    }
+    // Session token for the browser = API bearer key (not shown as “API key” in the UI).
+    return c.json({ ok: true, token: expectedApiKey() })
   })
 
   app.get('/api/health', (c) =>

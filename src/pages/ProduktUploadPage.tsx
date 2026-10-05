@@ -168,6 +168,11 @@ export function ProduktUploadPage() {
           Vor dem Speichern können Name und Alt-Text angepasst werden. Bestehende Katalogprodukte
           bleiben unverändert.
         </p>
+        <p className="mt-3 text-sm">
+          <Link to="/verwaltung/bilder" className="font-medium text-brand underline">
+            Zur zentralen Bildverwaltung
+          </Link>
+        </p>
 
         <div className="mt-8 rounded-sm border border-line bg-white p-6">
           <input

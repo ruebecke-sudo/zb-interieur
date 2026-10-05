@@ -113,7 +113,7 @@ export function Footer() {
               </a>
             </p>
           </div>
-          <div className="flex gap-4">
+          <div className="flex flex-wrap gap-4">
             <Link to="/impressum" className="hover:text-white">
               Impressum
             </Link>
@@ -125,6 +125,9 @@ export function Footer() {
             </Link>
             <Link to="/agb" className="hover:text-white">
               AGB
+            </Link>
+            <Link to="/verwaltung/bilder" className="hover:text-white">
+              Bildverwaltung
             </Link>
           </div>
         </div>
