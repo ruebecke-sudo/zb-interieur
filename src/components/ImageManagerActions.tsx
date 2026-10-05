@@ -129,7 +129,7 @@ export function ImageManagerActions({ item, categories, onChanged, primary = fal
           image.src = URL.createObjectURL(file)
         })
         URL.revokeObjectURL(image.src)
-        const { error: insertError } = await supabase.from('images').insert({
+        const { data: inserted, error: insertError } = await supabase.from('images').insert({
           tenant_id: membership.tenant_id,
           website_id: websiteId,
           filename: file.name,
@@ -147,8 +147,17 @@ export function ImageManagerActions({ item, categories, onChanged, primary = fal
           url: publicUrl.publicUrl,
           status: 'active',
           sync_status: 'pending',
-        })
+        }).select('id').single()
         if (insertError) throw new Error(insertError.message)
+        const { data: sessionData } = await supabase.auth.getSession()
+        const accessToken = sessionData.session?.access_token
+        if (accessToken && inserted?.id) {
+          await fetch('/.netlify/functions/sync-image-to-zb', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + accessToken },
+            body: JSON.stringify({ image_id: inserted.id }),
+          })
+        }
       }
       setModal(null)
       await onChanged()
