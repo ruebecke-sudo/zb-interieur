@@ -156,7 +156,7 @@ export function ImageManagerActions({ item, categories, onChanged, primary = fal
             headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + accessToken },
             body: JSON.stringify({ image_id: inserted.id }),
           })
-          const syncResult = await syncResponse.json().catch(() => ({})) as { error?: string }
+          const syncResult = await syncResponse.json().catch(() => ({})) as { error?: string; missing?: string[] }
           const previewIndex = previews.length - 1
           if (syncResponse.ok) {
             previews[previewIndex] = { ...previews[previewIndex], syncStatus: 'synced' }
@@ -164,7 +164,9 @@ export function ImageManagerActions({ item, categories, onChanged, primary = fal
             previews[previewIndex] = {
               ...previews[previewIndex],
               syncStatus: 'error',
-              syncError: syncResult.error || 'Übertragung zu ZB Interieur fehlgeschlagen.',
+              syncError: syncResult.missing?.length
+                ? `Fehlende Server-Konfiguration: ${syncResult.missing.join(', ')}`
+                : (syncResult.error || 'Übertragung zu ZB Interieur fehlgeschlagen.'),
             }
           }
           setUploadedPreviews([...previews])
