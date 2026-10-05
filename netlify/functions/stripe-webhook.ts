@@ -10,7 +10,7 @@ export default async (req: Request) => {
   const signature = req.headers.get('stripe-signature')
   if (!signature) return new Response('Missing Stripe signature.', { status: 400 })
   const payload = await req.text()
-  const event = verifyStripeEvent(payload, signature, webhookSecret)
+  const event = await verifyStripeEvent(payload, signature, webhookSecret)
   if (!event) return new Response('Invalid signature.', { status: 400 })
 
   if (event.type === 'checkout.session.completed') {
@@ -34,7 +34,7 @@ export default async (req: Request) => {
 }
 
 
-function verifyStripeEvent(payload: string, header: string, secret: string): { type: string; data: { object: any } } | null {
+async function verifyStripeEvent(payload: string, header: string, secret: string): Promise<{ type: string; data: { object: any } } | null> {
   const crypto = globalThis.crypto
   const parts = header.split(',')
   const timestampPart = parts.find((p) => p.startsWith('t='))
@@ -44,14 +44,13 @@ function verifyStripeEvent(payload: string, header: string, secret: string): { t
   const expectedInput = timestamp + '.' + payload
   const key = new TextEncoder().encode(secret)
   const data = new TextEncoder().encode(expectedInput)
-  return crypto.subtle.importKey('raw', key, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']).then(async (cryptoKey) => {
-    const sig = await crypto.subtle.sign('HMAC', cryptoKey, data)
-    const expected = Array.from(new Uint8Array(sig)).map((b) => b.toString(16).padStart(2, '0')).join('')
-    const supplied = signaturePart.slice(3)
-    if (expected.length !== supplied.length) return null
-    let diff = 0
-    for (let i = 0; i < expected.length; i++) diff |= expected.charCodeAt(i) ^ supplied.charCodeAt(i)
-    if (diff !== 0 || Math.abs(Date.now() / 1000 - Number(timestamp)) > 300) return null
-    return JSON.parse(payload)
-  }) as any
+  const cryptoKey = await crypto.subtle.importKey('raw', key, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign'])
+  const sig = await crypto.subtle.sign('HMAC', cryptoKey, data)
+  const expected = Array.from(new Uint8Array(sig)).map((b) => b.toString(16).padStart(2, '0')).join('')
+  const supplied = signaturePart.slice(3)
+  if (expected.length !== supplied.length) return null
+  let diff = 0
+  for (let i = 0; i < expected.length; i++) diff |= expected.charCodeAt(i) ^ supplied.charCodeAt(i)
+  if (diff !== 0 || Math.abs(Date.now() / 1000 - Number(timestamp)) > 300) return null
+  try { return JSON.parse(payload) } catch { return null }
 }
