@@ -39,6 +39,8 @@ const routes = [
   'raumgestaltung',
   'galerien',
   'galerie',
+  'verwaltung/produkte',
+  'verwaltung/bilder',
 ]
 
 for (const route of routes) {

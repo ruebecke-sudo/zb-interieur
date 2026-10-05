@@ -8,6 +8,69 @@ Die Seite **Marken** (`/marken`) zeigt Logos, Produktheadlines und Produktbilder
 
 Über **Produktverwaltung** (`/verwaltung/produkte`) können neue Produktbilder hochgeladen werden: Produktname und Marke werden aus dem Dateinamen abgeleitet (z. B. `FINE_Aria_Sofa_3-Sitzer.jpg` → „FINE Aria Sofa 3-Sitzer“ / Marke Fine), vor dem Speichern kontrolliert und lokal (IndexedDB + localStorage) an die Produktauswahl angehängt. Bestehende Katalogprodukte bleiben unverändert.
 
+## Bildverwaltung (Media Library)
+
+Zentrale Bildverwaltung unter [`/verwaltung/bilder`](http://127.0.0.1:43127/verwaltung/bilder):
+
+- Mehrfach-Upload mit Vorschau
+- Automatische Metadaten: Bildname (aus Dateiname), Auflösung, Farbraum, Format, Dateigröße, URL, Upload-Datum
+- Kategorien 1–4 (Marke, Produktart, Bereich, Stil) – erweiterbar
+- Suche + Mehrfachfilter, Thumbnails, Bearbeiten/Löschen
+- Metadaten und Bilddatei getrennt änderbar
+- API für das ChatGPT-Plugin „Web Image Manager“
+
+### Lokal starten
+
+```bash
+npm install
+cp .env.example .env   # optional
+npm run dev            # Vite :43127 + Media-API :43128
+```
+
+API-Schlüssel (Standard): `zb-interieur-dev-key`  
+UI-Login: denselben Schlüssel unter `/verwaltung/bilder` eintragen.
+
+### API-Endpunkte
+
+| Methode | Pfad | Beschreibung |
+|--------|------|--------------|
+| `POST` | `/api/images/upload` | Multipart-Upload (`file`, optional `name`, `text`, `category1–4`) |
+| `GET` | `/api/images` | Liste/Suche (`q`, `category1–4`) |
+| `GET` | `/api/images/:id` | Einzelbild |
+| `PUT` | `/api/images/:id` | Metadaten (JSON) oder Datei ersetzen (multipart) |
+| `DELETE` | `/api/images/:id` | Löschen |
+| `GET` | `/api/images/categories` | Kategorien |
+| `PUT` | `/api/images/categories` | Kategorien erweitern |
+| `GET` | `/api/health` | Healthcheck |
+| `GET` | `/api/images/openapi.json` | OpenAPI für ChatGPT-Plugin |
+
+Auth: `Authorization: Bearer <IMAGE_MANAGER_API_KEY>` oder Header `X-Api-Key`.
+
+### Speicher
+
+- **Lokal:** Dateien in `public/media/library/`, Metadaten in `data/media-library/index.json`
+- **Netlify:** Netlify Blobs Store `zb-media-library` (wenn `NETLIFY` gesetzt)
+
+### ChatGPT-Plugin
+
+1. Site-URL als Plugin-Server hinterlegen  
+2. OpenAPI: `https://<host>/api/images/openapi.json`  
+3. Manifest: `https://<host>/.well-known/ai-plugin.json`  
+4. Bearer-Token = `IMAGE_MANAGER_API_KEY` (in Netlify Environment Variables setzen)
+
+### Test-Upload (curl)
+
+```bash
+curl -X POST http://127.0.0.1:43127/api/images/upload \
+  -H "Authorization: Bearer zb-interieur-dev-key" \
+  -F "file=@./public/images/fine/auswahl-01.jpg" \
+  -F "name=FINE Daybed" \
+  -F "category1=Fine" \
+  -F "category2=Bett" \
+  -F "category3=Schlafzimmer" \
+  -F "category4=Modern"
+```
+
 ## Live auf Netlify
 
 Letzter anonymer Drop (Passwort-geschützt, zeitlich begrenzt):

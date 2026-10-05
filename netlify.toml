@@ -5,6 +5,10 @@
 [build.environment]
   NODE_VERSION = "22"
 
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
 # Alte Planungs-Unterseiten
 [[redirects]]
   from = "/kuechenplanungen-2"
@@ -87,7 +91,7 @@
   to = "/planung"
   status = 301
 
-# SPA routing
+# SPA routing (API routes are handled by Netlify Functions path config)
 [[redirects]]
   from = "/*"
   to = "/index.html"
@@ -95,9 +99,10 @@
 
 # Netlify Forms – detect forms in built HTML
 [dev]
-  command = "npm run dev"
+  command = "npm run dev:web"
   targetPort = 43127
   port = 8888
+  # Media API runs via `npm run media-api` or Netlify Functions in `netlify dev`
 
 [[headers]]
   for = "/assets/*"
