@@ -67,3 +67,5 @@ export function ImageManagerMembers() {
       {!members.length && <div className="p-6 text-center text-sm text-slate-500">Noch keine Mitglieder vorhanden.</div>}
     </div>
   </section>
+
+}
