@@ -17,7 +17,7 @@ export function ImageManagerPlans() {
   })()},[])
   if(message)return <div className="rounded-2xl border border-red-200 bg-red-50 p-5 text-sm text-red-700">{message}</div>
   if(!usage)return <div className="rounded-2xl border border-slate-200 bg-white p-6 text-sm text-slate-500">Planinformationen werden geladen …</div>
-  const plans=[['starter','Starter','19 € / Monat'],['professional','Professional','39 € / Monat'],['business','Business','79 € / Monat'],['agency','Agency','Individuell']]
+  const plans=[['starter','Starter','19 € / Monat'],['professional','Professional','39 € / Monat'],['business','Business','79 € / Monat'],['agency','Agency','Individuell'],['lifetime','Lifetime','499 € einmalig']]
   const percent=(n:number,max:number)=>Math.min(100,Math.round(n/max*100))
   return <section className="space-y-6">
     <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"><h2 className="text-xl font-bold">Tarif & Nutzung</h2><p className="mt-1 text-sm text-slate-500">Aktueller Tarif und technische Nutzungsgrenzen des Workspace.</p>
@@ -28,8 +28,8 @@ export function ImageManagerPlans() {
           ['Websites',usage.website_count,usage.max_websites]
         ].map(([label,n,max])=><div key={label as string} className="rounded-2xl bg-slate-50 p-4"><div className="flex justify-between text-sm font-semibold"><span>{label}</span><span>{n} / {max}</span></div><div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-200"><div className="h-full rounded-full bg-[#0E675A]" style={{width:percent(n as number,max as number)+'%'}}/></div></div>)}
       </div>
-      <div className="mt-5 rounded-xl border border-slate-200 p-4"><div className="text-xs uppercase tracking-wider text-slate-400">Aktueller Tarif</div><div className="mt-1 text-lg font-bold capitalize">{usage.plan}</div></div>
+      <div className="mt-5 rounded-xl border border-slate-200 p-4"><div className="text-xs uppercase tracking-wider text-slate-400">Aktueller Tarif</div><div className="mt-1 text-lg font-bold capitalize">{usage.plan}</div>{usage.plan!=='lifetime' && <button className="mt-4 rounded-xl bg-[#0E675A] px-4 py-2.5 text-sm font-semibold text-white">Lifetime-Lizenz kaufen</button>}</div>
     </div>
-    <div className="grid gap-4 md:grid-cols-4">{plans.map(([id,name,price])=><div key={id} className={`rounded-2xl border p-5 ${usage.plan===id?'border-[#0E675A] ring-2 ring-[#0E675A]/10':'border-slate-200'} bg-white`}><div className="font-bold">{name}</div><div className="mt-1 text-sm text-slate-500">{price}</div><div className="mt-5 text-xs text-slate-500">Bilder, Benutzer und Websites gemäß Tariflimit.</div></div>)}</div>
+    <div className="grid gap-4 md:grid-cols-4">{plans.map(([id,name,price])=><div key={id} className={`rounded-2xl border p-5 ${usage.plan===id?'border-[#0E675A] ring-2 ring-[#0E675A]/10':'border-slate-200'} bg-white`}><div className="font-bold">{name}</div><div className="mt-1 text-sm text-slate-500">{price}</div><div className="mt-5 text-xs text-slate-500">Bilder, Benutzer und Websites gemäß Tariflimit.</div>{id==='lifetime' && <div className="mt-4 rounded-xl bg-emerald-50 p-3 text-xs font-semibold text-emerald-800">Einmal zahlen · dauerhaft nutzen · keine monatliche Grundgebühr</div>}</div>)}</div>
   </section>
 }
