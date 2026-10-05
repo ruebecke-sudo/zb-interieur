@@ -122,20 +122,56 @@ create policy "users can read own memberships"
 on public.memberships for select
 using (user_id = auth.uid());
 
-create policy "tenant members can manage websites"
+create policy "tenant members can read websites"
+on public.websites for select
+using (public.is_tenant_member(tenant_id));
+
+create policy "tenant admins can manage websites"
 on public.websites for all
-using (public.is_tenant_member(tenant_id))
-with check (public.is_tenant_member(tenant_id));
+using (
+  exists (select 1 from public.memberships m where m.tenant_id = tenant_id and m.user_id = auth.uid() and m.role in ('owner','admin'))
+)
+with check (
+  exists (select 1 from public.memberships m where m.tenant_id = tenant_id and m.user_id = auth.uid() and m.role in ('owner','admin'))
+);
 
-create policy "tenant members can manage categories"
+create policy "tenant members can read categories"
+on public.categories for select
+using (public.is_tenant_member(tenant_id));
+
+create policy "tenant admins can manage categories"
 on public.categories for all
-using (public.is_tenant_member(tenant_id))
-with check (public.is_tenant_member(tenant_id));
+using (
+  exists (select 1 from public.memberships m where m.tenant_id = tenant_id and m.user_id = auth.uid() and m.role in ('owner','admin'))
+)
+with check (
+  exists (select 1 from public.memberships m where m.tenant_id = tenant_id and m.user_id = auth.uid() and m.role in ('owner','admin'))
+);
 
-create policy "tenant members can manage images"
-on public.images for all
-using (public.is_tenant_member(tenant_id))
-with check (public.is_tenant_member(tenant_id));
+create policy "tenant members can read images"
+on public.images for select
+using (public.is_tenant_member(tenant_id));
+
+create policy "tenant editors can create images"
+on public.images for insert
+with check (
+  exists (select 1 from public.memberships m where m.tenant_id = tenant_id and m.user_id = auth.uid() and m.role in ('owner','admin','member'))
+);
+
+create policy "tenant editors can update images"
+on public.images for update
+using (
+  exists (select 1 from public.memberships m where m.tenant_id = tenant_id and m.user_id = auth.uid() and m.role in ('owner','admin','member'))
+)
+with check (
+  exists (select 1 from public.memberships m where m.tenant_id = tenant_id and m.user_id = auth.uid() and m.role in ('owner','admin','member'))
+);
+
+create policy "tenant editors can delete images"
+on public.images for delete
+using (
+  exists (select 1 from public.memberships m where m.tenant_id = tenant_id and m.user_id = auth.uid() and m.role in ('owner','admin','member'))
+);
 
 create policy "tenant members can read audit logs"
 on public.audit_logs for select
