@@ -150,11 +150,15 @@ export function ImageManagerActions({ item, categories, onChanged, primary = fal
         const { data: sessionData } = await supabase.auth.getSession()
         const accessToken = sessionData.session?.access_token
         if (accessToken && inserted?.id) {
-          await fetch('/.netlify/functions/sync-image-to-zb', {
+          const syncResponse = await fetch('/.netlify/functions/sync-image-to-zb', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + accessToken },
             body: JSON.stringify({ image_id: inserted.id }),
           })
+          if (!syncResponse.ok) {
+            const syncResult = await syncResponse.json().catch(() => ({})) as { error?: string }
+            throw new Error(syncResult.error || 'Bild wurde hochgeladen, konnte aber noch nicht zu ZB Interieur übertragen werden.')
+          }
         }
       }
       setUploadedPreviews(previews)
