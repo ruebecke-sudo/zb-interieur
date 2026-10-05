@@ -12,7 +12,7 @@ declare
   display_name text;
   base_slug text;
 begin
-  if coalesce(new.raw_app_meta_data ->> 'image_manager_invited', 'false') = 'true' then
+  if coalesce(new.raw_user_meta_data ->> 'image_manager_invited', 'false') = 'true' then
     return new;
   end if;
 
