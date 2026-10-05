@@ -6,40 +6,99 @@ const cors = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 }
 
+const json = (body: unknown, status: number) =>
+  new Response(JSON.stringify(body), {
+    status,
+    headers: { ...cors, 'Content-Type': 'application/json' },
+  })
+
 export default async (req: Request) => {
   if (req.method === 'OPTIONS') return new Response('', { status: 204, headers: cors })
-  if (req.method !== 'POST') return new Response(JSON.stringify({ error: 'Method not allowed' }), { status: 405, headers: { ...cors, 'Content-Type': 'application/json' } })
+  if (req.method !== 'POST') return json({ error: 'Method not allowed' }, 405)
 
   const url = process.env.SUPABASE_URL
-  const publishable = process.env.SUPABASE_PUBLISHABLE_KEY
   const secret = process.env.SUPABASE_SECRET_KEY
-  if (!url || !publishable || !secret) return new Response(JSON.stringify({ error: 'Supabase server configuration missing.' }), { status: 500, headers: { ...cors, 'Content-Type': 'application/json' } })
 
-  const auth = req.headers.get('authorization') || ''
-  if (!auth.startsWith('Bearer ')) return new Response(JSON.stringify({ error: 'Authentication required.' }), { status: 401, headers: { ...cors, 'Content-Type': 'application/json' } })
-  const token = auth.slice(7)
+  // The publishable key is not needed server-side. The authenticated user's
+  // access token is verified with Supabase Auth using the server secret key.
+  if (!url || !secret) {
+    return json({ error: 'Supabase server configuration missing.' }, 500)
+  }
 
-  const userClient = createClient(url, publishable, { global: { headers: { Authorization: `Bearer ${token}` } }, auth: { persistSession: false, autoRefreshToken: false } })
-  const { data: userData } = await userClient.auth.getUser()
-  if (!userData.user) return new Response(JSON.stringify({ error: 'Invalid session.' }), { status: 401, headers: { ...cors, 'Content-Type': 'application/json' } })
+  const authorization = req.headers.get('authorization') || ''
+  if (!authorization.startsWith('Bearer ')) {
+    return json({ error: 'Authentication required.' }, 401)
+  }
+
+  const token = authorization.slice(7).trim()
+  if (!token) return json({ error: 'Authentication required.' }, 401)
+
+  const admin = createClient(url, secret, {
+    auth: { persistSession: false, autoRefreshToken: false },
+  })
+
+  const userClient = createClient(url, secret, {
+    global: { headers: { Authorization: `Bearer ${token}` } },
+    auth: { persistSession: false, autoRefreshToken: false },
+  })
+
+  const { data: userData, error: userError } = await userClient.auth.getUser()
+  if (userError || !userData.user) {
+    return json({ error: 'Invalid session.' }, 401)
+  }
 
   const body = await req.json().catch(() => null) as { email?: string; role?: string } | null
   const email = body?.email?.trim().toLowerCase()
   const role = body?.role || 'member'
-  if (!email || !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)) return new Response(JSON.stringify({ error: 'Gültige E-Mail-Adresse erforderlich.' }), { status: 400, headers: { ...cors, 'Content-Type': 'application/json' } })
-  if (!['admin','member','viewer'].includes(role)) return new Response(JSON.stringify({ error: 'Ungültige Rolle.' }), { status: 400, headers: { ...cors, 'Content-Type': 'application/json' } })
 
-  const { data: membership } = await userClient.from('memberships').select('tenant_id,role').eq('user_id', userData.user.id).limit(1).maybeSingle()
-  if (!membership || !['owner','admin'].includes(membership.role)) return new Response(JSON.stringify({ error: 'Keine Berechtigung.' }), { status: 403, headers: { ...cors, 'Content-Type': 'application/json' } })
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return json({ error: 'Gültige E-Mail-Adresse erforderlich.' }, 400)
+  }
 
-  const admin = createClient(url, secret, { auth: { persistSession: false, autoRefreshToken: false } })
-  const { error: pendingError } = await admin.from('image_manager_invitations').insert({ tenant_id: membership.tenant_id, email, role })
-  if (pendingError) return new Response(JSON.stringify({ error: 'Einladung konnte nicht vorbereitet werden: ' + pendingError.message }), { status: 500, headers: { ...cors, 'Content-Type': 'application/json' } })
+  if (!['admin', 'member', 'viewer'].includes(role)) {
+    return json({ error: 'Ungültige Rolle.' }, 400)
+  }
 
-  const { data: invite, error: inviteError } = await admin.auth.admin.inviteUserByEmail(email, { redirectTo: `${new URL(req.url).origin}/image-manager/app` })
-  if (inviteError || !invite.user) return new Response(JSON.stringify({ error: inviteError?.message || 'Einladung konnte nicht versendet werden.' }), { status: 400, headers: { ...cors, 'Content-Type': 'application/json' } })
+  const { data: membership, error: membershipError } = await admin
+    .from('memberships')
+    .select('tenant_id,role')
+    .eq('user_id', userData.user.id)
+    .limit(1)
+    .maybeSingle()
 
+  if (membershipError) {
+    return json({ error: 'Workspace-Berechtigung konnte nicht geprüft werden: ' + membershipError.message }, 500)
+  }
 
+  if (!membership || !['owner', 'admin'].includes(membership.role)) {
+    return json({ error: 'Keine Berechtigung.' }, 403)
+  }
 
-  return new Response(JSON.stringify({ ok: true, message: `Einladung an ${email} wurde versendet.` }), { status: 200, headers: { ...cors, 'Content-Type': 'application/json' } })
+  const { error: pendingError } = await admin
+    .from('image_manager_invitations')
+    .insert({ tenant_id: membership.tenant_id, email, role })
+
+  if (pendingError) {
+    return json({ error: 'Einladung konnte nicht vorbereitet werden: ' + pendingError.message }, 500)
+  }
+
+  const redirectTo = `${new URL(req.url).origin}/image-manager/app`
+  const { data: invite, error: inviteError } = await admin.auth.admin.inviteUserByEmail(email, { redirectTo })
+
+  if (inviteError || !invite.user) {
+    // Do not leave an unusable pending invitation behind when Supabase Auth
+    // rejects the invitation.
+    await admin
+      .from('image_manager_invitations')
+      .delete()
+      .eq('tenant_id', membership.tenant_id)
+      .eq('email', email)
+
+    return json(
+      { error: inviteError?.message || 'Einladung konnte nicht versendet werden.' },
+      400,
+    )
+  }
+
+  return json({ ok: true, message: `Einladung an ${email} wurde versendet.` }, 200)
 }
