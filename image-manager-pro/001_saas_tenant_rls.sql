@@ -13,6 +13,7 @@ create table if not exists public.tenants (
   lifetime_purchased_at timestamptz,
   lifetime_order_id text,
   subscription_id text,
+  stripe_customer_id text,
   status text not null default 'active' check (status in ('active','suspended','trial')),
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
