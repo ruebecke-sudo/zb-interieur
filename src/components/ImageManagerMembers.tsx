@@ -5,7 +5,6 @@ type Member = { id: string; user_id: string; role: 'owner' | 'admin' | 'member' 
 
 export function ImageManagerMembers() {
   const [members, setMembers] = useState<Member[]>([])
-  const [tenantId, setTenantId] = useState('')
   const [role, setRole] = useState<'owner' | 'admin' | 'member' | 'viewer'>('member')
   const [email, setEmail] = useState('')
   const [message, setMessage] = useState('')
@@ -16,7 +15,6 @@ export function ImageManagerMembers() {
     if (!userData.user) return
     const { data: membership } = await supabase.from('memberships').select('tenant_id,role').eq('user_id', userData.user.id).limit(1).maybeSingle()
     if (!membership?.tenant_id) return
-    setTenantId(membership.tenant_id)
     const { data, error } = await supabase.from('memberships').select('id,user_id,role,created_at').eq('tenant_id', membership.tenant_id).order('created_at')
     if (error) setMessage(error.message)
     else setMembers(data || [])
