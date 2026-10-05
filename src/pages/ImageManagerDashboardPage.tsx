@@ -52,6 +52,13 @@ export function ImageManagerDashboardPage() {
   const [workspaceName, setWorkspaceName] = useState('ZB Interieur')
   const [userEmail, setUserEmail] = useState('')
   const [userRole, setUserRole] = useState<'owner' | 'admin' | 'member' | 'viewer'>('member')
+  const [filterCategory1, setFilterCategory1] = useState('')
+  const [filterCategory2, setFilterCategory2] = useState('')
+  const [viewMode, setViewMode] = useState<'list' | 'grid'>('list')
+  const [selectedIds, setSelectedIds] = useState<string[]>([])
+  const [bulkCategory1, setBulkCategory1] = useState('')
+  const [bulkCategory2, setBulkCategory2] = useState('')
+  const [bulkBusy, setBulkBusy] = useState(false)
 
   const loadData = async () => {
     setLoading(true)
@@ -115,8 +122,38 @@ export function ImageManagerDashboardPage() {
   const [active, setActive] = useState('Übersicht')
   const filtered = useMemo(() => images.filter((item) => {
     const haystack = [item.name, item.text, item.category1, item.category2, item.category3, item.category4].join(' ').toLowerCase()
-    return haystack.includes(query.toLowerCase())
-  }), [images, query])
+    return haystack.includes(query.toLowerCase()) && (!filterCategory1 || item.category1 === filterCategory1) && (!filterCategory2 || item.category2 === filterCategory2)
+  }), [images, query, filterCategory1, filterCategory2])
+
+  const toggleSelected = (id: string) => setSelectedIds((current) => current.includes(id) ? current.filter((value) => value !== id) : [...current, id])
+  const selectAllFiltered = () => setSelectedIds((current) => current.length === filtered.length ? [] : filtered.map((item) => item.id))
+
+  const bulkDelete = async () => {
+    if (!supabase || !selectedIds.length || !window.confirm(`${selectedIds.length} Bilder wirklich löschen?`)) return
+    setBulkBusy(true)
+    const selected = images.filter((item) => selectedIds.includes(item.id))
+    const { error: deleteError } = await supabase.from('images').delete().in('id', selectedIds)
+    if (deleteError) setError(deleteError.message)
+    else {
+      const paths = selected.map((item) => item.storagePath).filter(Boolean) as string[]
+      if (paths.length) await supabase.storage.from('image-manager-media').remove(paths)
+      setSelectedIds([])
+      await loadData()
+    }
+    setBulkBusy(false)
+  }
+
+  const bulkUpdateCategories = async () => {
+    if (!supabase || !selectedIds.length || (!bulkCategory1 && !bulkCategory2)) return
+    setBulkBusy(true)
+    const patch: Record<string, string> = {}
+    if (bulkCategory1) patch.category1 = bulkCategory1
+    if (bulkCategory2) patch.category2 = bulkCategory2
+    const { error: updateError } = await supabase.from('images').update({ ...patch, sync_status: 'pending', sync_error: null }).in('id', selectedIds)
+    if (updateError) setError(updateError.message)
+    else { setSelectedIds([]); setBulkCategory1(''); setBulkCategory2(''); await loadData() }
+    setBulkBusy(false)
+  }
   const categoryCount = new Set(images.flatMap((item) => [item.category1, item.category2, item.category3, item.category4].filter(Boolean))).size
   const activeCount = images.length
   const isWebsites = active === 'Websites'
@@ -181,13 +218,26 @@ export function ImageManagerDashboardPage() {
           <section className="rounded-2xl border border-slate-200 bg-white shadow-sm">
             <div className="flex flex-col gap-4 border-b border-slate-200 p-5 md:flex-row md:items-center md:justify-between">
               <div><h2 className="text-lg font-bold">Bildbibliothek</h2><p className="text-sm text-slate-500">Bilder zentral verwalten, kategorisieren und an Websites ausspielen.</p></div>
-              <div className="relative"><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Bilder suchen …" className="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-2.5 text-sm outline-none md:w-72" /></div>
+              <div className="flex flex-col gap-2 md:flex-row md:items-center">
+                <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Bilder suchen …" className="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-2.5 text-sm outline-none md:w-64" />
+                <select value={filterCategory1} onChange={(e) => setFilterCategory1(e.target.value)} className="rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm"><option value="">Alle Marken</option>{categories.category1.map((value) => <option key={value}>{value}</option>)}</select>
+                <select value={filterCategory2} onChange={(e) => setFilterCategory2(e.target.value)} className="rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm"><option value="">Alle Produktarten</option>{categories.category2.map((value) => <option key={value}>{value}</option>)}</select>
+                <button type="button" onClick={() => setViewMode('list')} className={`rounded-xl border px-3 py-2.5 text-xs font-semibold ${viewMode === 'list' ? 'border-[#0E675A] bg-emerald-50 text-[#0E675A]' : 'border-slate-300'}`}>Liste</button>
+                <button type="button" onClick={() => setViewMode('grid')} className={`rounded-xl border px-3 py-2.5 text-xs font-semibold ${viewMode === 'grid' ? 'border-[#0E675A] bg-emerald-50 text-[#0E675A]' : 'border-slate-300'}`}>Raster</button>
+              </div>
             </div>
-            <div className="divide-y divide-slate-100">
+            {userRole !== 'viewer' && <div className="flex flex-col gap-3 border-b border-slate-200 bg-slate-50 p-4 md:flex-row md:items-center">
+              <label className="flex items-center gap-2 text-sm font-semibold"><input type="checkbox" checked={filtered.length > 0 && selectedIds.length === filtered.length} onChange={selectAllFiltered} /> {selectedIds.length ? `${selectedIds.length} ausgewählt` : 'Auswahl'}</label>
+              <select value={bulkCategory1} onChange={(e) => setBulkCategory1(e.target.value)} className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs"><option value="">Marke auf Auswahl …</option>{categories.category1.map((value) => <option key={value}>{value}</option>)}</select>
+              <select value={bulkCategory2} onChange={(e) => setBulkCategory2(e.target.value)} className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs"><option value="">Produktart auf Auswahl …</option>{categories.category2.map((value) => <option key={value}>{value}</option>)}</select>
+              <button type="button" onClick={() => void bulkUpdateCategories()} disabled={bulkBusy || !selectedIds.length || (!bulkCategory1 && !bulkCategory2)} className="rounded-xl bg-[#0E675A] px-3 py-2 text-xs font-semibold text-white disabled:opacity-40">Kategorien anwenden</button>
+              <button type="button" onClick={() => void bulkDelete()} disabled={bulkBusy || !selectedIds.length} className="rounded-xl border border-red-200 px-3 py-2 text-xs font-semibold text-red-600 disabled:opacity-40">Auswahl löschen</button>
+            </div>}
+            <div className={viewMode === 'grid' ? 'grid gap-4 p-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4' : 'divide-y divide-slate-100'}>
               {loading && <div className="p-8 text-center text-sm text-slate-500">Bildbibliothek wird geladen …</div>}
               {!loading && error && <div className="p-8 text-center text-sm text-red-600">{error}</div>}
               {!loading && !error && filtered.length === 0 && <div className="p-8 text-center text-sm text-slate-500">Keine Bilder gefunden.</div>}
-              {filtered.map((item) => <div key={item.id} className="flex flex-col gap-4 p-5 md:flex-row md:items-center">
+              {filtered.map((item) => <div key={item.id} className={viewMode === 'grid' ? 'rounded-2xl border border-slate-200 bg-white p-4 shadow-sm' : 'flex flex-col gap-4 p-5 md:flex-row md:items-center'}><div className="flex items-start gap-3"><input type="checkbox" checked={selectedIds.includes(item.id)} onChange={() => toggleSelected(item.id)} className="mt-2" /><img src={item.url} alt={item.name} className={viewMode === 'grid' ? 'h-44 w-full rounded-xl bg-slate-100 object-contain' : 'h-16 w-16 shrink-0 rounded-xl bg-slate-100 object-cover'} /></div>
                 <img src={item.url} alt={item.name} className="h-16 w-16 shrink-0 rounded-xl bg-slate-100 object-cover" />
                 <div className="min-w-0 flex-1"><div className="font-semibold">{item.name}</div><div className="mt-1 text-sm text-slate-500">{[item.category1, item.category2, item.category3, item.category4].filter(Boolean).join(" · ") || "Keine Kategorien"}</div></div>
                 <div className="grid grid-cols-3 gap-5 text-xs text-slate-500 md:text-right"><div><div className="font-semibold text-slate-700">{item.format}</div><div>{item.width && item.height ? `${item.width} × ${item.height}` : "Format"}</div></div><div><div className="font-semibold text-slate-700">{formatBytes(item.fileSize)}</div><div>Größe</div></div><div><div className="font-semibold text-slate-700">{formatDate(item.updatedAt)}</div><div>Aktualisiert</div></div></div>
