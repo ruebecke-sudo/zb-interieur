@@ -94,19 +94,21 @@ export function ImageManagerWebsites() {
     setPushing(site.id); setMessage('')
     try {
       if (!supabase) throw new Error('Supabase ist noch nicht konfiguriert.')
-      const { data: rows, error: readError } = await supabase.from('images').select('id,external_id,name,text,category1,category2,category3,category4,website_id,sync_status').eq('website_id', site.id).eq('sync_status', 'pending')
+      const { data: rows, error: readError } = await supabase.from('images').select('id,external_id,name,text,category1,category2,category3,category4,website_id,sync_status,url').eq('website_id', site.id).in('sync_status', ['pending','error'])
       if (readError) throw new Error(readError.message)
       const pending = rows || []
       let pushed = 0
       for (const row of pending) {
         const base = site.base_url.replace(/\/$/, '')
-        const response = await fetch(base + '/api/images/' + encodeURIComponent(String(row.external_id)), {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name: row.name, text: row.text, category1: row.category1, category2: row.category2, category3: row.category3, category4: row.category4 }),
+        const session = await supabase.auth.getSession()
+        const token = session.data.session?.access_token
+        if (!token) throw new Error('Sitzung abgelaufen.')
+        const response = await fetch('/.netlify/functions/sync-image-to-zb', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+          body: JSON.stringify({ image_id: row.id }),
         })
         if (!response.ok) continue
-        await supabase.from('images').update({ sync_status: 'synced', sync_error: null, last_synced_at: new Date().toISOString() }).eq('id', row.id)
         pushed += 1
       }
       setMessage(`${site.name}: ${pushed.toLocaleString('de-DE')} Änderungen übertragen.`)
