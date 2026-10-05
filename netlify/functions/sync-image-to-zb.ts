@@ -43,7 +43,9 @@ export default async (req: Request) => {
   if (!website) return new Response(JSON.stringify({ error: 'Website nicht gefunden.' }), { status: 404, headers })
 
   try {
-    const target = await fetch(website.base_url.replace(/\/$/, '') + '/api/images/upload-from-url', {
+    const targetUrl = new URL(website.base_url)
+    if (targetUrl.protocol !== 'https:') throw new Error('Website-Connector muss HTTPS verwenden.')
+    const target = await fetch(targetUrl.toString().replace(/\/$/, '') + '/api/images/upload-from-url', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${zbKey}`,
