@@ -27,6 +27,8 @@ type Categories = {
   category4: string[]
 }
 
+type UploadedPreview = { url: string; name: string }
+
 type EditorData = {
   name: string
   text: string
@@ -72,12 +74,14 @@ export function ImageManagerActions({ item, categories, onChanged, primary = fal
   const [websiteId, setWebsiteId] = useState('')
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
+  const [uploadedPreviews, setUploadedPreviews] = useState<UploadedPreview[]>([])
   const inputRef = useRef<HTMLInputElement>(null)
 
   const open = (target: 'upload' | 'edit') => {
     setError('')
     if (target === 'upload') {
       setFiles([])
+      setUploadedPreviews([])
       setEditor(emptyEditor)
       if (supabase) {
         void supabase.from('websites').select('id,name,base_url').order('name').then(({ data }) => {
@@ -107,12 +111,14 @@ export function ImageManagerActions({ item, categories, onChanged, primary = fal
       if (!['owner','admin','member'].includes(membership.role)) throw new Error('Keine Berechtigung zum Hochladen.')
       if (!websiteId) throw new Error('Bitte eine Website auswählen.')
 
+      const previews: UploadedPreview[] = []
       for (const file of files) {
         const safeName = file.name.toLowerCase().replace(/[^a-z0-9._-]+/g, '-')
         const path = `${membership.tenant_id}/${crypto.randomUUID()}-${safeName}`
         const { error: storageError } = await supabase.storage.from('image-manager-media').upload(path, file, { contentType: file.type, upsert: false })
         if (storageError) throw new Error(storageError.message)
         const { data: publicUrl } = supabase.storage.from('image-manager-media').getPublicUrl(path)
+        previews.push({ url: publicUrl.publicUrl, name: file.name })
         const image = new Image()
         const dimensions = await new Promise<{ width: number; height: number }>((resolve) => {
           image.onload = () => resolve({ width: image.naturalWidth, height: image.naturalHeight })
@@ -151,7 +157,7 @@ export function ImageManagerActions({ item, categories, onChanged, primary = fal
           })
         }
       }
-      setModal(null)
+      setUploadedPreviews(previews)
       await onChanged()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Upload fehlgeschlagen.')
@@ -210,7 +216,22 @@ export function ImageManagerActions({ item, categories, onChanged, primary = fal
   return <>
     {button}
 
-    {modal === 'upload' && <Modal><form onSubmit={upload} className="max-h-[calc(100dvh-2rem)] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white p-5 shadow-2xl"><h2 className="text-xl font-bold">Bilder hochladen</h2><p className="mt-1 text-sm text-slate-500">Mehrere Bilder können mit denselben Metadaten hochgeladen werden.</p><div className="mt-4 rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50 p-4 text-center"><input ref={inputRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/avif" multiple onChange={(e) => setFiles(Array.from(e.target.files || []))} className="hidden" /><button type="button" onClick={() => inputRef.current?.click()} className="rounded-xl bg-white px-4 py-2.5 text-sm font-semibold shadow-sm ring-1 ring-slate-200">Bilder auswählen</button><div className="mt-2 text-sm text-slate-500">{files.length ? files.map((file) => file.name).join(' · ') : 'JPG, PNG, WebP, GIF oder AVIF'}</div></div><div className="mt-4 grid gap-3 md:grid-cols-2"><label className="block md:col-span-2"><span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">Website</span><select value={websiteId} onChange={(e) => setWebsiteId(e.target.value)} className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-[#0E675A]"><option value="">Website auswählen …</option>{websites.map((site) => <option key={site.id} value={site.id}>{site.name} · {site.base_url}</option>)}</select></label><Field label="Bildname" value={editor.name} onChange={(v) => setEditor({ ...editor, name: v })} /><Field label="Bildtext" value={editor.text} onChange={(v) => setEditor({ ...editor, text: v })} /><CategoryField label="Kat.1 · Marke" value={editor.category1} values={categories.category1} onChange={(v) => setEditor({ ...editor, category1: v })} /><CategoryField label="Kat.2 · Produktart" value={editor.category2} values={categories.category2} onChange={(v) => setEditor({ ...editor, category2: v })} /><CategoryField label="Kat.3 · Bereich" value={editor.category3} values={categories.category3} onChange={(v) => setEditor({ ...editor, category3: v })} /><CategoryField label="Kat.4 · Stil" value={editor.category4} values={categories.category4} onChange={(v) => setEditor({ ...editor, category4: v })} /></div>{error && <div className="mt-4 text-sm text-red-600">{error}</div>}<div className="mt-4 flex justify-end gap-2"><button type="button" onClick={() => setModal(null)} className="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-semibold">Abbrechen</button><button disabled={busy || !files.length} className="rounded-xl bg-[#0E675A] px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-50">{busy ? 'Upload läuft …' : 'Hochladen'}</button></div></form></Modal>}
+    {modal === 'upload' && <Modal>{uploadedPreviews.length > 0 ? <div className="w-full max-w-2xl rounded-2xl bg-white p-6 shadow-2xl">
+      <div className="text-center">
+        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-emerald-50 text-2xl text-emerald-600">✓</div>
+        <h2 className="mt-3 text-xl font-bold">Upload erfolgreich</h2>
+        <p className="mt-1 text-sm text-slate-500">{uploadedPreviews.length === 1 ? 'Das hochgeladene Bild:' : `${uploadedPreviews.length} Bilder wurden erfolgreich hochgeladen:`}</p>
+      </div>
+      <div className="mt-5 grid gap-4 sm:grid-cols-2">
+        {uploadedPreviews.map((preview) => <div key={preview.url} className="overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
+          <img src={preview.url} alt={preview.name} className="h-56 w-full bg-white object-contain" />
+          <div className="truncate border-t border-slate-200 px-3 py-2 text-xs font-medium text-slate-600" title={preview.name}>{preview.name}</div>
+        </div>)}
+      </div>
+      <div className="mt-6 flex justify-end">
+        <button type="button" onClick={() => { setModal(null); setUploadedPreviews([]) }} className="rounded-xl bg-[#0E675A] px-5 py-2.5 text-sm font-semibold text-white">Schließen</button>
+      </div>
+    </div> : <form onSubmit={upload} className="max-h-[calc(100dvh-2rem)] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white p-5 shadow-2xl"><h2 className="text-xl font-bold">Bilder hochladen</h2><p className="mt-1 text-sm text-slate-500">Mehrere Bilder können mit denselben Metadaten hochgeladen werden.</p><div className="mt-4 rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50 p-4 text-center"><input ref={inputRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/avif" multiple onChange={(e) => setFiles(Array.from(e.target.files || []))} className="hidden" /><button type="button" onClick={() => inputRef.current?.click()} className="rounded-xl bg-white px-4 py-2.5 text-sm font-semibold shadow-sm ring-1 ring-slate-200">Bilder auswählen</button><div className="mt-2 text-sm text-slate-500">{files.length ? files.map((file) => file.name).join(' · ') : 'JPG, PNG, WebP, GIF oder AVIF'}</div></div><div className="mt-4 grid gap-3 md:grid-cols-2"><label className="block md:col-span-2"><span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">Website</span><select value={websiteId} onChange={(e) => setWebsiteId(e.target.value)} className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-[#0E675A]"><option value="">Website auswählen …</option>{websites.map((site) => <option key={site.id} value={site.id}>{site.name} · {site.base_url}</option>)}</select></label><Field label="Bildname" value={editor.name} onChange={(v) => setEditor({ ...editor, name: v })} /><Field label="Bildtext" value={editor.text} onChange={(v) => setEditor({ ...editor, text: v })} /><CategoryField label="Kat.1 · Marke" value={editor.category1} values={categories.category1} onChange={(v) => setEditor({ ...editor, category1: v })} /><CategoryField label="Kat.2 · Produktart" value={editor.category2} values={categories.category2} onChange={(v) => setEditor({ ...editor, category2: v })} /><CategoryField label="Kat.3 · Bereich" value={editor.category3} values={categories.category3} onChange={(v) => setEditor({ ...editor, category3: v })} /><CategoryField label="Kat.4 · Stil" value={editor.category4} values={categories.category4} onChange={(v) => setEditor({ ...editor, category4: v })} /></div>{error && <div className="mt-4 text-sm text-red-600">{error}</div>}<div className="mt-4 flex justify-end gap-2"><button type="button" onClick={() => setModal(null)} className="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-semibold">Abbrechen</button><button disabled={busy || !files.length} className="rounded-xl bg-[#0E675A] px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-50">{busy ? 'Upload läuft …' : 'Hochladen'}</button></div></form>}</Modal>}
 
     {modal === 'edit' && item && <Modal><form onSubmit={update} className="w-full max-w-2xl rounded-2xl bg-white p-6 shadow-2xl"><h2 className="text-xl font-bold">Bild bearbeiten</h2><div className="mt-5 flex gap-4 rounded-xl bg-slate-50 p-3"><img src={item.url} alt="" className="h-20 w-20 rounded-xl object-cover" /><div className="text-xs text-slate-500">{item.width} × {item.height}px<br />{item.format}</div></div><div className="mt-5 grid gap-4 md:grid-cols-2"><Field label="Bildname" value={editor.name} onChange={(v) => setEditor({ ...editor, name: v })} /><Field label="Bildtext" value={editor.text} onChange={(v) => setEditor({ ...editor, text: v })} /><CategoryField label="Kat.1 · Marke" value={editor.category1} values={categories.category1} onChange={(v) => setEditor({ ...editor, category1: v })} /><CategoryField label="Kat.2 · Produktart" value={editor.category2} values={categories.category2} onChange={(v) => setEditor({ ...editor, category2: v })} /><CategoryField label="Kat.3 · Bereich" value={editor.category3} values={categories.category3} onChange={(v) => setEditor({ ...editor, category3: v })} /><CategoryField label="Kat.4 · Stil" value={editor.category4} values={categories.category4} onChange={(v) => setEditor({ ...editor, category4: v })} /></div>{error && <div className="mt-4 text-sm text-red-600">{error}</div>}<div className="mt-6 flex justify-end gap-2"><button type="button" onClick={() => setModal(null)} className="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-semibold">Abbrechen</button><button disabled={busy} className="rounded-xl bg-[#0E675A] px-5 py-2.5 text-sm font-semibold text-white">{busy ? 'Speichern …' : 'Änderungen speichern'}</button></div></form></Modal>}
   </>
