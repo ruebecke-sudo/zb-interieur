@@ -32,7 +32,7 @@ export function ImageManagerWebsites() {
     const { data: userData } = await supabase.auth.getUser()
     if (!userData.user) return setMessage('Bitte zuerst anmelden.')
     const { data: membership } = await supabase.from('memberships').select('tenant_id').eq('user_id', userData.user.id).limit(1).maybeSingle()
-    if (!membership?.tenant_id) return setMessage('Kein Workspace gefunden.')
+    if (!membership?.tenant_id) return setMessage('Kein Arbeitsbereich gefunden.')
     const { error } = await supabase.from('websites').insert({ tenant_id: membership.tenant_id, name, base_url: url, connector_type: connector, status: 'active' })
     if (error) setMessage(error.message)
     else { setName(''); setUrl(''); setMessage('Website erfolgreich angelegt.'); await load() }
@@ -61,7 +61,7 @@ export function ImageManagerWebsites() {
       const { data: userData } = await supabase!.auth.getUser()
       if (!userData.user) throw new Error('Bitte zuerst anmelden.')
       const { data: membership } = await supabase!.from('memberships').select('tenant_id').eq('user_id', userData.user.id).limit(1).maybeSingle()
-      if (!membership?.tenant_id) throw new Error('Kein Workspace gefunden.')
+      if (!membership?.tenant_id) throw new Error('Kein Arbeitsbereich gefunden.')
       const rows = remoteItems.map((item) => ({
         tenant_id: membership.tenant_id,
         website_id: site.id,
@@ -85,7 +85,7 @@ export function ImageManagerWebsites() {
         const { error: upsertError } = await supabase!.from('images').upsert(rows, { onConflict: 'website_id,external_id' })
         if (upsertError) throw new Error(upsertError.message)
       }
-      setMessage(`${site.name}: ${rows.length.toLocaleString('de-DE')} Bilder synchronisiert und im Workspace gespeichert.`)
+      setMessage(`${site.name}: ${rows.length.toLocaleString('de-DE')} Bilder synchronisiert und im Arbeitsbereich gespeichert.`)
     } catch {
       setMessage(`${site.name}: Synchronisation fehlgeschlagen. Der Connector ist erreichbar, aber die Bild-API konnte nicht gelesen werden.`)
     } finally { setSyncing(null) }
@@ -125,11 +125,11 @@ export function ImageManagerWebsites() {
   }
 
   return <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-    <div className="flex items-start justify-between gap-4"><div><h2 className="text-xl font-bold">Websites</h2><p className="mt-1 text-sm text-slate-500">Verbinde mehrere Websites mit deinem Image Manager Workspace.</p></div><span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold">{items.length} verbunden</span></div>
+    <div className="flex items-start justify-between gap-4"><div><h2 className="text-xl font-bold">Websites</h2><p className="mt-1 text-sm text-slate-500">Verbinde mehrere Websites mit deinem Image Manager Arbeitsbereich.</p></div><span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold">{items.length} verbunden</span></div>
     <form onSubmit={add} className="mt-6 grid gap-3 rounded-2xl bg-slate-50 p-4 md:grid-cols-[1fr_1.5fr_180px_auto]">
       <input required value={name} onChange={e => setName(e.target.value)} placeholder="Website-Name" className="rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm" />
       <input required type="url" value={url} onChange={e => setUrl(e.target.value)} placeholder="https://www.beispiel.de" className="rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm" />
-      <select value={connector} onChange={e => setConnector(e.target.value)} className="rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm"><option value="rest">REST API</option><option value="wordpress">WordPress</option><option value="shopify">Shopify</option><option value="custom">Custom</option></select>
+      <select value={connector} onChange={e => setConnector(e.target.value)} className="rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm"><option value="rest">REST-Schnittstelle</option><option value="wordpress">WordPress</option><option value="shopify">Shopify</option><option value="custom">Individuell</option></select>
       <button disabled={busy} className="rounded-xl bg-[#0E675A] px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50">{busy ? 'Speichern …' : 'Website hinzufügen'}</button>
     </form>
     {message && <div className="mt-4 rounded-xl bg-slate-100 p-3 text-sm">{message}</div>}
