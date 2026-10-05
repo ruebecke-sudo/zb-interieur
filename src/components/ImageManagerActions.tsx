@@ -116,7 +116,7 @@ export function ImageManagerActions({ item, categories, onChanged, primary = fal
       const { data: userData } = await supabase.auth.getUser()
       if (!userData.user) throw new Error('Bitte zuerst anmelden.')
       const { data: membership } = await supabase.from('memberships').select('tenant_id,role').eq('user_id', userData.user.id).limit(1).maybeSingle()
-      if (!membership?.tenant_id) throw new Error('Kein Workspace gefunden.')
+      if (!membership?.tenant_id) throw new Error('Kein Arbeitsbereich gefunden.')
       if (!['owner','admin','member'].includes(membership.role)) throw new Error('Keine Berechtigung zum Hochladen.')
       if (!websiteId) throw new Error('Bitte eine Website auswählen.')
 
