@@ -43,24 +43,24 @@ export default async (req: Request) => {
   if (!website) return new Response(JSON.stringify({ error: 'Website nicht gefunden.' }), { status: 404, headers })
 
   try {
-    const source = await fetch(image.url)
-    if (!source.ok) throw new Error(`Quellbild HTTP ${source.status}`)
-    const bytes = await source.arrayBuffer()
-    const filename = image.filename || image.name || 'image.jpg'
-    const form = new FormData()
-    form.append('file', new Blob([bytes], { type: source.headers.get('content-type') || 'image/jpeg' }), filename)
-    form.append('name', image.name || filename)
-    form.append('text', image.text || '')
-    form.append('category1', image.category1 || '')
-    form.append('category2', image.category2 || '')
-    form.append('category3', image.category3 || '')
-    form.append('category4', image.category4 || '')
-    if (image.external_id) form.append('overwrite', 'true'), form.append('id', image.external_id)
-
-    const target = await fetch(website.base_url.replace(/\/$/, '') + '/api/images/upload', {
+    const target = await fetch(website.base_url.replace(/\/$/, '') + '/api/images/upload-from-url', {
       method: 'POST',
-      headers: { Authorization: `Bearer ${zbKey}` },
-      body: form,
+      headers: {
+        Authorization: `Bearer ${zbKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        source_url: image.url,
+        filename: image.filename || image.name || 'image.jpg',
+        name: image.name || '',
+        text: image.text || '',
+        category1: image.category1 || '',
+        category2: image.category2 || '',
+        category3: image.category3 || '',
+        category4: image.category4 || '',
+        overwrite: Boolean(image.external_id),
+        id: image.external_id || undefined,
+      }),
     })
     const result = await target.json().catch(() => ({}))
     if (!target.ok) throw new Error(result.error || `ZB HTTP ${target.status}`)
