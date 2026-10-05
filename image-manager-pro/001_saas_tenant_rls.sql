@@ -12,6 +12,7 @@ create table if not exists public.tenants (
   plan text not null default 'starter' check (plan in ('starter','professional','business','agency','lifetime')),
   lifetime_purchased_at timestamptz,
   lifetime_order_id text,
+  subscription_id text,
   status text not null default 'active' check (status in ('active','suspended','trial')),
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
@@ -72,6 +73,7 @@ create table if not exists public.images (
   format text,
   file_size bigint,
   url text,
+  storage_path text,
   status text not null default 'active',
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
