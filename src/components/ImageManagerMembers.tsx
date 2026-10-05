@@ -50,10 +50,10 @@ export function ImageManagerMembers() {
   }
 
   return <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-    <div><h2 className="text-xl font-bold">Benutzer & Rollen</h2><p className="mt-1 text-sm text-slate-500">Workspace-Mitglieder verwalten und Zugriffsrollen vergeben.</p></div>
+    <div><h2 className="text-xl font-bold">Benutzer & Rollen</h2><p className="mt-1 text-sm text-slate-500">Arbeitsbereich-Mitglieder verwalten und Zugriffsrollen vergeben.</p></div>
     {message && <div className="mt-4 rounded-xl bg-slate-100 p-3 text-sm">{message}</div>}
     {['owner','admin'].includes(currentRole) && <div className="mt-6 rounded-2xl bg-slate-50 p-4">
-      <div className="text-sm font-semibold">Benutzer zu Workspace hinzufügen</div>
+      <div className="text-sm font-semibold">Benutzer zu Arbeitsbereich hinzufügen</div>
       <div className="mt-3 grid gap-3 md:grid-cols-[1fr_180px_auto]">
         <input value={email} onChange={e => setEmail(e.target.value)} placeholder="E-Mail-Adresse des Mitarbeiters" className="rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm" />
         <select value={role} onChange={e => setRole(e.target.value as Member['role'])} className="rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm"><option value="member">Mitarbeiter</option><option value="viewer">Nur Lesen</option><option value="admin">Admin</option></select>
