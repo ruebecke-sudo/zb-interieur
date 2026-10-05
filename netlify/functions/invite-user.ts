@@ -18,11 +18,16 @@ export default async (req: Request) => {
 
   const url = process.env.SUPABASE_URL
   const secret = process.env.SUPABASE_SECRET_KEY
+  const resendApiKey = process.env.RESEND_API_KEY
+  const fromEmail = process.env.RESEND_FROM_EMAIL || 'Image Manager Pro <noreply@my-digital-world.de>'
 
   // The publishable key is not needed server-side. The authenticated user's
   // access token is verified with Supabase Auth using the server secret key.
   if (!url || !secret) {
     return json({ error: 'Supabase server configuration missing.' }, 500)
+  }
+  if (!resendApiKey) {
+    return json({ error: 'E-Mail-Versand ist noch nicht konfiguriert (RESEND_API_KEY).' }, 500)
   }
 
   const authorization = req.headers.get('authorization') || ''
@@ -98,13 +103,34 @@ export default async (req: Request) => {
   }
 
   const redirectTo = `${new URL(req.url).origin}/image-manager/app`
-  const { data: invite, error: inviteError } = await admin.auth.admin.inviteUserByEmail(email, {
-    redirectTo,
-    data: {
-      workspace_name: tenant.brand_name || tenant.name,
-      invited_role: role,
-    },
+  const { data: invite, error: inviteError } = await admin.auth.admin.generateLink({
+    type: 'invite',
+    email,
+    options: { redirectTo, data: { workspace_name: tenant.brand_name || tenant.name, invited_role: role } },
   })
+
+  if (inviteError || !invite?.properties?.action_link) {
+    await admin.from('image_manager_invitations').delete().eq('tenant_id', membership.tenant_id).eq('email', email)
+    return json({ error: inviteError?.message || 'Einladungslink konnte nicht erstellt werden.' }, 400)
+  }
+
+  const workspaceName = tenant.brand_name || tenant.name || 'Image Manager Pro'
+  const roleLabels: Record<string, string> = { admin: 'Administrator', member: 'Mitarbeiter', viewer: 'Betrachter' }
+  const roleLabel = roleLabels[role] || role
+  const actionLink = invite.properties.action_link
+  const emailHtml = `<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body style="margin:0;background:#f4f5f7;font-family:Arial,Helvetica,sans-serif;color:#17202a"><div style="max-width:620px;margin:0 auto;padding:40px 20px"><div style="background:#fff;border-radius:16px;padding:40px"><div style="font-size:22px;font-weight:700;margin-bottom:28px">Image Manager <span style="font-weight:400">PRO</span></div><h1 style="font-size:28px;margin:0 0 18px">Einladung zu Image Manager Pro</h1><p>Hallo,</p><p>Sie wurden eingeladen, einen Benutzerzugang für <strong>${workspaceName}</strong> in Image Manager Pro zu erstellen.</p><p>Vorgesehene Rolle: <strong>${roleLabel}</strong></p><p>Über den folgenden Button können Sie die Einladung annehmen und Ihr persönliches Passwort festlegen.</p><p style="margin:30px 0"><a href="${actionLink}" style="display:inline-block;background:#111827;color:#fff;text-decoration:none;padding:14px 24px;border-radius:9px;font-weight:700">Einladung annehmen</a></p><p style="color:#667085">Wenn Sie diese Einladung nicht erwartet haben, können Sie diese E-Mail ignorieren.</p><p>Viele Grüße<br><strong>Image Manager Pro</strong></p></div></div></body></html>`
+
+  const resendResponse = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${resendApiKey}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ from: fromEmail, to: [email], subject: 'Einladung zu Image Manager Pro', html: emailHtml }),
+  })
+
+  if (!resendResponse.ok) {
+    const resendError = await resendResponse.text()
+    await admin.from('image_manager_invitations').delete().eq('tenant_id', membership.tenant_id).eq('email', email)
+    return json({ error: 'Die Einladung konnte nicht per E-Mail versendet werden: ' + resendError }, 502)
+  }
 
   if (inviteError || !invite.user) {
     // Do not leave an unusable pending invitation behind when Supabase Auth
