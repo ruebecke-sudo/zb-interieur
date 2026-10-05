@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 
-const features=['Zentrale Bildbibliothek','Automatische Bild-Metadaten','Kategorien & Filter','Mehrere Websites verwalten','Benutzer & Rollen','White-Label Branding','API & Website-Connectoren','Sichere Tenant-Isolation']
+const features=['Zentrale Bildbibliothek','Automatische Bild-Metadaten','Kategorien & Filter','Mehrere Websites verwalten','Benutzer & Rollen','Eigener Markenauftritt Branding','API & Website-Schnittstellen','Sichere Mandantentrennung']
 
 export function ImageManagerLandingPage(){
   return <div className="min-h-screen bg-[#080a0d] text-white">
@@ -19,12 +19,12 @@ export function ImageManagerLandingPage(){
             ['Starter','19 € / Monat','500 Bilder · 2 Benutzer · 1 Website'],
             ['Professional','39 € / Monat','5.000 Bilder · 10 Benutzer · 5 Websites'],
             ['Business','79 € / Monat','25.000 Bilder · 50 Benutzer · 20 Websites'],
-            ['Agency','Individuell','100.000 Bilder · 200 Benutzer · 100 Websites'],
-            ['Lifetime','499 € einmalig','100.000 Bilder · 200 Benutzer · 100 Websites']
-          ].map(([name,price,desc])=><div key={name} className={`relative rounded-3xl border p-7 ${name==='Lifetime'?'border-[#48b8a6] bg-[#0E675A]/15 shadow-2xl shadow-[#0E675A]/10':'border-white/10 bg-white/[0.03]'}`}>{name==='Lifetime'&&<div className="absolute -top-3 left-6 rounded-full bg-[#48b8a6] px-3 py-1 text-xs font-black uppercase text-[#07110f]">Einmal zahlen</div>}<h3 className="text-xl font-bold">{name}</h3><div className="mt-4 text-3xl font-black">{price}</div><p className="mt-4 min-h-12 text-sm leading-6 text-slate-400">{desc}</p><Link to="/image-manager/login" className={`mt-7 block rounded-xl px-4 py-3 text-center text-sm font-bold ${name==='Lifetime'?'bg-[#48b8a6] text-[#07110f]':'bg-white text-slate-900'}`}>{name==='Lifetime'?'Lifetime sichern':'Jetzt starten'}</Link></div>)}
+            ['Agentur','Individuell','100.000 Bilder · 200 Benutzer · 100 Websites'],
+            ['Dauerlizenz','499 € einmalig','100.000 Bilder · 200 Benutzer · 100 Websites']
+          ].map(([name,price,desc])=><div key={name} className={`relative rounded-3xl border p-7 ${name==='Dauerlizenz'?'border-[#48b8a6] bg-[#0E675A]/15 shadow-2xl shadow-[#0E675A]/10':'border-white/10 bg-white/[0.03]'}`}>{name==='Dauerlizenz'&&<div className="absolute -top-3 left-6 rounded-full bg-[#48b8a6] px-3 py-1 text-xs font-black uppercase text-[#07110f]">Einmalig zahlen</div>}<h3 className="text-xl font-bold">{name}</h3><div className="mt-4 text-3xl font-black">{price}</div><p className="mt-4 min-h-12 text-sm leading-6 text-slate-400">{desc}</p><Link to="/image-manager/login" className={`mt-7 block rounded-xl px-4 py-3 text-center text-sm font-bold ${name==='Dauerlizenz'?'bg-[#48b8a6] text-[#07110f]':'bg-white text-slate-900'}`}>{name==='Dauerlizenz'?'Dauerlizenz sichern':'Jetzt starten'}</Link></div>)}
         </div>
       </section>
-      <section className="bg-[#0E675A] px-6 py-20 text-center"><h2 className="text-4xl font-black">Deine Bilder. Deine Marke. Deine Kontrolle.</h2><p className="mx-auto mt-4 max-w-2xl text-emerald-50/80">Starte mit deinem Workspace und erweitere ihn, wenn dein Unternehmen wächst.</p><Link to="/image-manager/login" className="mt-7 inline-block rounded-xl bg-white px-6 py-3.5 font-bold text-slate-900">Image Manager Pro starten</Link></section>
+      <section className="bg-[#0E675A] px-6 py-20 text-center"><h2 className="text-4xl font-black">Deine Bilder. Deine Marke. Deine Kontrolle.</h2><p className="mx-auto mt-4 max-w-2xl text-emerald-50/80">Starte mit deinem Arbeitsbereich und erweitere ihn, wenn dein Unternehmen wächst.</p><Link to="/image-manager/login" className="mt-7 inline-block rounded-xl bg-white px-6 py-3.5 font-bold text-slate-900">Image Manager Pro starten</Link></section>
     </main>
     <footer className="border-t border-white/10 px-6 py-8 text-center text-xs text-slate-500">Image Manager Pro · © 2026</footer>
   </div>
