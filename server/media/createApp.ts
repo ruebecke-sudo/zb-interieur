@@ -209,6 +209,8 @@ export function createMediaApp() {
 
       const parsed = new URL(sourceUrl)
       if (parsed.protocol !== 'https:') return c.json({ error: 'Nur HTTPS-Quellen sind erlaubt.' }, 400)
+      const allowedHosts = (process.env.IMAGE_MANAGER_ALLOWED_SOURCE_HOSTS || 'uvcarptiwkrxkwemgehg.supabase.co').split(',').map((host) => host.trim().toLowerCase()).filter(Boolean)
+      if (!allowedHosts.includes(parsed.hostname.toLowerCase())) return c.json({ error: 'Quellhost ist für den Bildimport nicht freigegeben.' }, 400)
 
       const source = await fetch(sourceUrl)
       if (!source.ok) throw new Error(`Quellbild HTTP ${source.status}`)
