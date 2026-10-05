@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { supabase } from '../lib/supabase'
 import type { FormEvent, ReactNode } from 'react'
 
@@ -47,10 +48,19 @@ function CategoryField({ label, value, values, onChange }: { label: string; valu
 }
 
 function Modal({ children }: { children: ReactNode }) {
-  return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center overflow-hidden bg-slate-950/60 p-4">
-      {children}
-    </div>
+  if (typeof document === 'undefined') return null
+
+  return createPortal(
+    <div
+      className="fixed inset-0 z-[99999] flex items-center justify-center bg-slate-950/70 p-4"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div className="flex max-h-[calc(100dvh-2rem)] w-full items-start justify-center overflow-y-auto">
+        {children}
+      </div>
+    </div>,
+    document.body,
   )
 }
 
