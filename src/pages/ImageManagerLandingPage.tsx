@@ -14,11 +14,12 @@ export function ImageManagerLandingPage(){
       </section>
       <section className="border-y border-white/10 bg-white/[0.02]"><div className="mx-auto grid max-w-7xl gap-4 px-6 py-12 sm:grid-cols-2 lg:grid-cols-4">{features.map((f)=><div key={f} className="rounded-2xl border border-white/10 bg-white/[0.03] p-5"><div className="mb-3 text-[#48b8a6]">✓</div><div className="font-semibold">{f}</div></div>)}</div></section>
       <section id="preise" className="mx-auto max-w-7xl px-6 py-20"><div className="text-center"><div className="text-sm font-semibold uppercase tracking-wider text-[#48b8a6]">Preise</div><h2 className="mt-3 text-4xl font-black">Einfach. Transparent. Skalierbar.</h2></div>
-        <div className="mt-12 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+        <div className="mt-12 grid gap-5 md:grid-cols-2 xl:grid-cols-5">
           {[
             ['Starter','19 € / Monat','500 Bilder · 2 Benutzer · 1 Website'],
             ['Professional','39 € / Monat','5.000 Bilder · 10 Benutzer · 5 Websites'],
             ['Business','79 € / Monat','25.000 Bilder · 50 Benutzer · 20 Websites'],
+            ['Agency','Individuell','100.000 Bilder · 200 Benutzer · 100 Websites'],
             ['Lifetime','499 € einmalig','100.000 Bilder · 200 Benutzer · 100 Websites']
           ].map(([name,price,desc])=><div key={name} className={`relative rounded-3xl border p-7 ${name==='Lifetime'?'border-[#48b8a6] bg-[#0E675A]/15 shadow-2xl shadow-[#0E675A]/10':'border-white/10 bg-white/[0.03]'}`}>{name==='Lifetime'&&<div className="absolute -top-3 left-6 rounded-full bg-[#48b8a6] px-3 py-1 text-xs font-black uppercase text-[#07110f]">Einmal zahlen</div>}<h3 className="text-xl font-bold">{name}</h3><div className="mt-4 text-3xl font-black">{price}</div><p className="mt-4 min-h-12 text-sm leading-6 text-slate-400">{desc}</p><Link to="/image-manager/login" className={`mt-7 block rounded-xl px-4 py-3 text-center text-sm font-bold ${name==='Lifetime'?'bg-[#48b8a6] text-[#07110f]':'bg-white text-slate-900'}`}>{name==='Lifetime'?'Lifetime sichern':'Jetzt starten'}</Link></div>)}
         </div>
