@@ -47,6 +47,7 @@ export function ImageManagerDashboardPage() {
   const [categories, setCategories] = useState({ category1: [] as string[], category2: [] as string[], category3: [] as string[], category4: [] as string[] })
   const [workspaceName, setWorkspaceName] = useState('ZB Interieur')
   const [userEmail, setUserEmail] = useState('')
+  const [userRole, setUserRole] = useState<'owner' | 'admin' | 'member' | 'viewer'>('member')
 
   const loadData = async () => {
     setLoading(true)
@@ -98,6 +99,7 @@ export function ImageManagerDashboardPage() {
         setUserEmail(data.user.email || '')
         const { data: membership } = await supabase.from('memberships').select('tenant_id').eq('user_id', data.user.id).limit(1).maybeSingle()
         if (membership?.tenant_id) {
+          setUserRole((membership as { role?: 'owner' | 'admin' | 'member' | 'viewer' }).role || 'member')
           const { data: tenant } = await supabase.from('tenants').select('name').eq('id', membership.tenant_id).single()
           if (tenant?.name) setWorkspaceName(tenant.name)
         }
@@ -113,6 +115,7 @@ export function ImageManagerDashboardPage() {
   const activeCount = images.length
   const isWebsites = active === 'Websites'
   const isCategories = active === 'Kategorien'
+  const canManage = userRole === 'owner' || userRole === 'admin'
 
   const nav = [
     ['Übersicht', '▦'],
@@ -146,7 +149,7 @@ export function ImageManagerDashboardPage() {
         <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/90 px-5 py-4 backdrop-blur md:px-8">
           <div className="flex items-center justify-between gap-4">
             <div><div className="text-sm text-slate-500">ZB Interieur / Image Manager</div><h1 className="mt-1 text-2xl font-bold tracking-tight">{active}</h1></div>
-            <ImageManagerActions primary categories={categories} onChanged={loadData} />
+            {userRole !== 'viewer' && <ImageManagerActions primary categories={categories} onChanged={loadData} />}
           </div>
         </header>
 
