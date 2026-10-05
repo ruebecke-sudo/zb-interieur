@@ -8,7 +8,13 @@ export default async (req: Request) => {
   const priceId = process.env.STRIPE_PRICE_LIFETIME
   const supabaseUrl = process.env.SUPABASE_URL
   const publishable = process.env.SUPABASE_PUBLISHABLE_KEY
-  if (!secret || !priceId || !supabaseUrl || !publishable) return new Response(JSON.stringify({ error: 'Stripe/Supabase server configuration missing.' }), { status: 500, headers: { 'Content-Type': 'application/json' } })
+  const missing = [
+    !secret ? 'STRIPE_SECRET_KEY' : '',
+    !priceId ? 'STRIPE_PRICE_LIFETIME' : '',
+    !supabaseUrl ? 'SUPABASE_URL' : '',
+    !publishable ? 'SUPABASE_PUBLISHABLE_KEY' : '',
+  ].filter(Boolean)
+  if (missing.length) return new Response(JSON.stringify({ error: 'Stripe/Supabase Server-Konfiguration unvollständig.', missing }), { status: 500, headers: { 'Content-Type': 'application/json' } })
 
   const auth = req.headers.get('authorization') || ''
   if (!auth.startsWith('Bearer ')) return new Response(JSON.stringify({ error: 'Authentication required.' }), { status: 401, headers: { 'Content-Type': 'application/json' } })
