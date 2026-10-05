@@ -23,12 +23,12 @@ export function ImageManagerBranding() {
   const save = async () => {
     if (!supabase || !tenantId) return
     const { error } = await supabase.from('tenants').update({ name, brand_name: brandName || null, logo_url: logoUrl || null, primary_color: primaryColor }).eq('id', tenantId)
-    setMessage(error ? error.message : 'White-Label-Einstellungen gespeichert.')
+    setMessage(error ? error.message : 'Einstellungen zum Markenauftritt gespeichert.')
   }
 
   return <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-    <h2 className="text-xl font-bold">White-Label</h2>
-    <p className="mt-1 text-sm text-slate-500">Der Workspace kann mit eigenem Namen, Logo und Markenfarbe dargestellt werden.</p>
+    <h2 className="text-xl font-bold">Eigener Markenauftritt</h2>
+    <p className="mt-1 text-sm text-slate-500">Der Arbeitsbereich kann mit eigenem Namen, Logo und Markenfarbe dargestellt werden.</p>
     <div className="mt-6 grid gap-5 md:grid-cols-2">
       <label className="text-sm font-semibold">Firmenname<input value={name} onChange={e=>setName(e.target.value)} className="mt-2 w-full rounded-xl border border-slate-300 px-3 py-2.5 font-normal" /></label>
       <label className="text-sm font-semibold">Markenname<input value={brandName} onChange={e=>setBrandName(e.target.value)} placeholder="Optional" className="mt-2 w-full rounded-xl border border-slate-300 px-3 py-2.5 font-normal" /></label>
