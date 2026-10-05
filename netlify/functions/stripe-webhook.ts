@@ -21,6 +21,7 @@ export default async (req: Request) => {
       payment_status?: string
       metadata?: { tenant_id?: string; plan?: string; product?: string }
       subscription?: string
+      customer?: string
     }
     if (session.mode === 'payment' && session.payment_status !== 'paid') return new Response('Payment not completed.', { status: 200 })
 
@@ -37,13 +38,14 @@ export default async (req: Request) => {
       lifetime_order_id: plan === 'lifetime' ? session.id : null,
     }
     if (session.subscription) patch.subscription_id = session.subscription
+    if (session.customer) patch.stripe_customer_id = session.customer
 
     const { error } = await supabase.from('tenants').update(patch).eq('id', tenantId)
     if (error) return new Response('Database update failed.', { status: 500 })
   }
 
   if (event.type === 'customer.subscription.deleted') {
-    const subscription = event.data.object as { id: string; metadata?: { tenant_id?: string } }
+    const subscription = event.data.object as { id: string; metadata?: { tenant_id?: string }; customer?: string }
     const tenantId = subscription.metadata?.tenant_id
     if (tenantId) {
       const { error } = await supabase.from('tenants').update({ plan: 'starter', status: 'active', subscription_id: null }).eq('id', tenantId).neq('plan', 'lifetime')
