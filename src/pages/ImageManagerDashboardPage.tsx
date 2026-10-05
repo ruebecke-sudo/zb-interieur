@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
 import { ImageManagerActions } from '../components/ImageManagerActions'
 import { ImageManagerWebsites } from '../components/ImageManagerWebsites'
+import { ImageManagerCategories } from '../components/ImageManagerCategories'
 import { supabase } from '../lib/supabase'
 
 type ImageItem = {
@@ -111,6 +112,7 @@ export function ImageManagerDashboardPage() {
   const categoryCount = new Set(images.flatMap((item) => [item.category1, item.category2, item.category3, item.category4].filter(Boolean))).size
   const activeCount = images.length
   const isWebsites = active === 'Websites'
+  const isCategories = active === 'Kategorien'
 
   const nav = [
     ['Übersicht', '▦'],
@@ -148,7 +150,7 @@ export function ImageManagerDashboardPage() {
           </div>
         </header>
 
-        <div className="mx-auto max-w-7xl space-y-7 p-5 md:p-8">{isWebsites ? <ImageManagerWebsites /> : <>
+        <div className="mx-auto max-w-7xl space-y-7 p-5 md:p-8">{isWebsites ? <ImageManagerWebsites /> : isCategories ? <ImageManagerCategories /> : <>
           <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             {[
               [`${images.length.toLocaleString('de-DE')}`, 'Bilder', loading ? 'Lade Bestand …' : 'Live aus ZB-Media-API', '▧'],
