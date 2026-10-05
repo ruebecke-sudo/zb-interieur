@@ -5,9 +5,37 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { analyzeImageBuffer, filenameToDefaultName, sanitizeFilename } from './analyzeImage.js'
-import { DEFAULT_CATEGORIES } from './categories.js'
+import { DEFAULT_CATEGORIES, CATALOG_BRANDS } from './categories.js'
 import type { MediaCategories, MediaImage, MediaImageInput, MediaListQuery } from './types.js'
 import { ALLOWED_EXT, ALLOWED_MIME, defaultMaxBytes } from './types.js'
+
+function brandKey(value: string): string {
+  return value
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '')
+}
+
+const REMOVED_EXAMPLE_BRANDS = new Set(
+  ['giorgetti', 'gervasoni', 'kristalia', 'piure'].map((s) => brandKey(s)),
+)
+
+function sanitizeCategories(parsed: MediaCategories): MediaCategories {
+  const catalogKeys = new Set(CATALOG_BRANDS.map((b) => brandKey(b)))
+  const keptExtras = (parsed.category1 || []).filter((name) => {
+    const key = brandKey(name)
+    if (!key || REMOVED_EXAMPLE_BRANDS.has(key)) return false
+    if (catalogKeys.has(key)) return false
+    return true
+  })
+  return {
+    category1: uniqueStrings([...CATALOG_BRANDS, ...keptExtras]),
+    category2: parsed.category2?.length ? uniqueStrings(parsed.category2) : [...DEFAULT_CATEGORIES.category2],
+    category3: parsed.category3?.length ? uniqueStrings(parsed.category3) : [...DEFAULT_CATEGORIES.category3],
+    category4: parsed.category4?.length ? uniqueStrings(parsed.category4) : [...DEFAULT_CATEGORIES.category4],
+  }
+}
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const INDEX_PATH = path.join(ROOT, 'data/media-library/index.json')
@@ -73,20 +101,17 @@ export async function getCategories(): Promise<MediaCategories> {
   const blobs = await getBlobs()
   if (blobs) {
     const data = (await blobs.get('categories', { type: 'json' })) as MediaCategories | null
-    if (data?.category1?.length) return data
-    await blobs.setJSON('categories', DEFAULT_CATEGORIES)
-    return structuredClone(DEFAULT_CATEGORIES)
+    const cleaned = sanitizeCategories(data?.category1 ? data : DEFAULT_CATEGORIES)
+    await blobs.setJSON('categories', cleaned)
+    return cleaned
   }
   await ensureDirs()
   try {
     const raw = await fs.readFile(CATEGORIES_PATH, 'utf8')
     const parsed = JSON.parse(raw) as MediaCategories
-    return {
-      category1: parsed.category1?.length ? parsed.category1 : DEFAULT_CATEGORIES.category1,
-      category2: parsed.category2?.length ? parsed.category2 : DEFAULT_CATEGORIES.category2,
-      category3: parsed.category3?.length ? parsed.category3 : DEFAULT_CATEGORIES.category3,
-      category4: parsed.category4?.length ? parsed.category4 : DEFAULT_CATEGORIES.category4,
-    }
+    const cleaned = sanitizeCategories(parsed)
+    await fs.writeFile(CATEGORIES_PATH, JSON.stringify(cleaned, null, 2), 'utf8')
+    return cleaned
   } catch {
     await fs.writeFile(CATEGORIES_PATH, JSON.stringify(DEFAULT_CATEGORIES, null, 2), 'utf8')
     return structuredClone(DEFAULT_CATEGORIES)
@@ -94,12 +119,12 @@ export async function getCategories(): Promise<MediaCategories> {
 }
 
 export async function saveCategories(next: MediaCategories): Promise<MediaCategories> {
-  const normalized: MediaCategories = {
+  const normalized = sanitizeCategories({
     category1: uniqueStrings(next.category1),
     category2: uniqueStrings(next.category2),
     category3: uniqueStrings(next.category3),
     category4: uniqueStrings(next.category4),
-  }
+  })
   const blobs = await getBlobs()
   if (blobs) {
     await blobs.setJSON('categories', normalized)
