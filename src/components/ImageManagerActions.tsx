@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import type { FormEvent } from 'react'
+import type { FormEvent, ReactNode } from 'react'
 
 type ImageItem = {
   id: string
@@ -44,7 +44,7 @@ function CategoryField({ label, value, values, onChange }: { label: string; valu
   return <label className="block"><span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">{label}</span><input list={id} value={value} onChange={(e) => onChange(e.target.value)} className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-[#0E675A]" /><datalist id={id}>{values.map((item) => <option key={item} value={item} />)}</datalist></label>
 }
 
-function Modal({ children }: { children: React.ReactNode }) {
+function Modal({ children }: { children: ReactNode }) {
   return <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4">{children}</div>
 }
 
