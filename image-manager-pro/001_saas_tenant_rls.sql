@@ -87,6 +87,7 @@ create index if not exists memberships_user_idx on public.memberships(user_id);
 create index if not exists websites_tenant_idx on public.websites(tenant_id);
 create index if not exists images_tenant_idx on public.images(tenant_id);
 create index if not exists images_website_idx on public.images(website_id);
+create unique index if not exists images_website_external_idx on public.images(website_id, external_id) where external_id is not null;
 create index if not exists audit_tenant_idx on public.audit_logs(tenant_id);
 
 create or replace function public.is_tenant_member(target_tenant uuid)
