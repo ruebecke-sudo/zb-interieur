@@ -97,7 +97,7 @@ export function ImageManagerDashboardPage() {
       void supabase.auth.getUser().then(async ({ data }) => {
         if (!data.user) return
         setUserEmail(data.user.email || '')
-        const { data: membership } = await supabase.from('memberships').select('tenant_id').eq('user_id', data.user.id).limit(1).maybeSingle()
+        const { data: membership } = await supabase.from('memberships').select('tenant_id,role').eq('user_id', data.user.id).limit(1).maybeSingle()
         if (membership?.tenant_id) {
           setUserRole((membership as { role?: 'owner' | 'admin' | 'member' | 'viewer' }).role || 'member')
           const { data: tenant } = await supabase.from('tenants').select('name').eq('id', membership.tenant_id).single()
