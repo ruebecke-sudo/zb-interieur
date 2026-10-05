@@ -5,7 +5,12 @@ export default async (req: Request) => {
   const secret = process.env.STRIPE_SECRET_KEY
   const supabaseUrl = process.env.SUPABASE_URL
   const publishable = process.env.SUPABASE_PUBLISHABLE_KEY
-  if (!secret || !supabaseUrl || !publishable) return json({ error: 'Stripe/Supabase server configuration missing.' }, 500)
+  const missing = [
+    !secret ? 'STRIPE_SECRET_KEY' : '',
+    !supabaseUrl ? 'SUPABASE_URL' : '',
+    !publishable ? 'SUPABASE_PUBLISHABLE_KEY' : '',
+  ].filter(Boolean)
+  if (missing.length) return json({ error: 'Stripe/Supabase Server-Konfiguration unvollständig.', missing }, 500)
   const auth = req.headers.get('authorization') || ''
   if (!auth.startsWith('Bearer ')) return json({ error: 'Authentication required.' }, 401)
   const client = createClient(supabaseUrl, publishable, { global: { headers: { Authorization: `Bearer ${auth.slice(7)}` } }, auth: { persistSession: false, autoRefreshToken: false } })
