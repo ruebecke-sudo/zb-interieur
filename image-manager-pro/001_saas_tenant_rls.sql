@@ -194,3 +194,18 @@ using (public.is_tenant_member(tenant_id));
 
 -- New users can be assigned to a tenant by a trusted onboarding flow.
 -- Do not expose service-role credentials in the browser.
+
+
+-- White-label settings are stored on the tenant/workspace.
+alter table public.tenants add column if not exists logo_url text;
+alter table public.tenants add column if not exists primary_color text not null default '#0E675A';
+alter table public.tenants add column if not exists brand_name text;
+
+create policy "tenant admins can update tenant branding"
+on public.tenants for update
+using (is_tenant_member(id) and exists (
+  select 1 from public.memberships m where m.tenant_id = tenants.id and m.user_id = auth.uid() and m.role in ('owner','admin')
+))
+with check (is_tenant_member(id) and exists (
+  select 1 from public.memberships m where m.tenant_id = tenants.id and m.user_id = auth.uid() and m.role in ('owner','admin')
+));
