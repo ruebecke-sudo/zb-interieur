@@ -160,7 +160,7 @@ export function ImageManagerActions({ item, categories, onChanged, primary = fal
         const { data: sessionData } = await supabase.auth.getSession()
         const accessToken = sessionData.session?.access_token
         if (accessToken && inserted?.id) {
-          const syncResponse = await fetch('/.netlify/functions/sync-image-to-zb', {
+          const syncResponse = await fetch('/.netlify/functions/push-image-to-website', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + accessToken },
             body: JSON.stringify({ image_id: inserted.id }),
@@ -175,7 +175,7 @@ export function ImageManagerActions({ item, categories, onChanged, primary = fal
               syncStatus: 'error',
               syncError: syncResult.missing?.length
                 ? `Fehlende Server-Konfiguration: ${syncResult.missing.join(', ')}`
-                : (syncResult.error || 'Übertragung zu ZB Interieur fehlgeschlagen.'),
+                : (syncResult.error || 'Übertragung zur Website fehlgeschlagen.'),
             }
           }
           setUploadedPreviews([...previews])
@@ -208,7 +208,7 @@ export function ImageManagerActions({ item, categories, onChanged, primary = fal
       const { data: sessionData } = await supabase.auth.getSession()
       const accessToken = sessionData.session?.access_token
       if (accessToken) {
-        await fetch('/.netlify/functions/sync-image-to-zb', {
+        await fetch('/.netlify/functions/push-image-to-website', {
           method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + accessToken },
           body: JSON.stringify({ image_id: item.id }),
         })
@@ -253,7 +253,7 @@ export function ImageManagerActions({ item, categories, onChanged, primary = fal
           <div className="border-t border-slate-200 px-3 py-2">
             <div className="truncate text-xs font-medium text-slate-600" title={preview.name}>{preview.name}</div>
             <div className={`mt-1 text-xs font-semibold ${preview.syncStatus === 'synced' ? 'text-emerald-600' : 'text-amber-600'}`}>
-              {preview.syncStatus === 'synced' ? '✓ Zu ZB Interieur synchronisiert' : '⚠ Hochladen gespeichert – ZB-Synchronisation ausstehend'}
+              {preview.syncStatus === 'synced' ? '✓ An die Website übertragen' : '⚠ Gespeichert – Übertragung zur Website ausstehend'}
             </div>
             {preview.syncError && <div className="mt-1 text-xs text-red-600">{preview.syncError}</div>}
           </div>

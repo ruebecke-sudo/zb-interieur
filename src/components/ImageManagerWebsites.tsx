@@ -13,6 +13,10 @@ export function ImageManagerWebsites() {
   const [testing, setTesting] = useState<string | null>(null)
   const [syncing, setSyncing] = useState<string | null>(null)
   const [pushing, setPushing] = useState<string | null>(null)
+  const [keyStatus, setKeyStatus] = useState<Record<string, boolean>>({})
+  const [keyEditor, setKeyEditor] = useState<string | null>(null)
+  const [keyValue, setKeyValue] = useState('')
+  const [savingKey, setSavingKey] = useState(false)
 
   const load = async () => {
     const db = supabase
@@ -20,6 +24,22 @@ export function ImageManagerWebsites() {
     const { data, error } = await db.from('websites').select('id,name,base_url,connector_type,status').order('created_at', { ascending: false })
     if (error) setMessage(error.message)
     else setItems(data || [])
+    // Only tells whether a key is stored – the key itself is never readable in the browser.
+    const { data: userData } = await db.auth.getUser()
+    if (!userData.user) return
+    const { data: membership } = await db.from('memberships').select('tenant_id').eq('user_id', userData.user.id).limit(1).maybeSingle()
+    if (!membership?.tenant_id) return
+    const { data: statusRows } = await db.rpc('get_website_credential_status', { target_tenant: membership.tenant_id })
+    setKeyStatus(Object.fromEntries(((statusRows || []) as Array<{ website_id: string; has_key: boolean }>).map((row) => [row.website_id, row.has_key])))
+  }
+
+  const saveKey = async (site: Website) => {
+    if (!supabase) return
+    setSavingKey(true); setMessage('')
+    const { error } = await supabase.rpc('set_website_credential', { target_website: site.id, new_api_key: keyValue })
+    if (error) setMessage(`${site.name}: ${error.message}`)
+    else { setMessage(keyValue.trim() ? `${site.name}: API-Schlüssel gespeichert.` : `${site.name}: API-Schlüssel entfernt.`); setKeyEditor(null); setKeyValue(''); await load() }
+    setSavingKey(false)
   }
 
   useEffect(() => { void load() }, [])
@@ -103,7 +123,7 @@ export function ImageManagerWebsites() {
         const session = await supabase.auth.getSession()
         const token = session.data.session?.access_token
         if (!token) throw new Error('Sitzung abgelaufen.')
-        const response = await fetch('/.netlify/functions/sync-image-to-zb', {
+        const response = await fetch('/.netlify/functions/push-image-to-website', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
           body: JSON.stringify({ image_id: row.id }),
@@ -129,11 +149,20 @@ export function ImageManagerWebsites() {
     <form onSubmit={add} className="mt-6 grid gap-3 rounded-2xl bg-slate-50 p-4 md:grid-cols-[1fr_1.5fr_180px_auto]">
       <input required value={name} onChange={e => setName(e.target.value)} placeholder="Website-Name" className="rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm" />
       <input required type="url" value={url} onChange={e => setUrl(e.target.value)} placeholder="https://www.beispiel.de" className="rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm" />
-      <select value={connector} onChange={e => setConnector(e.target.value)} className="rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm"><option value="rest">REST-Schnittstelle</option><option value="wordpress">WordPress</option><option value="shopify">Shopify</option><option value="custom">Individuell</option></select>
+      <select value={connector} onChange={e => setConnector(e.target.value)} className="rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm"><option value="rest">REST-Schnittstelle</option><option value="wordpress">WordPress (nur Import)</option><option value="shopify">Shopify (nur Import)</option><option value="custom">Individuell (REST)</option></select>
       <button disabled={busy} className="rounded-xl bg-[#0E675A] px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50">{busy ? 'Speichern …' : 'Website hinzufügen'}</button>
     </form>
     {message && <div className="mt-4 rounded-xl bg-slate-100 p-3 text-sm">{message}</div>}
-    <div className="mt-5 space-y-3">{items.map(site => <div key={site.id} className="flex flex-col gap-3 rounded-xl border border-slate-200 p-4 md:flex-row md:items-center md:justify-between"><div><div className="font-semibold">{site.name}</div><div className="mt-1 text-sm text-slate-500">{site.base_url} · {site.connector_type}</div></div><div className="flex items-center gap-3"><span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">{site.status === 'active' ? 'Aktiv' : site.status}</span><button onClick={() => void testConnection(site)} disabled={testing === site.id} className="rounded-lg border border-slate-300 px-3 py-2 text-xs font-semibold disabled:opacity-50">{testing === site.id ? "Prüfen …" : "Verbindung testen"}</button><button onClick={() => void syncImages(site)} disabled={syncing === site.id} className="rounded-lg bg-[#0E675A] px-3 py-2 text-xs font-semibold text-white disabled:opacity-50">{syncing === site.id ? "Synchronisieren …" : "Bilder synchronisieren"}</button><button onClick={() => void pushPending(site)} disabled={pushing === site.id} className="rounded-lg border border-slate-300 px-3 py-2 text-xs font-semibold disabled:opacity-50">{pushing === site.id ? "Übertragen …" : "Änderungen übertragen"}</button><button onClick={() => void remove(site.id)} className="rounded-lg border border-red-200 px-3 py-2 text-xs font-semibold text-red-600">Entfernen</button></div></div>)}</div>
+    <div className="mt-5 space-y-3">{items.map(site => <div key={site.id} className="rounded-xl border border-slate-200 p-4"><div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between"><div><div className="font-semibold">{site.name}</div><div className="mt-1 text-sm text-slate-500">{site.base_url} · {site.connector_type}</div></div><div className="flex flex-wrap items-center gap-3"><span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">{site.status === 'active' ? 'Aktiv' : site.status}</span><button onClick={() => { setKeyEditor(keyEditor === site.id ? null : site.id); setKeyValue('') }} className={`rounded-lg border px-3 py-2 text-xs font-semibold ${keyStatus[site.id] ? 'border-emerald-200 text-emerald-700' : 'border-amber-300 text-amber-700'}`}>{keyStatus[site.id] ? 'API-Schlüssel ✓' : 'API-Schlüssel fehlt'}</button><button onClick={() => void testConnection(site)} disabled={testing === site.id} className="rounded-lg border border-slate-300 px-3 py-2 text-xs font-semibold disabled:opacity-50">{testing === site.id ? "Prüfen …" : "Verbindung testen"}</button><button onClick={() => void syncImages(site)} disabled={syncing === site.id} className="rounded-lg bg-[#0E675A] px-3 py-2 text-xs font-semibold text-white disabled:opacity-50">{syncing === site.id ? "Synchronisieren …" : "Bilder synchronisieren"}</button><button onClick={() => void pushPending(site)} disabled={pushing === site.id} className="rounded-lg border border-slate-300 px-3 py-2 text-xs font-semibold disabled:opacity-50">{pushing === site.id ? "Übertragen …" : "Änderungen übertragen"}</button><button onClick={() => void remove(site.id)} className="rounded-lg border border-red-200 px-3 py-2 text-xs font-semibold text-red-600">Entfernen</button></div></div>
+      {keyEditor === site.id && <div className="mt-4 rounded-xl bg-slate-50 p-4">
+        <div className="text-sm font-semibold">API-Schlüssel der Website</div>
+        <p className="mt-1 text-xs text-slate-500">Den Schlüssel erhältst du vom Betreiber der Website. Er wird verschlüsselt übertragen, nur vom Server verwendet und ist danach hier nicht mehr lesbar. {keyStatus[site.id] ? 'Ein neuer Wert ersetzt den gespeicherten; ein leeres Feld entfernt ihn.' : ''}</p>
+        <div className="mt-3 flex flex-col gap-2 md:flex-row">
+          <input type="password" autoComplete="off" value={keyValue} onChange={e => setKeyValue(e.target.value)} placeholder={keyStatus[site.id] ? 'Neuen Schlüssel eingeben' : 'Schlüssel eingeben (mind. 16 Zeichen)'} className="flex-1 rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm" />
+          <button onClick={() => void saveKey(site)} disabled={savingKey || (!keyValue.trim() && !keyStatus[site.id])} className="rounded-xl bg-[#0E675A] px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50">{savingKey ? 'Speichern …' : keyValue.trim() || !keyStatus[site.id] ? 'Schlüssel speichern' : 'Schlüssel entfernen'}</button>
+        </div>
+      </div>}
+    </div>)}</div>
     {!items.length && <div className="mt-5 rounded-xl border border-dashed border-slate-300 p-8 text-center text-sm text-slate-500">Noch keine Website verbunden.</div>}
   </section>
 }
