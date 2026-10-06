@@ -1,20 +1,44 @@
 import { useEffect, useState } from 'react'
 import { supabase, supabaseConfigured } from '../lib/supabase'
 
+// Supabase reports failed email links (e.g. expired or already used) in the URL hash.
+function readLinkError() {
+  const hash = new URLSearchParams(window.location.hash.replace(/^#/, ''))
+  if (!hash.get('error')) return ''
+  return hash.get('error_code') === 'otp_expired'
+    ? 'Der Bestätigungslink ist abgelaufen oder wurde bereits verwendet. Versuche dich anzumelden – oder fordere unten eine neue Bestätigungsmail an.'
+    : 'Der Link aus der E-Mail konnte nicht verwendet werden. Bitte versuche es erneut.'
+}
+
 export function ImageManagerAuthPage() {
+  const [linkError] = useState(readLinkError)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [companyName, setCompanyName] = useState('')
   const [mode, setMode] = useState<'login' | 'signup'>('login')
-  const [message, setMessage] = useState('')
+  const [message, setMessage] = useState(linkError)
   const [busy, setBusy] = useState(false)
 
+  const [showResend, setShowResend] = useState(Boolean(linkError))
+
   useEffect(() => {
+    if (linkError) window.history.replaceState(null, '', window.location.pathname)
     if (!supabase) return
     void supabase.auth.getSession().then(({ data }) => {
       if (data.session) window.location.href = '/image-manager/app'
     })
-  }, [])
+  }, [linkError])
+
+  const emailRedirectTo = `${window.location.origin}/image-manager/login`
+
+  const resendConfirmation = async () => {
+    if (!supabase) return
+    if (!email) return setMessage('Bitte oben deine E-Mail-Adresse eintragen, dann erneut auf „Bestätigungsmail erneut senden“ klicken.')
+    setBusy(true)
+    const { error } = await supabase.auth.resend({ type: 'signup', email, options: { emailRedirectTo } })
+    setMessage(error ? error.message : 'Neue Bestätigungsmail ist unterwegs. Bitte klicke den Link nur einmal.')
+    setBusy(false)
+  }
 
   const submit = async (event: React.FormEvent) => {
     event.preventDefault()
@@ -26,9 +50,9 @@ export function ImageManagerAuthPage() {
     setMessage('')
     const result = mode === 'login'
       ? await supabase.auth.signInWithPassword({ email, password })
-      : await supabase.auth.signUp({ email, password, options: { data: { company_name: companyName } } })
+      : await supabase.auth.signUp({ email, password, options: { emailRedirectTo, data: { company_name: companyName } } })
     if (result.error) setMessage(result.error.message)
-    else if (mode === 'signup') setMessage('Konto erstellt. Bitte bestätige ggf. deine E-Mail-Adresse.')
+    else if (mode === 'signup') { setMessage('Konto erstellt. Bitte bestätige deine E-Mail-Adresse über den Link in der E-Mail.'); setShowResend(true) }
     else window.location.href = '/image-manager/app'
     setBusy(false)
   }
@@ -44,6 +68,7 @@ export function ImageManagerAuthPage() {
         </div>
         {!supabaseConfigured && <div className="mt-4 rounded-xl bg-amber-50 p-3 text-xs text-amber-800">Anmeldung noch nicht konfiguriert.</div>}
         {message && <div className="mt-4 rounded-xl bg-slate-100 p-3 text-sm">{message}</div>}
+        {showResend && <button type="button" onClick={() => void resendConfirmation()} disabled={busy} className="mt-3 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-50">Bestätigungsmail erneut senden</button>}
         <button disabled={busy} className="mt-5 w-full rounded-xl bg-[#0E675A] px-4 py-3 text-sm font-semibold text-white disabled:opacity-50">{busy ? 'Bitte warten …' : mode === 'login' ? 'Anmelden' : 'Konto erstellen'}</button>
         <button type="button" onClick={() => { setMode(mode === 'login' ? 'signup' : 'login'); setMessage('') }} className="mt-4 w-full text-sm font-medium text-[#0E675A]">{mode === 'login' ? 'Noch kein Konto? Konto erstellen' : 'Bereits registriert? Anmelden'}</button>
       </form>
