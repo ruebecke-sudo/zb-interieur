@@ -13,6 +13,7 @@ function writePendingPlan(plan: string | null) {
 
 export function ImageManagerPlans() {
   const [usage,setUsage]=useState<Usage|null>(null)
+  const [limits,setLimits]=useState<Record<string,{max_images:number;max_members:number;max_websites:number}>>({})
   const [message,setMessage]=useState('')
   const [activationPending,setActivationPending]=useState(false)
   const loadUsage = useCallback(async () => {
@@ -69,6 +70,18 @@ export function ImageManagerPlans() {
   }
   useEffect(()=>{void loadUsage()},[loadUsage])
   useEffect(()=>{
+    if(!supabase)return
+    void supabase.from('plan_limits').select('plan,max_images,max_members,max_websites').then(({data})=>{
+      setLimits(Object.fromEntries((data||[]).map((row)=>[row.plan,row])))
+    })
+  },[])
+  const limitText=(id:string)=>{
+    const l=limits[id]
+    if(!l)return 'Bilder, Benutzer und Websites gemäß Tariflimit.'
+    if(id==='agency')return 'Bilder, Benutzer und Websites nach Absprache.'
+    return `${l.max_images.toLocaleString('de-DE')} Bilder · ${l.max_members} Benutzer · ${l.max_websites} ${l.max_websites===1?'Website':'Websites'}`
+  }
+  useEffect(()=>{
     if(new URLSearchParams(window.location.search).get('payment') !== 'success') return
     const pendingPlan = readPendingPlan()
     setActivationPending(true)
@@ -103,8 +116,8 @@ export function ImageManagerPlans() {
       </div>
       <div className="mt-5 rounded-xl border border-slate-200 p-4"><div className="text-xs uppercase tracking-wider text-slate-400">Aktueller Tarif</div><div className="mt-1 text-lg font-bold">{planLabel(usage.plan)}</div>{usage.stripe_customer_id && usage.plan !== 'lifetime' && <button onClick={()=>void manageAbrechnung()} className="mt-4 rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-semibold">Abrechnung verwalten</button>}</div>
     </div>
-    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">{plans.map(([id,name,price])=><div key={id} className={`rounded-2xl border p-5 ${usage.plan===id?'border-[#0E675A] ring-2 ring-[#0E675A]/10':'border-slate-200'} bg-white`}><div className="font-bold">{name}</div><div className="mt-1 text-sm text-slate-500">{price}</div><div className="mt-5 text-xs text-slate-500">Bilder, Benutzer und Websites gemäß Tariflimit.</div>{id==='lifetime' && <div className="mt-4 rounded-xl bg-emerald-50 p-3 text-xs font-semibold text-emerald-800">Einmalig zahlen · dauerhaft nutzen · keine monatliche Grundgebühr</div>}{id==='agency' && usage.plan!==id
+    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">{plans.map(([id,name,price])=><div key={id} className={`rounded-2xl border p-5 ${usage.plan===id?'border-[#0E675A] ring-2 ring-[#0E675A]/10':'border-slate-200'} bg-white`}><div className="font-bold">{name}</div><div className="mt-1 text-sm text-slate-500">{price}</div><div className="mt-5 text-xs text-slate-500">{limitText(id)}</div>{id==='lifetime' && <div className="mt-4 rounded-xl bg-emerald-50 p-3 text-xs font-semibold text-emerald-800">Einmalig zahlen · dauerhaft nutzen · keine monatliche Grundgebühr</div>}{id==='agency' && usage.plan!==id
         ? <a href={`mailto:${SALES_CONTACT_EMAIL}?subject=${encodeURIComponent('Image Manager Pro – Agentur-Tarif')}`} className="mt-4 block w-full rounded-xl border border-[#0E675A] px-3 py-2.5 text-center text-xs font-semibold text-[#0E675A] hover:bg-emerald-50">Kontakt aufnehmen</a>
-        : <button onClick={()=>void checkout(id)} disabled={usage.plan===id || usage.plan==='lifetime'} className="mt-4 w-full rounded-xl bg-[#0E675A] px-3 py-2.5 text-xs font-semibold text-white disabled:opacity-50">{usage.plan===id ? 'Aktueller Tarif' : usage.plan==='lifetime' ? 'In Dauerlizenz enthalten' : id==='lifetime' ? 'Dauerlizenz kaufen' : 'Tarif auswählen'}</button>}</div>)}</div>
+        : <button onClick={()=>void checkout(id)} disabled={usage.plan===id || usage.plan==='lifetime'} className="mt-4 w-full rounded-xl bg-[#0E675A] px-3 py-2.5 text-xs font-semibold text-white disabled:opacity-50">{usage.plan===id ? 'Aktueller Tarif' : usage.plan==='lifetime' ? 'Dauerlizenz aktiv' : id==='lifetime' ? 'Dauerlizenz kaufen' : 'Tarif auswählen'}</button>}</div>)}</div>
   </section>
 }

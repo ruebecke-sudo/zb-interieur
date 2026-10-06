@@ -1,12 +1,14 @@
 import { useEffect, useMemo, useState } from 'react'
 import { ImageManagerActions } from '../components/ImageManagerActions'
 import { ImageManagerWebsites } from '../components/ImageManagerWebsites'
+import { ImageManagerEmbed } from '../components/ImageManagerEmbed'
 import { ImageManagerCategories } from '../components/ImageManagerCategories'
 import { ImageManagerMembers } from '../components/ImageManagerMembers'
 import { ImageManagerBranding } from '../components/ImageManagerBranding'
 import { ImageManagerPlans } from '../components/ImageManagerPlans'
 import { supabase } from '../lib/supabase'
 import { planLabel } from '../lib/planLabels'
+import { DEFAULT_CATEGORY_LABELS, toCategoryLabels, type CategoryLabels } from '../lib/categoryLabels'
 
 type ImageItem = {
   id: string
@@ -60,6 +62,7 @@ export function ImageManagerDashboardPage() {
   const [bulkBusy, setBulkBusy] = useState(false)
   const [planUsage, setPlanUsage] = useState<{ plan: string; imageCount: number; maxImages: number; websiteCount: number; maxWebsites: number } | null>(null)
   const [navOpen, setNavOpen] = useState(false)
+  const [categoryLabels, setCategoryLabels] = useState<CategoryLabels>(DEFAULT_CATEGORY_LABELS)
   const [brokenLogoUrl, setBrokenLogoUrl] = useState('')
   const logoBroken = Boolean(logoUrl) && logoUrl === brokenLogoUrl
 
@@ -121,6 +124,9 @@ export function ImageManagerDashboardPage() {
           if (tenant?.brand_name) setBrandName(tenant.brand_name)
           if (tenant?.logo_url) setLogoUrl(tenant.logo_url)
           if (tenant?.primary_color) setPrimaryColor(tenant.primary_color)
+          // Separate query: before migration 009 the column does not exist yet.
+          const { data: labelRow } = await db.from('tenants').select('category_labels').eq('id', membership.tenant_id).maybeSingle()
+          if (labelRow) setCategoryLabels(toCategoryLabels(labelRow.category_labels))
         }
       })
     }
@@ -249,13 +255,13 @@ export function ImageManagerDashboardPage() {
                 </div>
               </div>
               <button type="button" onClick={() => void signOut()} className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50">Abmelden</button>
-              {userRole !== 'viewer' && <ImageManagerActions primary categories={categories} onChanged={loadData} />}
+              {userRole !== 'viewer' && <ImageManagerActions primary categories={categories} labels={categoryLabels} onChanged={loadData} />}
             </div>
           </div>
         </header>
 
         <div className="mx-auto max-w-7xl space-y-7 p-5 md:p-8">
-          {isWebsites ? <ImageManagerWebsites /> : isCategories ? <ImageManagerCategories /> : isPlans ? <ImageManagerPlans /> : isSettings ? (
+          {isWebsites ? <><ImageManagerWebsites /><ImageManagerEmbed categories={categories} labels={categoryLabels} /></> : isCategories ? <ImageManagerCategories onLabelsChanged={setCategoryLabels} /> : isPlans ? <ImageManagerPlans /> : isSettings ? (
             <>
               <ImageManagerMembers />
               <div className="mt-6"><ImageManagerBranding onSaved={(settings) => {
@@ -282,16 +288,16 @@ export function ImageManagerDashboardPage() {
               <div><h2 className="text-lg font-bold">Bildbibliothek</h2><p className="text-sm text-slate-500">Bilder zentral verwalten, kategorisieren und an Websites ausspielen.</p></div>
               <div className="flex flex-col gap-2 md:flex-row md:items-center">
                 <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Bilder suchen …" className="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-2.5 text-sm outline-none md:w-64" />
-                <select value={filterCategory1} onChange={(e) => setFilterCategory1(e.target.value)} className="rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm"><option value="">Alle Marken</option>{categories.category1.map((value) => <option key={value}>{value}</option>)}</select>
-                <select value={filterCategory2} onChange={(e) => setFilterCategory2(e.target.value)} className="rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm"><option value="">Alle Produktarten</option>{categories.category2.map((value) => <option key={value}>{value}</option>)}</select>
+                <select value={filterCategory1} onChange={(e) => setFilterCategory1(e.target.value)} className="rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm"><option value="">{`Alle: ${categoryLabels[0]}`}</option>{categories.category1.map((value) => <option key={value}>{value}</option>)}</select>
+                <select value={filterCategory2} onChange={(e) => setFilterCategory2(e.target.value)} className="rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm"><option value="">{`Alle: ${categoryLabels[1]}`}</option>{categories.category2.map((value) => <option key={value}>{value}</option>)}</select>
                 <button type="button" onClick={() => setViewMode('list')} className={`rounded-xl border px-3 py-2.5 text-xs font-semibold ${viewMode === 'list' ? 'border-[#0E675A] bg-emerald-50 text-[#0E675A]' : 'border-slate-300'}`}>Liste</button>
                 <button type="button" onClick={() => setViewMode('grid')} className={`rounded-xl border px-3 py-2.5 text-xs font-semibold ${viewMode === 'grid' ? 'border-[#0E675A] bg-emerald-50 text-[#0E675A]' : 'border-slate-300'}`}>Raster</button>
               </div>
             </div>
             {userRole !== 'viewer' && <div className="flex flex-col gap-3 border-b border-slate-200 bg-slate-50 p-4 md:flex-row md:items-center">
               <label className="flex items-center gap-2 text-sm font-semibold"><input type="checkbox" checked={filtered.length > 0 && selectedIds.length === filtered.length} onChange={selectAllFiltered} /> {selectedIds.length ? `${selectedIds.length} ausgewählt` : 'Auswahl'}</label>
-              <select value={bulkCategory1} onChange={(e) => setBulkCategory1(e.target.value)} className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs"><option value="">Marke auf Auswahl …</option>{categories.category1.map((value) => <option key={value}>{value}</option>)}</select>
-              <select value={bulkCategory2} onChange={(e) => setBulkCategory2(e.target.value)} className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs"><option value="">Produktart auf Auswahl …</option>{categories.category2.map((value) => <option key={value}>{value}</option>)}</select>
+              <select value={bulkCategory1} onChange={(e) => setBulkCategory1(e.target.value)} className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs"><option value="">{`${categoryLabels[0]} auf Auswahl …`}</option>{categories.category1.map((value) => <option key={value}>{value}</option>)}</select>
+              <select value={bulkCategory2} onChange={(e) => setBulkCategory2(e.target.value)} className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs"><option value="">{`${categoryLabels[1]} auf Auswahl …`}</option>{categories.category2.map((value) => <option key={value}>{value}</option>)}</select>
               <button type="button" onClick={() => void bulkUpdateCategories()} disabled={bulkBusy || !selectedIds.length || (!bulkCategory1 && !bulkCategory2)} className="rounded-xl bg-[#0E675A] px-3 py-2 text-xs font-semibold text-white disabled:opacity-40">Kategorien anwenden</button>
               <button type="button" onClick={() => void bulkDelete()} disabled={bulkBusy || !selectedIds.length} className="rounded-xl border border-red-200 px-3 py-2 text-xs font-semibold text-red-600 disabled:opacity-40">Auswahl löschen</button>
             </div>}
@@ -303,7 +309,7 @@ export function ImageManagerDashboardPage() {
                 <div className="min-w-0 flex-1"><div className="font-semibold">{item.name}</div><div className="mt-1 text-sm text-slate-500">{[item.category1, item.category2, item.category3, item.category4].filter(Boolean).join(" · ") || "Keine Kategorien"}</div></div>
                 <div className="grid grid-cols-3 gap-5 text-xs text-slate-500 md:text-right"><div><div className="font-semibold text-slate-700">{item.format}</div><div>{item.width && item.height ? `${item.width} × ${item.height}` : "Format"}</div></div><div><div className="font-semibold text-slate-700">{formatBytes(item.fileSize)}</div><div>Größe</div></div><div><div className="font-semibold text-slate-700">{formatDate(item.updatedAt)}</div><div>Aktualisiert</div></div></div>
                 <span className={`rounded-full px-3 py-1 text-xs font-semibold ${item.status === "Fehler" ? "bg-red-50 text-red-700" : item.status === "Synchronisiert" ? "bg-emerald-50 text-emerald-700" : "bg-amber-50 text-amber-700"}`}>{item.status || "Ausstehend"}</span>
-                <ImageManagerActions item={item} categories={categories} onChanged={loadData} />
+                <ImageManagerActions item={item} categories={categories} labels={categoryLabels} onChanged={loadData} />
               </div>)}
             </div>
           </section>

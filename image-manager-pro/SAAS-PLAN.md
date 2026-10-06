@@ -66,7 +66,15 @@ Branch `image-manager-pro-foundation`).
 | 2.5 | Datenbank-Skripte 001–008 zu einem Setup-Skript für neue Umgebungen zusammenführen | offen, erst für Phase 3 nötig |
 | 2.6 | Deutsche E-Mail-Vorlagen in Supabase einfügen (Authentication → Email Templates) | **du** – Vorlagen in `EMAIL-TEMPLATES-DE.md` |
 | 2.7 | Rechtstexte und Datenschutzhinweis in die App einbauen | wartet auf 1.5 |
-| 2.8 | Echte Übertragung für WordPress und Shopify | offen – heute nur REST/Individuell; in der Auswahl als „nur Import“ gekennzeichnet |
+| 2.8 | Echte Übertragung für WordPress (Plugin), später Shopify | offen – heute nur REST/Individuell; in der Auswahl als „nur Import“ gekennzeichnet |
+| 2.9 | Kategorien frei benennbar (`tenants.category_labels`), Werte löschbar | Code fertig – braucht `009_…sql` |
+| 2.10 | Tarif-Grenzen neu: Starter 500/2/1, Professional 5.000/5/2, Business 25.000/15/5, Agentur nach Absprache, Dauerlizenz 25.000/10/3 (Bilder/Benutzer/Websites) | Code fertig – braucht `009_…sql` |
+| 2.11 | **Einbettungscode für jede Website**: Freigabe pro Arbeitsbereich, Generator unter Websites, Skript `/image-manager-embed.js`, Daten über `public-gallery` | Code fertig – braucht `009_…sql` |
+
+Neutrale SaaS-Site: Netlify-Projekt `image-manager-pro`, gleiches Repo und
+gleicher Branch, `VITE_IMAGE_MANAGER_STANDALONE=true`, Domain
+`imagemanager.my-digital-world.de` (DNS bei Hetzner). Landingpage:
+`my-digital-world.de/image-manager-pro` (Repo `my-digital-world-ger`).
 
 ## Phase 3 – Herauslösen (gemeinsam)
 
