@@ -19,6 +19,7 @@ type ImageItem = {
   height: number
   originalFilename?: string
   storagePath?: string
+  websiteId?: string
 }
 
 type Categories = {
@@ -28,7 +29,7 @@ type Categories = {
   category4: string[]
 }
 
-type UploadedPreview = { url: string; name: string; syncStatus: 'synced' | 'error'; syncError?: string }
+type UploadedPreview = { url: string; name: string; syncStatus: 'synced' | 'error' | 'library'; syncError?: string }
 
 type EditorData = {
   name: string
@@ -71,7 +72,7 @@ export function ImageManagerActions({ item, categories, labels = DEFAULT_CATEGOR
   const [modal, setModal] = useState<'upload' | 'edit' | null>(null)
   const [editor, setEditor] = useState<EditorData>(item ? { name: item.name, text: item.text, category1: item.category1, category2: item.category2, category3: item.category3, category4: item.category4 } : emptyEditor)
   const [files, setFiles] = useState<File[]>([])
-  const [websites, setWebsites] = useState<Array<{ id: string; name: string; base_url: string }>>([])
+  const [websites, setWebsites] = useState<Array<{ id: string; name: string; base_url: string; hasKey: boolean }>>([])
   const [websiteId, setWebsiteId] = useState('')
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
@@ -94,11 +95,16 @@ export function ImageManagerActions({ item, categories, labels = DEFAULT_CATEGOR
       clearSelectedPreviews()
       setEditor(emptyEditor)
       if (supabase) {
-        void supabase.from('websites').select('id,name,base_url').order('name').then(({ data }) => {
+        const db = supabase
+        void (async () => {
+          const { data } = await db.from('websites').select('id,name,base_url,tenant_id').order('name')
           const rows = data || []
-          setWebsites(rows)
-          if (rows[0]) setWebsiteId(rows[0].id)
-        })
+          // Only websites with a stored API key can receive images automatically.
+          const { data: keyRows } = rows[0] ? await db.rpc('get_website_credential_status', { target_tenant: rows[0].tenant_id }) : { data: [] }
+          const withKey = new Set(((keyRows || []) as Array<{ website_id: string; has_key: boolean }>).filter((row) => row.has_key).map((row) => row.website_id))
+          setWebsites(rows.map((row) => ({ id: row.id, name: row.name, base_url: row.base_url, hasKey: withKey.has(row.id) })))
+          setWebsiteId(rows.find((row) => withKey.has(row.id))?.id || '')
+        })()
       }
     } else if (item) {
       setEditor({ name: item.name, text: item.text, category1: item.category1, category2: item.category2, category3: item.category3, category4: item.category4 })
@@ -119,7 +125,6 @@ export function ImageManagerActions({ item, categories, labels = DEFAULT_CATEGOR
       const { data: membership } = await supabase.from('memberships').select('tenant_id,role').eq('user_id', userData.user.id).limit(1).maybeSingle()
       if (!membership?.tenant_id) throw new Error('Kein Arbeitsbereich gefunden.')
       if (!['owner','admin','member'].includes(membership.role)) throw new Error('Keine Berechtigung zum Hochladen.')
-      if (!websiteId) throw new Error('Bitte eine Website auswählen.')
 
       const previews: UploadedPreview[] = []
       for (const file of files) {
@@ -128,7 +133,7 @@ export function ImageManagerActions({ item, categories, labels = DEFAULT_CATEGOR
         const { error: storageError } = await supabase.storage.from('image-manager-media').upload(path, file, { contentType: file.type, upsert: false })
         if (storageError) throw new Error(storageError.message)
         const { data: publicUrl } = supabase.storage.from('image-manager-media').getPublicUrl(path)
-        previews.push({ url: publicUrl.publicUrl, name: file.name, syncStatus: 'error' })
+        previews.push({ url: publicUrl.publicUrl, name: file.name, syncStatus: websiteId ? 'error' : 'library' })
         setUploadedPreviews([...previews])
         const image = new Image()
         const dimensions = await new Promise<{ width: number; height: number }>((resolve) => {
@@ -139,7 +144,7 @@ export function ImageManagerActions({ item, categories, labels = DEFAULT_CATEGOR
         URL.revokeObjectURL(image.src)
         const { data: inserted, error: insertError } = await supabase.from('images').insert({
           tenant_id: membership.tenant_id,
-          website_id: websiteId,
+          website_id: websiteId || null,
           filename: file.name,
           name: editor.name || file.name.replace(/\.[^.]+$/, ''),
           text: editor.text,
@@ -160,7 +165,7 @@ export function ImageManagerActions({ item, categories, labels = DEFAULT_CATEGOR
         if (insertError) throw new Error(insertError.message)
         const { data: sessionData } = await supabase.auth.getSession()
         const accessToken = sessionData.session?.access_token
-        if (accessToken && inserted?.id) {
+        if (websiteId && accessToken && inserted?.id) {
           const syncResponse = await fetch('/.netlify/functions/push-image-to-website', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + accessToken },
@@ -208,7 +213,7 @@ export function ImageManagerActions({ item, categories, labels = DEFAULT_CATEGOR
       await onChanged()
       const { data: sessionData } = await supabase.auth.getSession()
       const accessToken = sessionData.session?.access_token
-      if (accessToken) {
+      if (accessToken && item.websiteId) {
         await fetch('/.netlify/functions/push-image-to-website', {
           method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + accessToken },
           body: JSON.stringify({ image_id: item.id }),
@@ -253,8 +258,8 @@ export function ImageManagerActions({ item, categories, labels = DEFAULT_CATEGOR
           <img src={preview.url} alt={preview.name} className="h-56 w-full bg-white object-contain" />
           <div className="border-t border-slate-200 px-3 py-2">
             <div className="truncate text-xs font-medium text-slate-600" title={preview.name}>{preview.name}</div>
-            <div className={`mt-1 text-xs font-semibold ${preview.syncStatus === 'synced' ? 'text-emerald-600' : 'text-amber-600'}`}>
-              {preview.syncStatus === 'synced' ? '✓ An die Website übertragen' : '⚠ Gespeichert – Übertragung zur Website ausstehend'}
+            <div className={`mt-1 text-xs font-semibold ${preview.syncStatus === 'error' ? 'text-amber-600' : 'text-emerald-600'}`}>
+              {preview.syncStatus === 'synced' ? '✓ An die Website übertragen' : preview.syncStatus === 'library' ? '✓ In Bibliothek und Galerie gespeichert' : '⚠ Gespeichert – Übertragung zur Website ausstehend'}
             </div>
             {preview.syncError && <div className="mt-1 text-xs text-red-600">{preview.syncError}</div>}
           </div>
@@ -317,7 +322,7 @@ export function ImageManagerActions({ item, categories, labels = DEFAULT_CATEGOR
       ))}
     </div>
   )}
-</div><div className="mt-4 grid gap-3 md:grid-cols-2"><label className="block md:col-span-2"><span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">Website</span><select value={websiteId} onChange={(e) => setWebsiteId(e.target.value)} className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-[#0E675A]"><option value="">Website auswählen …</option>{websites.map((site) => <option key={site.id} value={site.id}>{site.name} · {site.base_url}</option>)}</select></label><Field label="Bildname" value={editor.name} onChange={(v) => setEditor({ ...editor, name: v })} /><Field label="Bildtext" value={editor.text} onChange={(v) => setEditor({ ...editor, text: v })} /><CategoryField label={`Kat.1 · ${labels[0]}`} value={editor.category1} values={categories.category1} onChange={(v) => setEditor({ ...editor, category1: v })} /><CategoryField label={`Kat.2 · ${labels[1]}`} value={editor.category2} values={categories.category2} onChange={(v) => setEditor({ ...editor, category2: v })} /><CategoryField label={`Kat.3 · ${labels[2]}`} value={editor.category3} values={categories.category3} onChange={(v) => setEditor({ ...editor, category3: v })} /><CategoryField label={`Kat.4 · ${labels[3]}`} value={editor.category4} values={categories.category4} onChange={(v) => setEditor({ ...editor, category4: v })} /></div>{error && <div className="mt-4 text-sm text-red-600">{error}</div>}<div className="mt-4 flex justify-end gap-2"><button type="button" onClick={() => { setModal(null); clearSelectedPreviews() }} className="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-semibold">Abbrechen</button><button disabled={busy || !files.length} className="rounded-xl bg-[#0E675A] px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-50">{busy ? 'Hochladen läuft …' : 'Hochladen'}</button></div></form>}</Modal>}
+</div><div className="mt-4 grid gap-3 md:grid-cols-2"><label className="block md:col-span-2"><span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">Website</span><select value={websiteId} onChange={(e) => setWebsiteId(e.target.value)} className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-[#0E675A]"><option value="">Keine Übertragung, nur Bibliothek und Galerie</option>{websites.map((site) => <option key={site.id} value={site.id}>{site.name} · {site.base_url}{site.hasKey ? '' : ' (ohne API-Schlüssel)'}</option>)}</select></label><Field label="Bildname" value={editor.name} onChange={(v) => setEditor({ ...editor, name: v })} /><Field label="Bildtext" value={editor.text} onChange={(v) => setEditor({ ...editor, text: v })} /><CategoryField label={`Kat.1 · ${labels[0]}`} value={editor.category1} values={categories.category1} onChange={(v) => setEditor({ ...editor, category1: v })} /><CategoryField label={`Kat.2 · ${labels[1]}`} value={editor.category2} values={categories.category2} onChange={(v) => setEditor({ ...editor, category2: v })} /><CategoryField label={`Kat.3 · ${labels[2]}`} value={editor.category3} values={categories.category3} onChange={(v) => setEditor({ ...editor, category3: v })} /><CategoryField label={`Kat.4 · ${labels[3]}`} value={editor.category4} values={categories.category4} onChange={(v) => setEditor({ ...editor, category4: v })} /></div>{error && <div className="mt-4 text-sm text-red-600">{error}</div>}<div className="mt-4 flex justify-end gap-2"><button type="button" onClick={() => { setModal(null); clearSelectedPreviews() }} className="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-semibold">Abbrechen</button><button disabled={busy || !files.length} className="rounded-xl bg-[#0E675A] px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-50">{busy ? 'Hochladen läuft …' : 'Hochladen'}</button></div></form>}</Modal>}
 
     {modal === 'edit' && item && <Modal><form onSubmit={update} className="w-full max-w-2xl rounded-2xl bg-white p-6 shadow-2xl"><h2 className="text-xl font-bold">Bild bearbeiten</h2><div className="mt-5 flex gap-4 rounded-xl bg-slate-50 p-3"><img src={item.url} alt="" className="h-20 w-20 rounded-xl object-cover" /><div className="text-xs text-slate-500">{item.width} × {item.height}px<br />{item.format}</div></div><div className="mt-5 grid gap-4 md:grid-cols-2"><Field label="Bildname" value={editor.name} onChange={(v) => setEditor({ ...editor, name: v })} /><Field label="Bildtext" value={editor.text} onChange={(v) => setEditor({ ...editor, text: v })} /><CategoryField label={`Kat.1 · ${labels[0]}`} value={editor.category1} values={categories.category1} onChange={(v) => setEditor({ ...editor, category1: v })} /><CategoryField label={`Kat.2 · ${labels[1]}`} value={editor.category2} values={categories.category2} onChange={(v) => setEditor({ ...editor, category2: v })} /><CategoryField label={`Kat.3 · ${labels[2]}`} value={editor.category3} values={categories.category3} onChange={(v) => setEditor({ ...editor, category3: v })} /><CategoryField label={`Kat.4 · ${labels[3]}`} value={editor.category4} values={categories.category4} onChange={(v) => setEditor({ ...editor, category4: v })} /></div>{error && <div className="mt-4 text-sm text-red-600">{error}</div>}<div className="mt-6 flex justify-end gap-2"><button type="button" onClick={() => setModal(null)} className="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-semibold">Abbrechen</button><button disabled={busy} className="rounded-xl bg-[#0E675A] px-5 py-2.5 text-sm font-semibold text-white">{busy ? 'Speichern …' : 'Änderungen speichern'}</button></div></form></Modal>}
   </>

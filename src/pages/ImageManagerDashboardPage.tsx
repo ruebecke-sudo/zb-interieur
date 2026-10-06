@@ -24,7 +24,8 @@ type ImageItem = {
   updatedAt: string
   width: number
   height: number
-  status?: 'Aktiv' | 'Entwurf' | 'Fehler' | 'Synchronisiert' | 'Ausstehend'
+  status?: 'Aktiv' | 'Entwurf' | 'Fehler' | 'Synchronisiert' | 'Ausstehend' | 'In Bibliothek'
+  websiteId?: string
   storagePath?: string
 }
 
@@ -87,7 +88,7 @@ export function ImageManagerDashboardPage() {
           id: row.id, name: row.name || row.filename || 'Ohne Namen', text: row.text || '',
           category1: row.category1 || '', category2: row.category2 || '', category3: row.category3 || '', category4: row.category4 || '',
           format: row.format || '–', fileSize: Number(row.file_size || 0), url: row.url || '', updatedAt: row.updated_at,
-          width: Number(row.width || 0), height: Number(row.height || 0), storagePath: row.storage_path || undefined, status: row.sync_status === 'error' ? 'Fehler' : row.sync_status === 'synced' ? 'Synchronisiert' : row.status === 'active' ? 'Ausstehend' : 'Entwurf',
+          width: Number(row.width || 0), height: Number(row.height || 0), storagePath: row.storage_path || undefined, websiteId: row.website_id || undefined, status: !row.website_id ? 'In Bibliothek' : row.sync_status === 'error' ? 'Fehler' : row.sync_status === 'synced' ? 'Synchronisiert' : row.status === 'active' ? 'Ausstehend' : 'Entwurf',
         }))
         setImages(mapped)
         setCategories({
@@ -308,7 +309,7 @@ export function ImageManagerDashboardPage() {
               {filtered.map((item) => <div key={item.id} className={viewMode === 'grid' ? 'rounded-2xl border border-slate-200 bg-white p-4 shadow-sm' : 'flex flex-col gap-4 p-5 md:flex-row md:items-center'}><div className="flex items-start gap-3"><input type="checkbox" checked={selectedIds.includes(item.id)} onChange={() => toggleSelected(item.id)} className="mt-2" /><img src={item.url} alt={item.name} className={viewMode === 'grid' ? 'h-44 w-full rounded-xl bg-slate-100 object-contain' : 'h-16 w-16 shrink-0 rounded-xl bg-slate-100 object-cover'} /></div>
                 <div className="min-w-0 flex-1"><div className="font-semibold">{item.name}</div><div className="mt-1 text-sm text-slate-500">{[item.category1, item.category2, item.category3, item.category4].filter(Boolean).join(" · ") || "Keine Kategorien"}</div></div>
                 <div className="grid grid-cols-3 gap-5 text-xs text-slate-500 md:text-right"><div><div className="font-semibold text-slate-700">{item.format}</div><div>{item.width && item.height ? `${item.width} × ${item.height}` : "Format"}</div></div><div><div className="font-semibold text-slate-700">{formatBytes(item.fileSize)}</div><div>Größe</div></div><div><div className="font-semibold text-slate-700">{formatDate(item.updatedAt)}</div><div>Aktualisiert</div></div></div>
-                <span className={`rounded-full px-3 py-1 text-xs font-semibold ${item.status === "Fehler" ? "bg-red-50 text-red-700" : item.status === "Synchronisiert" ? "bg-emerald-50 text-emerald-700" : "bg-amber-50 text-amber-700"}`}>{item.status || "Ausstehend"}</span>
+                <span className={`rounded-full px-3 py-1 text-xs font-semibold ${item.status === "Fehler" ? "bg-red-50 text-red-700" : item.status === "In Bibliothek" ? "bg-slate-100 text-slate-600" : item.status === "Synchronisiert" ? "bg-emerald-50 text-emerald-700" : "bg-amber-50 text-amber-700"}`}>{item.status || "Ausstehend"}</span>
                 <ImageManagerActions item={item} categories={categories} labels={categoryLabels} onChanged={loadData} />
               </div>)}
             </div>
