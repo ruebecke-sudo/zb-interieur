@@ -14,10 +14,7 @@ import { ServicePage } from './pages/ServicePage'
 import { TerminPage } from './pages/TerminPage'
 import { ProduktUploadPage } from './pages/ProduktUploadPage'
 import { BildverwaltungPage } from './pages/BildverwaltungPage'
-import { ImageManagerDashboardPage } from './pages/ImageManagerDashboardPage'
-import { ImageManagerAuthPage } from './pages/ImageManagerAuthPage'
-import { ImageManagerLandingPage } from './pages/ImageManagerLandingPage'
-import { ImageManagerLayout } from './components/ImageManagerLayout'
+import { imageManagerRoute } from './imageManagerRoute'
 
 const router = createBrowserRouter([
   {
@@ -52,16 +49,7 @@ const router = createBrowserRouter([
       { path: 'galerie', element: <Navigate to="/planung" replace /> },
     ],
   },
-  {
-    // Image Manager Pro runs without the ZB Interieur website frame (white-label).
-    path: '/image-manager',
-    element: <ImageManagerLayout />,
-    children: [
-      { index: true, element: <ImageManagerLandingPage /> },
-      { path: 'login', element: <ImageManagerAuthPage /> },
-      { path: 'app', element: <ImageManagerDashboardPage /> },
-    ],
-  },
+  imageManagerRoute,
 ])
 
 export default function App() {

@@ -8,6 +8,8 @@ process.env.USE_NETLIFY_BLOBS = 'true'
 const app = createMediaApp()
 
 export default async function handler(request: Request): Promise<Response> {
+  // The ZB Interieur media API only exists on the ZB site, not on the neutral SaaS site.
+  if (process.env.VITE_IMAGE_MANAGER_STANDALONE === 'true') return new Response('Not found', { status: 404 })
   return app.fetch(request)
 }
 

@@ -16,6 +16,12 @@ if (!existsSync(index)) {
   process.exit(1)
 }
 
+// Neutral SaaS build: there are no ZB Interieur pages to mirror.
+if (process.env.VITE_IMAGE_MANAGER_STANDALONE === 'true') {
+  console.log('SPA route mirrors: skipped (Image Manager standalone build)')
+  process.exit(0)
+}
+
 const routes = [
   'beratung',
   'planung',
