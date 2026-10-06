@@ -1,18 +1,25 @@
 import { createClient } from '@supabase/supabase-js'
 
 export default async (req: Request) => {
+  if (req.method !== 'POST') return new Response('Method not allowed.', { status: 405 })
+
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET
   const supabaseUrl = process.env.SUPABASE_URL
   const serviceKey = process.env.SUPABASE_SECRET_KEY
-  if (!webhookSecret || !supabaseUrl || !serviceKey) return new Response('Server configuration missing.', { status: 500 })
+  const missing = [
+    !webhookSecret ? 'STRIPE_WEBHOOK_SECRET' : '',
+    !supabaseUrl ? 'SUPABASE_URL' : '',
+    !serviceKey ? 'SUPABASE_SECRET_KEY' : '',
+  ].filter(Boolean)
+  if (missing.length) return new Response(`Server configuration missing: ${missing.join(', ')}.`, { status: 500 })
 
   const signature = req.headers.get('stripe-signature')
   if (!signature) return new Response('Missing Stripe signature.', { status: 400 })
   const payload = await req.text()
-  const event = await verifyStripeEvent(payload, signature, webhookSecret)
+  const event = await verifyStripeEvent(payload, signature, webhookSecret!)
   if (!event) return new Response('Invalid signature.', { status: 400 })
 
-  const supabase = createClient(supabaseUrl, serviceKey, { auth: { persistSession: false, autoRefreshToken: false } })
+  const supabase = createClient(supabaseUrl!, serviceKey!, { auth: { persistSession: false, autoRefreshToken: false } })
 
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object as {
@@ -63,7 +70,19 @@ export default async (req: Request) => {
       if (!activeStatuses.includes(subscription.status || '')) patch.plan = 'starter'
       else patch.plan = plan
 
-      const { error } = await supabase.from('tenants').update(patch).eq('id', tenantId).neq('plan', 'lifetime')
+      // An older subscription event must not overwrite the subscription that a
+      // newer Checkout session has already assigned to the workspace.
+      const { data: tenant, error: tenantError } = await supabase
+        .from('tenants')
+        .select('subscription_id,plan')
+        .eq('id', tenantId)
+        .single()
+      if (tenantError) return new Response('Database lookup failed.', { status: 500 })
+      if (tenant.plan === 'lifetime' || (tenant.subscription_id && tenant.subscription_id !== subscription.id)) {
+        return new Response('ok', { status: 200 })
+      }
+
+      const { error } = await supabase.from('tenants').update(patch).eq('id', tenantId)
       if (error) return new Response('Database update failed.', { status: 500 })
     }
   }
@@ -72,7 +91,10 @@ export default async (req: Request) => {
     const subscription = event.data.object as { id: string; metadata?: { tenant_id?: string }; customer?: string }
     const tenantId = subscription.metadata?.tenant_id
     if (tenantId) {
-      const { error } = await supabase.from('tenants').update({ plan: 'starter', status: 'active', subscription_id: null }).eq('id', tenantId).neq('plan', 'lifetime')
+      // Only the currently recorded subscription may downgrade a workspace.
+      // This prevents a delayed event from an old plan changing a new
+      // Professional subscription back to Starter.
+      const { error } = await supabase.from('tenants').update({ plan: 'starter', status: 'active', subscription_id: null }).eq('id', tenantId).eq('subscription_id', subscription.id).neq('plan', 'lifetime')
       if (error) return new Response('Database update failed.', { status: 500 })
     }
   }

@@ -46,6 +46,8 @@
    - create the Lifetime one-time price
    - configure webhook endpoint /.netlify/functions/stripe-webhook
    - enable Checkout and Customer Portal
+   - subscribe the webhook to at least `checkout.session.completed`,
+     `customer.subscription.updated`, and `customer.subscription.deleted`
 4. Supabase Auth:
    - enable leaked-password protection / compromised-password checks
    - configure production email sender and redirect URLs

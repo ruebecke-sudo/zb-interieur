@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 
 type Usage = { plan:string; image_count:number; member_count:number; website_count:number; max_images:number; max_members:number; max_websites:number; subscription_id?: string | null; stripe_customer_id?: string | null }
@@ -6,6 +6,25 @@ type Usage = { plan:string; image_count:number; member_count:number; website_cou
 export function ImageManagerPlans() {
   const [usage,setUsage]=useState<Usage|null>(null)
   const [message,setMessage]=useState('')
+  const [activationPending,setActivationPending]=useState(false)
+  const loadUsage = useCallback(async () => {
+    if(!supabase)return null
+    const {data:u}=await supabase.auth.getUser()
+    if(!u.user)return null
+    const {data:m}=await supabase.from('memberships').select('tenant_id').eq('user_id',u.user.id).limit(1).maybeSingle()
+    if(!m?.tenant_id)return null
+    const [{data,error},{data:tenant}] = await Promise.all([
+      supabase.rpc('get_tenant_usage',{target_tenant:m.tenant_id}),
+      supabase.from('tenants').select('subscription_id,stripe_customer_id').eq('id',m.tenant_id).single(),
+    ])
+    if(error) {
+      setMessage(error.message)
+      return null
+    }
+    const nextUsage = data?.[0] ? { ...data[0], ...tenant } : null
+    if(nextUsage) setUsage(nextUsage)
+    return nextUsage
+  }, [])
   const manageAbrechnung = async () => {
     if (!supabase) return
     const { data: sessionData } = await supabase.auth.getSession()
@@ -39,23 +58,28 @@ export function ImageManagerPlans() {
       setMessage(error instanceof Error ? error.message : 'Zahlungsvorgang konnte nicht gestartet werden.')
     }
   }
-  useEffect(()=>{void (async()=>{
-    if(!supabase)return
-    const {data:u}=await supabase.auth.getUser()
-    if(!u.user)return
-    const {data:m}=await supabase.from('memberships').select('tenant_id').eq('user_id',u.user.id).limit(1).maybeSingle()
-    if(!m?.tenant_id)return
-    const [{data,error},{data:tenant}] = await Promise.all([
-      supabase.rpc('get_tenant_usage',{target_tenant:m.tenant_id}),
-      supabase.from('tenants').select('subscription_id,stripe_customer_id').eq('id',m.tenant_id).single(),
-    ])
-    if(error)setMessage(error.message); else if(data?.[0])setUsage({ ...data[0], ...tenant })
-  })()},[])
+  useEffect(()=>{void loadUsage()},[loadUsage])
+  useEffect(()=>{
+    if(new URLSearchParams(window.location.search).get('payment') !== 'success') return
+    setActivationPending(true)
+    let attempts = 0
+    const poll = window.setInterval(() => {
+      attempts += 1
+      void loadUsage().then((nextUsage) => {
+        if(nextUsage?.plan === 'professional' || attempts >= 15) {
+          window.clearInterval(poll)
+          setActivationPending(false)
+        }
+      })
+    }, 2000)
+    return () => window.clearInterval(poll)
+  },[loadUsage])
   if(message)return <div className="rounded-2xl border border-red-200 bg-red-50 p-5 text-sm text-red-700">{message}</div>
   if(!usage)return <div className="rounded-2xl border border-slate-200 bg-white p-6 text-sm text-slate-500">Tarifinformationen werden geladen …</div>
   const plans=[['starter','Starter','19 € / Monat'],['professional','Professional','39 € / Monat'],['business','Business','79 € / Monat'],['agency','Agentur','Individuell'],['lifetime','Dauerlizenz','499 € einmalig']]
   const percent=(n:number,max:number)=>Math.min(100,Math.round(n/max*100))
   return <section className="space-y-6">
+    {activationPending && <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800">Zahlung bestätigt. Der neue Tarif wird aktiviert …</div>}
     <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"><h2 className="text-xl font-bold">Tarif & Nutzung</h2><p className="mt-1 text-sm text-slate-500">Aktueller Tarif und technische Nutzungsgrenzen des Arbeitsbereich.</p>
       <div className="mt-6 grid gap-4 md:grid-cols-3">
         {[

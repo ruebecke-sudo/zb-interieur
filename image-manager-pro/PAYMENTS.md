@@ -30,6 +30,12 @@ Die Freischaltung erfolgt ausschließlich nach verifiziertem Webhook.
 - STRIPE_PRICE_PROFESSIONAL
 - STRIPE_PRICE_BUSINESS
 
+Zusätzlich benötigt der Webhook `SUPABASE_URL` und `SUPABASE_SECRET_KEY`.
+Der Secret Key bleibt ausschließlich in Netlify Functions: Der Webhook muss den
+Tarif unabhängig von Browser-RLS schreiben können. `SUPABASE_PUBLISHABLE_KEY`
+ist für die authentifizierten Checkout-Endpunkte erforderlich, ersetzt den
+Server-Schlüssel aber nicht.
+
 ## Noch offen
 Die echten Stripe Price IDs und ein Stripe-Konto müssen hinterlegt werden. Erst danach kann der Checkout produktiv geschaltet werden.
 
