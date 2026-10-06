@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from 'react'
-import type { ReactNode } from 'react'
 import { ImageManagerActions } from '../components/ImageManagerActions'
 import { ImageManagerWebsites } from '../components/ImageManagerWebsites'
 import { ImageManagerCategories } from '../components/ImageManagerCategories'
@@ -40,17 +39,13 @@ function formatDate(value: string) {
   return new Intl.DateTimeFormat('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(date)
 }
 
-function Icon({ children }: { children: ReactNode }) {
-  return <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/10 text-white">{children}</span>
-}
-
 export function ImageManagerDashboardPage() {
   const [query, setQuery] = useState('')
   const [images, setImages] = useState<ImageItem[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [categories, setCategories] = useState({ category1: [] as string[], category2: [] as string[], category3: [] as string[], category4: [] as string[] })
-  const [ArbeitsbereichName, setArbeitsbereichName] = useState('ZB Interieur')
+  const [ArbeitsbereichName, setArbeitsbereichName] = useState('Arbeitsbereich')
   const [brandName, setBrandName] = useState('Image Manager PRO')
   const [logoUrl, setLogoUrl] = useState('')
   const [primaryColor, setPrimaryColor] = useState('#0E675A')
@@ -63,7 +58,7 @@ export function ImageManagerDashboardPage() {
   const [bulkCategory1, setBulkCategory1] = useState('')
   const [bulkCategory2, setBulkCategory2] = useState('')
   const [bulkBusy, setBulkBusy] = useState(false)
-  const [planUsage, setPlanUsage] = useState<{ plan: string; imageCount: number; maxImages: number } | null>(null)
+  const [planUsage, setPlanUsage] = useState<{ plan: string; imageCount: number; maxImages: number; websiteCount: number; maxWebsites: number } | null>(null)
   const [navOpen, setNavOpen] = useState(false)
   const [brokenLogoUrl, setBrokenLogoUrl] = useState('')
   const logoBroken = Boolean(logoUrl) && logoUrl === brokenLogoUrl
@@ -144,7 +139,7 @@ export function ImageManagerDashboardPage() {
       if (!membership?.tenant_id) return
       const { data } = await db.rpc('get_tenant_usage', { target_tenant: membership.tenant_id })
       const row = data?.[0]
-      if (row) setPlanUsage({ plan: row.plan, imageCount: Number(row.image_count || 0), maxImages: Number(row.max_images || 0) })
+      if (row) setPlanUsage({ plan: row.plan, imageCount: Number(row.image_count || 0), maxImages: Number(row.max_images || 0), websiteCount: Number(row.website_count || 0), maxWebsites: Number(row.max_websites || 0) })
     })()
   }, [active])
   const filtered = useMemo(() => images.filter((item) => {
@@ -275,10 +270,10 @@ export function ImageManagerDashboardPage() {
           <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
             {planUsage && <button type="button" onClick={() => setActive('Tarif')} className="rounded-2xl border border-[#0E675A]/30 bg-white p-5 text-left shadow-sm"><div className="flex items-start justify-between"><div><div className="text-2xl font-bold">{planLabel(planUsage.plan)}</div><div className="mt-1 font-semibold">Ihr Tarif</div><div className="mt-1 text-xs text-slate-500">{planUsage.imageCount.toLocaleString('de-DE')} / {planUsage.maxImages.toLocaleString('de-DE')} Bilder genutzt</div></div><div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-[#0E675A]">€</div></div></button>}
             {[
-              [`${images.length.toLocaleString('de-DE')}`, 'Bilder', loading ? 'Lade Bestand …' : 'Live aus ZB-Medien-API', '▧'],
+              [`${images.length.toLocaleString('de-DE')}`, 'Bilder', loading ? 'Lade Bestand …' : 'In der Bildbibliothek', '▧'],
               [`${activeCount.toLocaleString('de-DE')}`, 'Aktive Bilder', 'Auf Websites verfügbar', '✓'],
               [`${categoryCount}`, 'Kategorien', 'Aktuell belegte Werte', '≡'],
-              [`${images.length ? '1' : '0'}`, 'Website', 'Verbunden', '⌘'],
+              [`${(planUsage?.websiteCount ?? 0).toLocaleString('de-DE')}`, planUsage?.websiteCount === 1 ? 'Website' : 'Websites', planUsage ? `Verbunden · max. ${planUsage.maxWebsites.toLocaleString('de-DE')}` : 'Verbunden', '⌘'],
             ].map(([value,label,sub,icon]) => <div key={label} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"><div className="flex items-start justify-between"><div><div className="text-3xl font-bold">{value}</div><div className="mt-1 font-semibold">{label}</div><div className="mt-1 text-xs text-slate-500">{sub}</div></div><div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-600">{icon}</div></div></div>)}
           </section>
 
@@ -311,11 +306,6 @@ export function ImageManagerDashboardPage() {
                 <ImageManagerActions item={item} categories={categories} onChanged={loadData} />
               </div>)}
             </div>
-          </section>
-
-          <section className="grid gap-5 lg:grid-cols-2">
-            <div className="rounded-2xl bg-[#111318] p-6 text-white"><div className="flex items-center gap-3"><Icon>⌘</Icon><div><div className="font-bold">Website-Verbindungen</div><div className="text-sm text-slate-400">Zentrale Verwaltung deiner angeschlossenen Websites</div></div></div><div className="mt-6 flex items-center justify-between rounded-xl border border-white/10 bg-white/5 p-4"><div><div className="font-semibold">Website-Verbindung</div><div className="mt-1 text-xs text-slate-400">REST-Schnittstelle · zentral verwaltet</div></div><span className="rounded-full bg-emerald-400/10 px-3 py-1 text-xs font-semibold text-emerald-300">Online</span></div></div>
-            <div className="rounded-2xl border border-slate-200 bg-white p-6"><div className="font-bold">Nächster Schritt</div><p className="mt-2 text-sm leading-6 text-slate-500">Medienbibliothek, Rollen, Eigener Markenauftritt, Connectoren und Abrechnung sind vorbereitet. Vor dem öffentlichen Verkauf fehlen nur externe Stripe-/Auth-Konfiguration und der finale abschließende Gesamttest.</p><button className="mt-5 rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-semibold hover:bg-slate-50">Produktionsstatus</button></div>
           </section>
             </>
           )}

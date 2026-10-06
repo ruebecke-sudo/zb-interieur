@@ -17,6 +17,7 @@ import { BildverwaltungPage } from './pages/BildverwaltungPage'
 import { ImageManagerDashboardPage } from './pages/ImageManagerDashboardPage'
 import { ImageManagerAuthPage } from './pages/ImageManagerAuthPage'
 import { ImageManagerLandingPage } from './pages/ImageManagerLandingPage'
+import { ImageManagerLayout } from './components/ImageManagerLayout'
 
 const router = createBrowserRouter([
   {
@@ -29,10 +30,6 @@ const router = createBrowserRouter([
       { path: 'marken', element: <MarkenPage /> },
       { path: 'verwaltung/produkte', element: <ProduktUploadPage /> },
       { path: 'verwaltung/bilder', element: <BildverwaltungPage /> },
-      { path: 'image-manager', element: <ImageManagerLandingPage /> },
-      { path: 'image-manager/login', element: <ImageManagerAuthPage /> },
-      { path: 'image-manager/app', element: <ImageManagerDashboardPage /> },
-      
       { path: 'magazin', element: <MagazinPage /> },
       { path: 'blog', element: <BlogPage /> },
       { path: 'blog/:slug', element: <BlogPostPage /> },
@@ -53,6 +50,16 @@ const router = createBrowserRouter([
       { path: 'agb', element: <AgbPage /> },
       { path: 'galerien', element: <Navigate to="/planung" replace /> },
       { path: 'galerie', element: <Navigate to="/planung" replace /> },
+    ],
+  },
+  {
+    // Image Manager Pro runs without the ZB Interieur website frame (white-label).
+    path: '/image-manager',
+    element: <ImageManagerLayout />,
+    children: [
+      { index: true, element: <ImageManagerLandingPage /> },
+      { path: 'login', element: <ImageManagerAuthPage /> },
+      { path: 'app', element: <ImageManagerDashboardPage /> },
     ],
   },
 ])

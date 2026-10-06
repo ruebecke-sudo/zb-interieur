@@ -9,10 +9,15 @@ export default async (req: Request) => {
   const supabaseUrl = process.env.SUPABASE_URL
   const secret = process.env.SUPABASE_SECRET_KEY
   const zbKey = process.env.ZB_IMAGE_MANAGER_API_KEY
+  // The ZB key may only ever be used by the ZB workspace and only be sent to the ZB host.
+  // Without this, any self-registered workspace could push images to ZB or capture the key.
+  const zbTenantId = process.env.ZB_SYNC_TENANT_ID
+  const zbAllowedHosts = (process.env.ZB_SYNC_ALLOWED_HOSTS || 'zb-interieur.netlify.app').split(',').map((host) => host.trim().toLowerCase()).filter(Boolean)
   const missing = [
     !supabaseUrl ? 'SUPABASE_URL' : '',
     !secret ? 'SUPABASE_SECRET_KEY' : '',
     !zbKey ? 'ZB_IMAGE_MANAGER_API_KEY' : '',
+    !zbTenantId ? 'ZB_SYNC_TENANT_ID' : '',
   ].filter(Boolean)
   if (missing.length) {
     return new Response(JSON.stringify({
@@ -33,6 +38,7 @@ export default async (req: Request) => {
 
   const { data: membership } = await client.from('memberships').select('tenant_id,role').eq('user_id', userData.user.id).limit(1).maybeSingle()
   if (!membership || !['owner','admin','member'].includes(membership.role)) return new Response(JSON.stringify({ error: 'Keine Berechtigung.' }), { status: 403, headers })
+  if (membership.tenant_id !== zbTenantId) return new Response(JSON.stringify({ error: 'Die Website-Übertragung ist für diesen Arbeitsbereich nicht freigeschaltet.' }), { status: 403, headers })
 
   const admin = createClient(supabaseUrl, secret, { auth: { persistSession: false, autoRefreshToken: false } })
   const { data: image, error: imageError } = await admin.from('images').select('*').eq('id', body.image_id).eq('tenant_id', membership.tenant_id).single()
@@ -45,6 +51,7 @@ export default async (req: Request) => {
   try {
     const targetUrl = new URL(website.base_url)
     if (targetUrl.protocol !== 'https:') throw new Error('Website-Connector muss HTTPS verwenden.')
+    if (!zbAllowedHosts.includes(targetUrl.hostname.toLowerCase())) throw new Error(`Ziel-Host ${targetUrl.hostname} ist für die Übertragung nicht freigegeben.`)
     const target = await fetch(targetUrl.toString().replace(/\/$/, '') + '/api/images/upload-from-url', {
       method: 'POST',
       headers: {

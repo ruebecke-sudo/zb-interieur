@@ -32,6 +32,8 @@
    - VITE_SUPABASE_URL
    - VITE_SUPABASE_PUBLISHABLE_KEY
    - ZB_IMAGE_MANAGER_API_KEY
+   - ZB_SYNC_TENANT_ID (the only workspace allowed to push images to ZB Interieur)
+   - optional: ZB_SYNC_ALLOWED_HOSTS (sync target hosts, default `zb-interieur.netlify.app`)
    - STRIPE_SECRET_KEY
    - STRIPE_PRICE_LIFETIME
    - STRIPE_PRICE_STARTER
