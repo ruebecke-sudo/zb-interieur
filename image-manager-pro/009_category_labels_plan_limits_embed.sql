@@ -43,3 +43,7 @@ on conflict (plan) do update
 alter table public.tenants add column if not exists embed_id uuid not null default gen_random_uuid();
 alter table public.tenants add column if not exists embed_enabled boolean not null default false;
 create unique index if not exists tenants_embed_id_idx on public.tenants(embed_id);
+
+-- 008 limits browser updates on tenants to branding columns; allow the two new
+-- workspace settings as well (embed_id itself stays read-only).
+grant update (category_labels, embed_enabled) on public.tenants to authenticated;

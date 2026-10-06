@@ -58,7 +58,7 @@ Branch `image-manager-pro-foundation`).
 
 | # | Aufgabe | Status |
 |---|---|---|
-| 2.0 | **Datenbank-Regeln korrigiert:** Schreibregeln für Websites, Kategorien und Bilder prüften den Arbeitsbereich nicht wirksam | Code fertig – `008_…sql` muss in Supabase ausgeführt werden |
+| 2.0 | **Tarif-Felder gesperrt:** Browser dürfen beim Arbeitsbereich nur noch Name, Logo, Farbe (später Kategorienamen, Galerie-Freigabe) ändern, nicht `plan` oder Stripe-IDs. (Die zuerst vermutete RLS-Lücke gibt es live nicht – die SQL-Dateien 001–007 weichen von der Live-Datenbank ab.) | `008_…sql` in Supabase ausführen |
 | 2.1 | Eigener API-Schlüssel pro Website (Tabelle `website_credentials`, im Browser nicht lesbar), Eingabe unter Websites | Code fertig – braucht `008_…sql` |
 | 2.2 | Neutrale Übertragungsfunktion `push-image-to-website` (alter Name bleibt als Weiterleitung), Schutz vor internen Zieladressen | fertig |
 | 2.3 | ZB-Texte in der Oberfläche entfernt | fertig |

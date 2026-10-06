@@ -1,13 +1,21 @@
--- 008: Fix tenant checks in write policies + per-website connector credentials.
+-- 008: Lock tenant billing fields + per-website connector credentials.
+-- Written against the live database (checked 06.10.2026): RLS is enabled on all
+-- tables and the existing policies compare against the row's own tenant correctly.
 -- Safe to run more than once (Supabase SQL Editor).
 
 -- ---------------------------------------------------------------------------
--- 1) Tenant role helper
+-- 1) Browsers may only change branding fields of a workspace
 -- ---------------------------------------------------------------------------
--- The write policies from 001 compared "m.tenant_id = tenant_id". Inside the
--- subquery the unqualified tenant_id resolves to m.tenant_id, so the check was
--- always true: an owner/admin/member of ANY workspace passed it for EVERY
--- workspace. The helper below takes the row's tenant explicitly.
+-- The policy "tenant admins can update tenant branding" allows owners/admins to
+-- UPDATE the tenants row, and RLS cannot restrict columns. Without this, an owner
+-- could set plan = 'lifetime' or another stripe_customer_id via the REST API.
+-- Plan and Stripe fields are only written by server functions (service role).
+revoke update on public.tenants from anon, authenticated;
+grant update (name, brand_name, logo_url, primary_color) on public.tenants to authenticated;
+
+-- ---------------------------------------------------------------------------
+-- 2) Tenant role helper (used by the functions below)
+-- ---------------------------------------------------------------------------
 create or replace function public.has_tenant_role(target_tenant uuid, allowed_roles text[])
 returns boolean
 language sql
@@ -22,37 +30,6 @@ as $$
       and role = any(allowed_roles)
   );
 $$;
-
--- ---------------------------------------------------------------------------
--- 2) Recreate the affected policies with an explicit row tenant
--- ---------------------------------------------------------------------------
-drop policy if exists "tenant admins can manage websites" on public.websites;
-create policy "tenant admins can manage websites"
-on public.websites for all
-using (public.has_tenant_role(websites.tenant_id, array['owner','admin']))
-with check (public.has_tenant_role(websites.tenant_id, array['owner','admin']));
-
-drop policy if exists "tenant admins can manage categories" on public.categories;
-create policy "tenant admins can manage categories"
-on public.categories for all
-using (public.has_tenant_role(categories.tenant_id, array['owner','admin']))
-with check (public.has_tenant_role(categories.tenant_id, array['owner','admin']));
-
-drop policy if exists "tenant editors can create images" on public.images;
-create policy "tenant editors can create images"
-on public.images for insert
-with check (public.has_tenant_role(images.tenant_id, array['owner','admin','member']));
-
-drop policy if exists "tenant editors can update images" on public.images;
-create policy "tenant editors can update images"
-on public.images for update
-using (public.has_tenant_role(images.tenant_id, array['owner','admin','member']))
-with check (public.has_tenant_role(images.tenant_id, array['owner','admin','member']));
-
-drop policy if exists "tenant editors can delete images" on public.images;
-create policy "tenant editors can delete images"
-on public.images for delete
-using (public.has_tenant_role(images.tenant_id, array['owner','admin','member']));
 
 -- An image may only reference a website of the same workspace.
 create or replace function public.check_image_website_tenant()
@@ -131,5 +108,9 @@ as $$
   select w.id, c.website_id is not null, c.updated_at
   from public.websites w
   left join public.website_credentials c on c.website_id = w.id
-  where w.tenant_id = target_tenant and public.is_tenant_member(target_tenant);
+  where w.tenant_id = target_tenant
+    and public.has_tenant_role(target_tenant, array['owner','admin','member','viewer']);
 $$;
+
+revoke all on function public.get_website_credential_status(uuid) from public, anon;
+grant execute on function public.get_website_credential_status(uuid) to authenticated;
