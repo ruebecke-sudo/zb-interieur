@@ -43,6 +43,10 @@ const EMBED_SCRIPT = String.raw`(function () {
     var captions = host.getAttribute('data-captions') !== 'false';
     var root = host.shadowRoot || host.attachShadow({ mode: 'open' });
     root.innerHTML = '';
+    // Only the latest render of this element may write its result.
+    var token = (host.__imageManagerRender || 0) + 1;
+    host.__imageManagerRender = token;
+    function stale() { return host.__imageManagerRender !== token; }
     var style = el('style'); style.textContent = STYLE; root.appendChild(style);
     var grid = el('div', 'grid');
     grid.style.setProperty('--cols', String(cols));
@@ -62,6 +66,7 @@ const EMBED_SCRIPT = String.raw`(function () {
     fetch(base + '/.netlify/functions/public-gallery?' + params.toString())
       .then(function (res) { return res.json().then(function (body) { if (!res.ok) throw new Error(body.error || 'Fehler'); return body; }); })
       .then(function (body) {
+        if (stale()) return;
         var items = body.items || [];
         msg.remove();
         if (!items.length) { root.appendChild(el('div', 'msg', 'Keine Bilder vorhanden.')); return; }
@@ -75,7 +80,7 @@ const EMBED_SCRIPT = String.raw`(function () {
           grid.appendChild(fig);
         });
       })
-      .catch(function (err) { msg.textContent = 'Galerie nicht verfügbar: ' + err.message; });
+      .catch(function (err) { if (!stale()) msg.textContent = 'Galerie nicht verfügbar: ' + err.message; });
   }
 
   function open(root, items, start) {

@@ -1,2 +1,3 @@
+https://image-manager-pro.netlify.app/*  https://imagemanager.my-digital-world.de/:splat  301!
 /  /image-manager/login  302
 /*  /index.html  200
