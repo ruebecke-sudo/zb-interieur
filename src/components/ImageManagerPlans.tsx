@@ -1,7 +1,15 @@
 import { useCallback, useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
+import { planLabel } from '../lib/planLabels'
 
 type Usage = { plan:string; image_count:number; member_count:number; website_count:number; max_images:number; max_members:number; max_websites:number; subscription_id?: string | null; stripe_customer_id?: string | null }
+
+// Remembers which plan was bought, so the return page knows when activation is done.
+const PENDING_PLAN_KEY = 'image-manager-pending-plan'
+function readPendingPlan() { try { return window.sessionStorage.getItem(PENDING_PLAN_KEY) } catch { return null } }
+function writePendingPlan(plan: string | null) {
+  try { if (plan) window.sessionStorage.setItem(PENDING_PLAN_KEY, plan); else window.sessionStorage.removeItem(PENDING_PLAN_KEY) } catch { /* storage unavailable */ }
+}
 
 export function ImageManagerPlans() {
   const [usage,setUsage]=useState<Usage|null>(null)
@@ -53,6 +61,7 @@ export function ImageManagerPlans() {
         const detail = data.missing?.length ? ` Fehlende Server-Konfiguration: ${data.missing.join(', ')}.` : ''
         throw new Error((data.error || 'Zahlungsvorgang konnte nicht gestartet werden.') + detail)
       }
+      writePendingPlan(plan)
       window.location.href = data.url
     } catch (error) {
       setMessage(error instanceof Error ? error.message : 'Zahlungsvorgang konnte nicht gestartet werden.')
@@ -61,14 +70,18 @@ export function ImageManagerPlans() {
   useEffect(()=>{void loadUsage()},[loadUsage])
   useEffect(()=>{
     if(new URLSearchParams(window.location.search).get('payment') !== 'success') return
+    const pendingPlan = readPendingPlan()
     setActivationPending(true)
     let attempts = 0
     const poll = window.setInterval(() => {
       attempts += 1
       void loadUsage().then((nextUsage) => {
-        if(nextUsage?.plan === 'professional' || attempts >= 15) {
+        // Without a remembered plan (e.g. other browser tab) one successful reload is enough.
+        const activated = pendingPlan ? nextUsage?.plan === pendingPlan : Boolean(nextUsage)
+        if(activated || attempts >= 15) {
           window.clearInterval(poll)
           setActivationPending(false)
+          writePendingPlan(null)
         }
       })
     }, 2000)
@@ -88,8 +101,8 @@ export function ImageManagerPlans() {
           ['Websites',usage.website_count,usage.max_websites]
         ].map(([label,n,max])=><div key={label as string} className="rounded-2xl bg-slate-50 p-4"><div className="flex justify-between text-sm font-semibold"><span>{label}</span><span>{n} / {max}</span></div><div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-200"><div className="h-full rounded-full bg-[#0E675A]" style={{width:percent(n as number,max as number)+'%'}}/></div></div>)}
       </div>
-      <div className="mt-5 rounded-xl border border-slate-200 p-4"><div className="text-xs uppercase tracking-wider text-slate-400">Aktueller Tarif</div><div className="mt-1 text-lg font-bold capitalize">{usage.plan}</div>{usage.stripe_customer_id && usage.plan !== 'lifetime' && <button onClick={()=>void manageAbrechnung()} className="mt-4 mr-2 rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-semibold">Abrechnung verwalten</button>}{usage.plan!=='lifetime' && <button onClick={()=>checkout('lifetime')} className="mt-4 rounded-xl bg-[#0E675A] px-4 py-2.5 text-sm font-semibold text-white">Dauerlizenz kaufen</button>}</div>
+      <div className="mt-5 rounded-xl border border-slate-200 p-4"><div className="text-xs uppercase tracking-wider text-slate-400">Aktueller Tarif</div><div className="mt-1 text-lg font-bold">{planLabel(usage.plan)}</div>{usage.stripe_customer_id && usage.plan !== 'lifetime' && <button onClick={()=>void manageAbrechnung()} className="mt-4 rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-semibold">Abrechnung verwalten</button>}</div>
     </div>
-    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">{plans.map(([id,name,price])=><div key={id} className={`rounded-2xl border p-5 ${usage.plan===id?'border-[#0E675A] ring-2 ring-[#0E675A]/10':'border-slate-200'} bg-white`}><div className="font-bold">{name}</div><div className="mt-1 text-sm text-slate-500">{price}</div><div className="mt-5 text-xs text-slate-500">Bilder, Benutzer und Websites gemäß Tariflimit.</div>{id==='lifetime' ? <div className="mt-4 rounded-xl bg-emerald-50 p-3 text-xs font-semibold text-emerald-800">Einmalig zahlen · dauerhaft nutzen · keine monatliche Grundgebühr</div> : <button onClick={()=>void checkout(id)} disabled={usage.plan===id} className="mt-4 w-full rounded-xl bg-[#0E675A] px-3 py-2.5 text-xs font-semibold text-white disabled:opacity-50">{usage.plan===id ? 'Aktueller Tarif' : 'Tarif auswählen'}</button>}</div>)}</div>
+    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">{plans.map(([id,name,price])=><div key={id} className={`rounded-2xl border p-5 ${usage.plan===id?'border-[#0E675A] ring-2 ring-[#0E675A]/10':'border-slate-200'} bg-white`}><div className="font-bold">{name}</div><div className="mt-1 text-sm text-slate-500">{price}</div><div className="mt-5 text-xs text-slate-500">Bilder, Benutzer und Websites gemäß Tariflimit.</div>{id==='lifetime' && <div className="mt-4 rounded-xl bg-emerald-50 p-3 text-xs font-semibold text-emerald-800">Einmalig zahlen · dauerhaft nutzen · keine monatliche Grundgebühr</div>}<button onClick={()=>void checkout(id)} disabled={usage.plan===id} className="mt-4 w-full rounded-xl bg-[#0E675A] px-3 py-2.5 text-xs font-semibold text-white disabled:opacity-50">{usage.plan===id ? 'Aktueller Tarif' : id==='lifetime' ? 'Dauerlizenz kaufen' : 'Tarif auswählen'}</button></div>)}</div>
   </section>
 }

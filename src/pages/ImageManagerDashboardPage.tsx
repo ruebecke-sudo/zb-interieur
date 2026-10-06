@@ -7,6 +7,7 @@ import { ImageManagerMembers } from '../components/ImageManagerMembers'
 import { ImageManagerBranding } from '../components/ImageManagerBranding'
 import { ImageManagerPlans } from '../components/ImageManagerPlans'
 import { supabase } from '../lib/supabase'
+import { planLabel } from '../lib/planLabels'
 
 type ImageItem = {
   id: string
@@ -62,6 +63,10 @@ export function ImageManagerDashboardPage() {
   const [bulkCategory1, setBulkCategory1] = useState('')
   const [bulkCategory2, setBulkCategory2] = useState('')
   const [bulkBusy, setBulkBusy] = useState(false)
+  const [planUsage, setPlanUsage] = useState<{ plan: string; imageCount: number; maxImages: number } | null>(null)
+  const [navOpen, setNavOpen] = useState(false)
+  const [brokenLogoUrl, setBrokenLogoUrl] = useState('')
+  const logoBroken = Boolean(logoUrl) && logoUrl === brokenLogoUrl
 
   const loadData = async () => {
     setLoading(true)
@@ -125,7 +130,23 @@ export function ImageManagerDashboardPage() {
       })
     }
   }, [])
-  const [active, setActive] = useState('Übersicht')
+  // Returning from Stripe Checkout lands on the plan page, which shows the activation status.
+  const [active, setActive] = useState(() => new URLSearchParams(window.location.search).has('payment') ? 'Tarif' : 'Übersicht')
+
+  // Reloaded on every page switch so the plan badge follows a completed checkout.
+  useEffect(() => {
+    if (!supabase) return
+    const db = supabase
+    void (async () => {
+      const { data: userData } = await db.auth.getUser()
+      if (!userData.user) return
+      const { data: membership } = await db.from('memberships').select('tenant_id').eq('user_id', userData.user.id).limit(1).maybeSingle()
+      if (!membership?.tenant_id) return
+      const { data } = await db.rpc('get_tenant_usage', { target_tenant: membership.tenant_id })
+      const row = data?.[0]
+      if (row) setPlanUsage({ plan: row.plan, imageCount: Number(row.image_count || 0), maxImages: Number(row.max_images || 0) })
+    })()
+  }, [active])
   const filtered = useMemo(() => images.filter((item) => {
     const haystack = [item.name, item.text, item.category1, item.category2, item.category3, item.category4].join(' ').toLowerCase()
     return haystack.includes(query.toLowerCase()) && (!filterCategory1 || item.category1 === filterCategory1) && (!filterCategory2 || item.category2 === filterCategory2)
@@ -185,10 +206,17 @@ export function ImageManagerDashboardPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-[#f5f6f8] text-slate-900">
-      <aside className="fixed inset-y-0 left-0 hidden w-64 flex-col bg-[#111318] text-white lg:flex">
+    <div className="image-manager-app min-h-screen bg-[#f5f6f8] text-slate-900">
+      {navOpen && <div className="fixed inset-0 z-30 bg-black/40 lg:hidden" onClick={() => setNavOpen(false)} />}
+      <aside className={`fixed inset-y-0 left-0 z-40 w-64 flex-col overflow-y-auto bg-[#111318] text-white ${navOpen ? 'flex' : 'hidden'} lg:flex`}>
         <div className="border-b border-white/10 px-6 py-6">
-          <div className="flex items-center gap-3">{logoUrl ? <img src={logoUrl} alt="Logo" className="h-9 w-9 rounded-xl bg-white object-contain" /> : <div className="flex h-9 w-9 items-center justify-center rounded-xl font-bold text-white" style={{ backgroundColor: primaryColor }}>{ArbeitsbereichName.slice(0, 1).toUpperCase()}</div>}<div><div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">{brandName}</div><div className="mt-1 text-lg font-bold tracking-tight">Bildverwaltung</div></div></div>
+          <div className="flex items-start justify-between gap-3">
+            {logoUrl && !logoBroken
+              ? <div className="flex h-14 min-w-0 flex-1 items-center rounded-xl bg-white px-3"><img src={logoUrl} alt={`${brandName} Logo`} onError={() => setBrokenLogoUrl(logoUrl)} className="max-h-10 max-w-full object-contain" /></div>
+              : <div className="flex h-11 w-11 items-center justify-center rounded-xl text-lg font-bold text-white" style={{ backgroundColor: primaryColor }}>{ArbeitsbereichName.slice(0, 1).toUpperCase()}</div>}
+            <button type="button" onClick={() => setNavOpen(false)} aria-label="Menü schließen" className="rounded-lg px-2 py-1 text-xl text-slate-300 lg:hidden">✕</button>
+          </div>
+          <div className="mt-4"><div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">{brandName}</div><div className="mt-1 text-lg font-bold tracking-tight">Bildverwaltung</div></div>
         </div>
         <div className="px-4 py-5">
           <div className="mb-3 px-3 text-xs font-semibold uppercase tracking-wider text-slate-500">Arbeitsbereich</div>
@@ -197,7 +225,7 @@ export function ImageManagerDashboardPage() {
             <div><div className="text-sm font-semibold">{ArbeitsbereichName}</div><div className="text-xs text-slate-400">{userEmail || "Pilot-Arbeitsbereich"}</div></div>
           </div>
           <nav className="space-y-1">
-            {nav.map(([label, icon]) => <button key={label} onClick={() => setActive(label)} className={`flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm transition ${active === label ? 'bg-white text-slate-900 font-semibold' : 'text-slate-300 hover:bg-white/10'}`}><span className="w-6 text-center">{icon}</span>{label}</button>)}
+            {nav.map(([label, icon]) => <button key={label} onClick={() => { setActive(label); setNavOpen(false) }} className={`flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm transition ${active === label ? 'bg-white text-slate-900 font-semibold' : 'text-slate-300 hover:bg-white/10'}`}><span className="w-6 text-center">{icon}</span>{label}</button>)}
           </nav>
         </div>
         <div className="mt-auto border-t border-white/10 p-5 text-xs text-slate-500">Image Manager Pro · SaaS-Arbeitsbereich</div>
@@ -206,11 +234,18 @@ export function ImageManagerDashboardPage() {
       <main className="lg:ml-64">
         <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/95 px-5 py-4 backdrop-blur md:px-8">
           <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
-            <div>
-              <div className="text-sm text-slate-500">{ArbeitsbereichName} / Image Manager</div>
-              <h1 className="mt-1 text-2xl font-bold tracking-tight">{active}</h1>
+            <div className="flex items-center gap-3">
+              <button type="button" onClick={() => setNavOpen(true)} aria-label="Menü öffnen" className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-lg leading-none text-slate-700 lg:hidden">☰</button>
+              <div>
+                <div className="text-sm text-slate-500">{ArbeitsbereichName} / Image Manager</div>
+                <h1 className="mt-1 text-2xl font-bold tracking-tight">{active}</h1>
+              </div>
             </div>
             <div className="flex flex-wrap items-center gap-3">
+              {planUsage && <button type="button" onClick={() => setActive('Tarif')} title="Tarif & Nutzung anzeigen" className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-left leading-tight">
+                <div className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Tarif</div>
+                <div className="text-xs font-bold text-slate-800">{planLabel(planUsage.plan)}</div>
+              </button>}
               <div className="flex items-center gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2">
                 <span className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
                 <div className="leading-tight">
@@ -228,11 +263,17 @@ export function ImageManagerDashboardPage() {
           {isWebsites ? <ImageManagerWebsites /> : isCategories ? <ImageManagerCategories /> : isPlans ? <ImageManagerPlans /> : isSettings ? (
             <>
               <ImageManagerMembers />
-              <div className="mt-6"><ImageManagerBranding /></div>
+              <div className="mt-6"><ImageManagerBranding onSaved={(settings) => {
+                if (settings.name) setArbeitsbereichName(settings.name)
+                setBrandName(settings.brandName || 'Image Manager PRO')
+                setLogoUrl(settings.logoUrl)
+                setPrimaryColor(settings.primaryColor)
+              }} /></div>
             </>
           ) : (
             <>
-          <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+            {planUsage && <button type="button" onClick={() => setActive('Tarif')} className="rounded-2xl border border-[#0E675A]/30 bg-white p-5 text-left shadow-sm"><div className="flex items-start justify-between"><div><div className="text-2xl font-bold">{planLabel(planUsage.plan)}</div><div className="mt-1 font-semibold">Ihr Tarif</div><div className="mt-1 text-xs text-slate-500">{planUsage.imageCount.toLocaleString('de-DE')} / {planUsage.maxImages.toLocaleString('de-DE')} Bilder genutzt</div></div><div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-[#0E675A]">€</div></div></button>}
             {[
               [`${images.length.toLocaleString('de-DE')}`, 'Bilder', loading ? 'Lade Bestand …' : 'Live aus ZB-Medien-API', '▧'],
               [`${activeCount.toLocaleString('de-DE')}`, 'Aktive Bilder', 'Auf Websites verfügbar', '✓'],

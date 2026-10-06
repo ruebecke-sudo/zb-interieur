@@ -38,6 +38,11 @@
    - STRIPE_PRICE_PROFESSIONAL
    - STRIPE_PRICE_BUSINESS
    - STRIPE_WEBHOOK_SECRET
+   - RESEND_API_KEY
+   - RESEND_FROM_EMAIL
+   - IMAGE_MANAGER_API_KEY (media API key; without it the code falls back to the public default `zb-interieur-dev-key`)
+   - recommended: IMAGE_MANAGER_PASSWORD (UI login; defaults to IMAGE_MANAGER_API_KEY)
+   - recommended: PUBLIC_SITE_URL (fallback for checkout/portal return URLs and the plugin/OpenAPI manifest)
 2. ZB Interieur Netlify:
    - keep the connector API key configured
    - optionally set IMAGE_MANAGER_ALLOWED_SOURCE_HOSTS to the exact trusted storage host(s)

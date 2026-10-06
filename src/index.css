@@ -169,6 +169,26 @@ textarea:focus-visible {
   animation-play-state: paused;
 }
 
+/* Image Manager: visible hover/click feedback for every button
+   (Tailwind 4 no longer sets cursor: pointer on buttons) */
+.image-manager-app button:not(:disabled) {
+  cursor: pointer;
+  transition: filter 0.15s ease, transform 0.08s ease, background-color 0.15s ease;
+}
+
+.image-manager-app button:not(:disabled):hover {
+  filter: brightness(0.92);
+}
+
+.image-manager-app button:not(:disabled):active {
+  transform: scale(0.97);
+}
+
+/* Dark sidebar: brightening instead of darkening */
+.image-manager-app aside button:not(:disabled):hover {
+  filter: brightness(1.15);
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
