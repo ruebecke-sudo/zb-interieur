@@ -10,10 +10,25 @@ import {
   websiteJsonLd,
 } from '../data/seo'
 import { faqs, site } from '../data/site'
+import { useBlogPosts } from '../lib/blogFeed'
 
 export function Seo() {
   const { pathname } = useLocation()
-  const seo = resolvePageSeo(pathname)
+  // Blog posts written in Image Manager Pro are not in the fixed list: look them up at runtime.
+  const blogSlug = /^\/blog\/[^/]+\/?$/.test(pathname) ? pathname.replace(/^\/blog\//, '').replace(/\/$/, '') : ''
+  const isManagerPost = Boolean(blogSlug) && !getBlogPost(blogSlug)
+  const { posts } = useBlogPosts(isManagerPost)
+  const managerPost = isManagerPost ? posts.find((post) => post.slug === blogSlug) : undefined
+  const seo = managerPost
+    ? {
+        path: `/blog/${managerPost.slug}`,
+        title: `${managerPost.title} | Blog ZB Interieur Homburg`,
+        description: managerPost.excerpt,
+        keywords: [managerPost.category, 'Blog ZB Interieur', 'Einrichtungshaus Homburg'],
+        ogImage: absoluteUrl(managerPost.image),
+        type: 'article' as const,
+      }
+    : resolvePageSeo(pathname)
   const url = absoluteUrl(seo.path)
   const image = seo.ogImage || defaultOgImage
   const robots = seo.noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large'
@@ -40,7 +55,7 @@ export function Seo() {
   }
 
   if (seo.path.startsWith('/blog/') && seo.path !== '/blog') {
-    const post = getBlogPost(seo.path.slice('/blog/'.length))
+    const post = getBlogPost(seo.path.slice('/blog/'.length)) || managerPost
     if (post) {
       graph.push({
         '@context': 'https://schema.org',

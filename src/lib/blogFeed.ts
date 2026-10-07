@@ -47,14 +47,18 @@ function loadManagerPosts(): Promise<BlogPost[]> {
   return cache
 }
 
-/** All posts, newest first. `loaded` turns true once the Image Manager posts arrived. */
-export function useBlogPosts(): { posts: BlogPost[]; loaded: boolean } {
+/**
+ * All posts, newest first. `loaded` turns true once the Image Manager posts arrived.
+ * With enabled=false nothing is fetched (used by the site-wide Seo component).
+ */
+export function useBlogPosts(enabled = true): { posts: BlogPost[]; loaded: boolean } {
   const [managerPosts, setManagerPosts] = useState<BlogPost[] | null>(null)
   useEffect(() => {
+    if (!enabled) return
     let cancelled = false
     void loadManagerPosts().then((posts) => { if (!cancelled) setManagerPosts(posts) })
     return () => { cancelled = true }
-  }, [])
+  }, [enabled])
   const extra = managerPosts || []
   const slugs = new Set(extra.map((post) => post.slug))
   const posts = [...extra, ...blogPosts.filter((post) => !slugs.has(post.slug))]

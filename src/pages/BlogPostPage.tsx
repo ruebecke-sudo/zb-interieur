@@ -1,6 +1,4 @@
-import { Helmet } from 'react-helmet-async'
 import { Link, Navigate, useParams } from 'react-router-dom'
-import { getBlogPost } from '../data/blog'
 import { useBlogPosts } from '../lib/blogFeed'
 
 export function BlogPostPage() {
@@ -14,23 +12,11 @@ export function BlogPostPage() {
     return <Navigate to="/blog" replace />
   }
 
+  // Meta tags for all posts (also those from Image Manager Pro) come from the Seo component.
   const related = posts.filter((item) => item.slug !== post.slug).slice(0, 3)
-  // Fixed posts get their meta tags from the Seo component; new posts set them here.
-  const isManagerPost = !getBlogPost(post.slug)
-  const absoluteImage = post.image.startsWith('http') ? post.image : `https://zb-interieur.de${post.image}`
 
   return (
     <>
-      {isManagerPost ? (
-        <Helmet>
-          <title>{`${post.title} | Blog ZB Interieur Homburg`}</title>
-          <meta name="description" content={post.excerpt} />
-          <meta property="og:title" content={post.title} />
-          <meta property="og:description" content={post.excerpt} />
-          <meta property="og:type" content="article" />
-          <meta property="og:image" content={absoluteImage} />
-        </Helmet>
-      ) : null}
       <article>
         <header className="bg-fog">
           <div className="mx-auto max-w-3xl px-4 py-12 md:py-16">
