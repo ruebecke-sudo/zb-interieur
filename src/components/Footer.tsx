@@ -126,7 +126,7 @@ export function Footer() {
             <Link to="/agb" className="hover:text-white">
               AGB
             </Link>
-            <Link to="/verwaltung/bilder" className="hover:text-white">
+            <Link to="/image-manager/login" className="hover:text-white">
               Bildverwaltung
             </Link>
           </div>

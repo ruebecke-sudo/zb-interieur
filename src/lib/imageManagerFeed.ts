@@ -28,7 +28,7 @@ let cache: Promise<GalleryItem[]> | null = null
 /** All gallery images of the ZB workspace (newest first). Empty list if unavailable. */
 export function loadImageManagerItems(): Promise<GalleryItem[]> {
   if (!cache) {
-    cache = fetch(`/.netlify/functions/public-gallery?id=${ZB_GALLERY_ID}&limit=200`)
+    cache = fetch(`/.netlify/functions/public-gallery?id=${ZB_GALLERY_ID}&limit=500`)
       .then((response) => (response.ok ? response.json() : { items: [] }))
       .then((body: { items?: GalleryItem[] }) => body.items || [])
       .catch(() => [])

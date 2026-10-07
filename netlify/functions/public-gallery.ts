@@ -23,7 +23,7 @@ type Tenant = {
  * Public, read-only image list for the embed script (image-manager-embed.js) and the
  * hosted gallery page. Only serves workspaces that switched the gallery on (embed_enabled).
  * Query: id=<embed_id> or slug=<tenant slug>, optional c1..c4 (exact category values),
- * q (search), limit (max 200), meta=1 (adds branding and category values for /g/<slug>).
+ * q (search), limit (max 500), meta=1 (adds branding and category values for /g/<slug>).
  * Works before and after migration 010 (note, gallery style, inquiry button).
  */
 export default async (req: Request) => {
@@ -78,7 +78,7 @@ export default async (req: Request) => {
     }
   }
 
-  const limit = Math.min(Math.max(Number(params.get('limit')) || 60, 1), 200)
+  const limit = Math.min(Math.max(Number(params.get('limit')) || 60, 1), 500)
   const buildQuery = (columns: string) => {
     let query = admin.from('images')
       .select(columns)

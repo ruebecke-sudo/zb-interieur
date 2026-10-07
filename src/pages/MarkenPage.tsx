@@ -22,6 +22,8 @@ export function MarkenPage() {
   const [catalogOverrides, setCatalogOverrides] = useState<Map<string, MarkenProdukt>>(
     () => new Map(),
   )
+  // True once the former catalog lives in Image Manager Pro: then it is the only source.
+  const [managerOnly, setManagerOnly] = useState(false)
 
   useEffect(() => {
     let cancelled = false
@@ -34,6 +36,14 @@ export function MarkenPage() {
       loadImageManagerItems(),
     ]).then(([localUploads, libraryItems, managerItems]) => {
       if (cancelled) return
+      setUploaded(localUploads)
+      // Imported catalog rows carry external_id "zb-catalog:…" / "zb-library:…".
+      if (managerItems.some((item) => item.external_id?.startsWith('zb-'))) {
+        setManagerOnly(true)
+        setLibrary(mediaImagesToMarkenProdukte(managerItems.map(galleryItemToMediaImage)).products)
+        setCatalogOverrides(new Map())
+        return
+      }
       const libraryIds = new Set(libraryItems.map((item) => item.id))
       const libraryResult = mediaImagesToMarkenProdukte([
         ...withoutLibraryDuplicates(managerItems, libraryIds).map(galleryItemToMediaImage),
@@ -49,8 +59,8 @@ export function MarkenPage() {
   }, [])
 
   const allProdukte = useMemo(
-    () => mergeMarkenProdukte([...library, ...uploaded], catalogOverrides),
-    [library, uploaded, catalogOverrides],
+    () => (managerOnly ? [...library, ...uploaded] : mergeMarkenProdukte([...library, ...uploaded], catalogOverrides)),
+    [managerOnly, library, uploaded, catalogOverrides],
   )
   const brandsWithProducts = useMemo(
     () => markenMitProduktenFrom(allProdukte),
