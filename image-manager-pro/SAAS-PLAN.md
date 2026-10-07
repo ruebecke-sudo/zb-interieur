@@ -69,6 +69,7 @@ Branch `image-manager-pro-foundation`).
 | 2.8 | Echte Übertragung für WordPress (Plugin), später Shopify | offen – heute nur REST/Individuell; in der Auswahl als „nur Import“ gekennzeichnet |
 | 2.9 | Kategorien frei benennbar (`tenants.category_labels`), Werte löschbar | Code fertig – braucht `009_…sql` |
 | 2.10 | Tarif-Grenzen neu: Starter 500/2/1, Professional 5.000/5/2, Business 25.000/15/5, Agentur nach Absprache, Dauerlizenz 25.000/10/3 (Bilder/Benutzer/Websites) | Code fertig – braucht `009_…sql` |
+| 2.12 | **Einbinde-Assistent**: System wählen (WordPress, Wix, Jimdo, Shopify, Anderes) oder „Weiß ich nicht“ → Website-Adresse eingeben, System wird automatisch erkannt (`detect-website-platform`) → drei passende Schritte; WordPress: persönliches Plugin als ZIP-Download (Galerie-ID schon drin, Shortcode `[image_manager_galerie]`). Grundsatz: Kunde schafft alles selbst, ohne Webdesigner | lokal fertig, wartet auf Freigabe |
 | 2.11 | **Einbettungscode für jede Website**: Freigabe pro Arbeitsbereich, Generator unter Websites, Skript `/image-manager-embed.js`, Daten über `public-gallery` | Code fertig – braucht `009_…sql` |
 
 Neutrale SaaS-Site: Netlify-Projekt `image-manager-pro`, gleiches Repo und
