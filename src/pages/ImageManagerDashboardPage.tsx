@@ -29,6 +29,8 @@ type ImageItem = {
   storagePath?: string
 }
 
+const GALLERY_TAB = 'Galerie & Website'
+
 function formatBytes(bytes: number) {
   if (!bytes) return '–'
   if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`
@@ -64,6 +66,7 @@ export function ImageManagerDashboardPage() {
   const [planUsage, setPlanUsage] = useState<{ plan: string; imageCount: number; maxImages: number; websiteCount: number; maxWebsites: number } | null>(null)
   const [navOpen, setNavOpen] = useState(false)
   const [categoryLabels, setCategoryLabels] = useState<CategoryLabels>(DEFAULT_CATEGORY_LABELS)
+  const [galleryEnabled, setGalleryEnabled] = useState(false)
   const [brokenLogoUrl, setBrokenLogoUrl] = useState('')
   const logoBroken = Boolean(logoUrl) && logoUrl === brokenLogoUrl
 
@@ -126,8 +129,11 @@ export function ImageManagerDashboardPage() {
           if (tenant?.logo_url) setLogoUrl(tenant.logo_url)
           if (tenant?.primary_color) setPrimaryColor(tenant.primary_color)
           // Separate query: before migration 009 the column does not exist yet.
-          const { data: labelRow } = await db.from('tenants').select('category_labels').eq('id', membership.tenant_id).maybeSingle()
-          if (labelRow) setCategoryLabels(toCategoryLabels(labelRow.category_labels))
+          const { data: labelRow } = await db.from('tenants').select('category_labels,embed_enabled').eq('id', membership.tenant_id).maybeSingle()
+          if (labelRow) {
+            setCategoryLabels(toCategoryLabels(labelRow.category_labels))
+            setGalleryEnabled(Boolean(labelRow.embed_enabled))
+          }
         }
       })
     }
@@ -185,7 +191,7 @@ export function ImageManagerDashboardPage() {
   }
   const categoryCount = new Set(images.flatMap((item) => [item.category1, item.category2, item.category3, item.category4].filter(Boolean))).size
   const activeCount = images.length
-  const isWebsites = active === 'Websites'
+  const isWebsites = active === GALLERY_TAB
   const isCategories = active === 'Kategorien'
   const isSettings = active === 'Einstellungen'
   const isPlans = active === 'Tarif'
@@ -199,12 +205,12 @@ export function ImageManagerDashboardPage() {
   }
 
   const nav = [
-    ['Übersicht', '▦'],
-    ['Bildverwaltung', '▣'],
-    ['Websites', '⌘'],
-    ['Kategorien', '≡'],
-    ['Einstellungen', '⚙'],
-    ['Tarif', '€'],
+    ['Übersicht', '🏠'],
+    ['Bildverwaltung', '🖼️'],
+    [GALLERY_TAB, '🌐'],
+    ['Kategorien', '🏷️'],
+    ['Einstellungen', '⚙️'],
+    ['Tarif', '💶'],
   ]
 
   return (
@@ -262,7 +268,13 @@ export function ImageManagerDashboardPage() {
         </header>
 
         <div className="mx-auto max-w-7xl space-y-7 p-5 md:p-8">
-          {isWebsites ? <><ImageManagerWebsites /><ImageManagerEmbed categories={categories} labels={categoryLabels} /></> : isCategories ? <ImageManagerCategories onLabelsChanged={setCategoryLabels} /> : isPlans ? <ImageManagerPlans /> : isSettings ? (
+          {isWebsites ? <>
+            <ImageManagerEmbed categories={categories} labels={categoryLabels} onEnabledChange={setGalleryEnabled} />
+            <details className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+              <summary className="cursor-pointer text-sm font-semibold text-slate-600">🔧 Für Fortgeschrittene: Bilder per Schnittstelle automatisch an eine Website übertragen</summary>
+              <div className="mt-4"><ImageManagerWebsites /></div>
+            </details>
+          </> : isCategories ? <ImageManagerCategories onLabelsChanged={setCategoryLabels} /> : isPlans ? <ImageManagerPlans /> : isSettings ? (
             <>
               <ImageManagerMembers />
               <div className="mt-6"><ImageManagerBranding onSaved={(settings) => {
@@ -274,6 +286,30 @@ export function ImageManagerDashboardPage() {
             </>
           ) : (
             <>
+          {!loading && userRole !== 'viewer' && !(logoUrl && images.length && galleryEnabled) && (() => {
+            const steps = [
+              { icon: '🎨', title: 'Logo und Farbe', text: 'Damit Ihre Galerie nach Ihrer Firma aussieht.', done: Boolean(logoUrl), action: <button type="button" onClick={() => setActive('Einstellungen')} className="rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-slate-800 ring-1 ring-slate-300">Logo hochladen</button> },
+              { icon: '🖼️', title: 'Bilder hochladen', text: 'Einfach auswählen, fertig. Namen und Kategorien sind freiwillig.', done: images.length > 0, action: <ImageManagerActions primary categories={categories} labels={categoryLabels} onChanged={loadData} /> },
+              { icon: '🌐', title: 'Galerie zeigen', text: 'Fertige Galerie-Seite, Link, QR-Code oder direkt auf Ihrer Website.', done: galleryEnabled, action: <button type="button" onClick={() => setActive(GALLERY_TAB)} className="rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-slate-800 ring-1 ring-slate-300">Galerie einrichten</button> },
+            ]
+            const doneCount = steps.filter((step) => step.done).length
+            return <section className="rounded-2xl border-2 border-[#0E675A]/25 bg-white p-6 shadow-sm">
+              <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+                <div><h2 className="text-xl font-bold">In 3 Schritten zu Ihrer Galerie</h2><p className="mt-1 text-sm text-slate-500">Arbeiten Sie die Schritte von links nach rechts ab. Erledigte Schritte werden grün.</p></div>
+                <div className="text-sm font-semibold text-[#0E675A]">{doneCount} von 3 erledigt</div>
+              </div>
+              <div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-100"><div className="h-full rounded-full bg-[#0E675A] transition-all" style={{ width: `${(doneCount / 3) * 100}%` }} /></div>
+              <div className="mt-5 grid gap-4 md:grid-cols-3">
+                {steps.map((step, index) => <div key={step.title} className={`flex flex-col rounded-2xl border p-5 ${step.done ? 'border-emerald-200 bg-emerald-50' : 'border-slate-200 bg-slate-50'}`}>
+                  <div className="flex items-center justify-between"><span className="text-4xl" aria-hidden="true">{step.icon}</span><span className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold ${step.done ? 'bg-emerald-600 text-white' : 'bg-white text-slate-500 ring-1 ring-slate-300'}`}>{step.done ? '✓' : index + 1}</span></div>
+                  <div className="mt-3 text-lg font-bold">{step.title}</div>
+                  <p className="mt-1 flex-1 text-sm text-slate-600">{step.text}</p>
+                  <div className="mt-4">{step.done ? <span className="text-sm font-semibold text-emerald-700">Erledigt</span> : step.action}</div>
+                </div>)}
+              </div>
+            </section>
+          })()}
+
           <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
             {planUsage && <button type="button" onClick={() => setActive('Tarif')} className="rounded-2xl border border-[#0E675A]/30 bg-white p-5 text-left shadow-sm"><div className="flex items-start justify-between"><div><div className="text-2xl font-bold">{planLabel(planUsage.plan)}</div><div className="mt-1 font-semibold">Ihr Tarif</div><div className="mt-1 text-xs text-slate-500">{planUsage.imageCount.toLocaleString('de-DE')} / {planUsage.maxImages.toLocaleString('de-DE')} Bilder genutzt</div></div><div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-[#0E675A]">€</div></div></button>}
             {[

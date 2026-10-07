@@ -115,7 +115,7 @@ function imp_galerie_admin_page() {
             </tbody>
         </table>
         <p>Beispiel: <code>[image_manager_galerie kategorie1="${example}" spalten="4"]</code> zeigt nur Bilder mit <?php echo esc_html($labels[0]); ?> „${example}“. Den Wert genau so schreiben wie im Image Manager.</p>
-        <p style="color:#646970">Neue und geänderte Bilder erscheinen automatisch. Die Galerie muss im Image Manager unter „Websites“ freigegeben sein.</p>
+        <p style="color:#646970">Neue und geänderte Bilder erscheinen automatisch. Die Galerie muss im Image Manager unter „Galerie &amp; Website“ eingeschaltet sein.</p>
     </div>
     <?php
 }

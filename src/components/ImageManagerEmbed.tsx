@@ -45,7 +45,7 @@ function CopyBlock({ text, onCopy }: { text: string; onCopy: () => void }) {
 
 
 /** Generator for the copy-paste gallery code customers put on any website. */
-export function ImageManagerEmbed({ categories, labels }: { categories: Categories; labels: CategoryLabels }) {
+export function ImageManagerEmbed({ categories, labels, onEnabledChange }: { categories: Categories; labels: CategoryLabels; onEnabledChange?: (enabled: boolean) => void }) {
   const [tenantId, setTenantId] = useState('')
   const [embedId, setEmbedId] = useState('')
   const [enabled, setEnabled] = useState(false)
@@ -110,6 +110,7 @@ export function ImageManagerEmbed({ categories, labels }: { categories: Categori
     const { error } = await supabase.from('tenants').update({ embed_enabled: !enabled }).eq('id', tenantId)
     if (error) return setMessage(error.message)
     setEnabled(!enabled)
+    onEnabledChange?.(!enabled)
     setMessage(!enabled ? 'Galerie freigegeben. Bilder dieses Arbeitsbereichs können jetzt über den Code angezeigt werden.' : 'Galerie gesperrt. Eingebundene Galerien zeigen keine Bilder mehr.')
   }
 
@@ -192,16 +193,22 @@ export function ImageManagerEmbed({ categories, labels }: { categories: Categori
   return <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
     <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
       <div>
-        <h2 className="text-xl font-bold">Galerie auf Ihrer Website einbinden</h2>
-        <p className="mt-1 max-w-2xl text-sm text-slate-500">Funktioniert mit jeder Website, zum Beispiel WordPress, Wix, Jimdo oder Shopify. Auswählen, was gezeigt werden soll, dann Ihr System wählen und den Schritten folgen. Neue und geänderte Bilder erscheinen danach automatisch.</p>
+        <h2 className="text-xl font-bold">🌐 Ihre Galerie</h2>
+        <p className="mt-1 max-w-2xl text-sm text-slate-500">Zeigen Sie Ihre Bilder als fertige Galerie-Seite oder direkt auf Ihrer Website. Neue und geänderte Bilder erscheinen dort immer automatisch.</p>
       </div>
-      {!unavailable && <button type="button" onClick={() => void toggle()} disabled={!canManage} title={canManage ? '' : 'Nur Inhaber und Administratoren'} className={`shrink-0 rounded-xl px-4 py-2.5 text-sm font-semibold disabled:opacity-50 ${enabled ? 'border border-slate-300 text-slate-700' : 'bg-[#0E675A] text-white'}`}>{enabled ? 'Galerie sperren' : 'Galerie freigeben'}</button>}
+      {!unavailable && enabled && <button type="button" onClick={() => void toggle()} disabled={!canManage} title={canManage ? '' : 'Nur Inhaber und Administratoren'} className={`shrink-0 rounded-xl px-4 py-2.5 text-sm font-semibold disabled:opacity-50 ${enabled ? 'border border-slate-300 text-slate-700' : 'bg-[#0E675A] text-white'}`}>{enabled ? 'Galerie sperren' : 'Galerie freigeben'}</button>}
     </div>
 
     {unavailable && <div className="mt-4 rounded-xl bg-amber-50 p-3 text-sm text-amber-800">Die Einbindung ist noch nicht aktiv. Bitte das Datenbank-Update 009 in Supabase ausführen.</div>}
     {message && <div className="mt-4 rounded-xl bg-slate-100 p-3 text-sm">{message}</div>}
 
-    {!unavailable && !enabled && <div className="mt-4 rounded-xl border border-dashed border-slate-300 p-4 text-sm text-slate-500">Solange die Galerie nicht freigegeben ist, sind Ihre Bilder nicht öffentlich abrufbar.</div>}
+    {!unavailable && !enabled && <div className="mt-6 rounded-2xl border-2 border-dashed border-slate-300 p-8 text-center">
+      <div className="text-5xl" aria-hidden="true">🌐</div>
+      <div className="mt-3 text-lg font-bold">Galerie einschalten</div>
+      <p className="mx-auto mt-1 max-w-md text-sm text-slate-500">Mit einem Klick bekommen Sie eine fertige Galerie-Seite mit Link und QR-Code. Vorher sind Ihre Bilder nicht öffentlich sichtbar.</p>
+      <button type="button" onClick={() => void toggle()} disabled={!canManage} className="mt-5 rounded-xl bg-[#0E675A] px-6 py-3 text-base font-semibold text-white disabled:opacity-50">Galerie jetzt einschalten</button>
+      {!canManage && <p className="mt-2 text-xs text-slate-500">Das kann nur der Inhaber oder ein Administrator.</p>}
+    </div>}
 
     {!unavailable && enabled && <>
       {pageUrl && <div className="mt-6 rounded-2xl border-2 border-[#0E675A]/30 bg-emerald-50/40 p-5">

@@ -73,7 +73,7 @@ export default async (req: Request) => {
     const legacyHosts = (process.env.ZB_SYNC_ALLOWED_HOSTS || 'zb-interieur.netlify.app').split(',').map((host) => host.trim().toLowerCase()).filter(Boolean)
     if (legacyKey && legacyTenant && membership.tenant_id === legacyTenant && legacyHosts.includes(targetUrl.hostname.toLowerCase())) apiKey = legacyKey
   }
-  if (!apiKey) return fail('Für diese Website ist noch kein API-Schlüssel hinterlegt (Websites → „API-Schlüssel“).', 400)
+  if (!apiKey) return fail('Für diese Website ist noch kein API-Schlüssel hinterlegt (Galerie & Website → Für Fortgeschrittene → „API-Schlüssel“).', 400)
 
   try {
     const target = await fetch(targetUrl.toString().replace(/\/$/, '') + '/api/images/upload-from-url', {
