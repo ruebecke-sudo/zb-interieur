@@ -20,6 +20,8 @@ export type MediaImage = {
   mimeType: string
   storageKey: string
   external?: boolean
+  /** Optional note from Image Manager Pro, e.g. "Preis auf Anfrage". */
+  note?: string
   sourceUrl?: string
 }
 

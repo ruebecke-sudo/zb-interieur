@@ -27,7 +27,7 @@ export function mediaImageToMarkenProdukt(img: MediaImage): MarkenProdukt | null
     brandName,
     headline,
     image: img.url,
-    price: 'Preis auf Anfrage',
+    price: img.note?.trim() || 'Preis auf Anfrage',
     stilpunkteUrl: `/marken#media-${img.id}`,
     altText: (img.text || headline).trim(),
   }

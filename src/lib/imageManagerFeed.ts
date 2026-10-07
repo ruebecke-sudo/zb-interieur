@@ -21,6 +21,7 @@ export type GalleryItem = {
   width: number | null
   height: number | null
   external_id: string | null
+  note?: string | null
 }
 
 let cache: Promise<GalleryItem[]> | null = null
@@ -58,6 +59,7 @@ export function galleryItemToMediaImage(item: GalleryItem): MediaImage {
     mimeType: '',
     storageKey: '',
     external: true,
+    note: item.note || '',
   }
 }
 

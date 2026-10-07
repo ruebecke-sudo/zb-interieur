@@ -236,11 +236,7 @@ export function MarkenPage() {
               <div className="relative overflow-hidden bg-fog lg:col-span-7">
                 <img
                   src={featured.image}
-                  alt={
-                    featured.altText ||
-                    getUploadedAltText(featured.stilpunkteUrl) ||
-                    `${featured.brandName}: ${featured.headline}`
-                  }
+                  alt={`${featured.brandName}: ${featured.headline}`}
                   className="aspect-[4/5] w-full object-cover transition duration-700 group-hover:scale-[1.03] lg:aspect-[5/4] lg:min-h-[420px]"
                 />
                 <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/55 to-transparent p-4 opacity-0 transition group-hover:opacity-100">
@@ -256,9 +252,12 @@ export function MarkenPage() {
                 </h3>
                 {(featured.altText || getUploadedAltText(featured.stilpunkteUrl)) &&
                 (featured.altText || getUploadedAltText(featured.stilpunkteUrl)) !== featured.headline ? (
-                  <p className="mt-4 text-sm leading-relaxed text-muted md:text-base">
+                  <p className="mt-4 line-clamp-6 text-sm leading-relaxed text-muted md:text-base">
                     {featured.altText || getUploadedAltText(featured.stilpunkteUrl)}
                   </p>
+                ) : null}
+                {featured.price ? (
+                  <p className="mt-5 text-[11px] font-semibold tracking-[0.14em] text-brand uppercase">{featured.price}</p>
                 ) : null}
               </div>
             </article>
@@ -415,10 +414,8 @@ function BrandMark({ product }: { product: MarkenProdukt }) {
 }
 
 function ProductCard({ product, index }: { product: MarkenProdukt; index: number }) {
-  const alt =
-    product.altText ||
-    getUploadedAltText(product.stilpunkteUrl) ||
-    `${product.brandName}: ${product.headline}`
+  // Short alt text; the (often long) description stays in the card text.
+  const alt = `${product.brandName}: ${product.headline}`
   return (
     <article
       className="animate-marken-reveal group flex h-full flex-col bg-white"
@@ -440,7 +437,10 @@ function ProductCard({ product, index }: { product: MarkenProdukt; index: number
         <BrandMark product={product} />
         <h3 className="mt-3 font-sans text-lg leading-snug font-bold text-ink">{product.headline}</h3>
         {product.altText && product.altText !== product.headline ? (
-          <p className="mt-2 text-sm leading-relaxed text-muted">{product.altText}</p>
+          <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-muted">{product.altText}</p>
+        ) : null}
+        {product.price ? (
+          <p className="mt-auto pt-4 text-[11px] font-semibold tracking-[0.14em] text-brand uppercase">{product.price}</p>
         ) : null}
       </div>
     </article>
