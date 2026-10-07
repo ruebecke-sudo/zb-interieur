@@ -2,7 +2,7 @@ import { createZip } from './zip'
 import type { CategoryLabels } from './categoryLabels'
 
 const SLUG = 'image-manager-pro-galerie'
-const VERSION = '2.0.2'
+const VERSION = '2.1.0'
 
 const php = (value: string) => `'${value.replace(/\\/g, '\\\\').replace(/'/g, "\\'")}'`
 
@@ -238,6 +238,67 @@ function imp_galerie_handle_sync_button() {
 add_action('admin_post_imp_galerie_sync', 'imp_galerie_handle_sync_button');
 
 /* ---------------------------------------------------------------------------
+ * Galerie-Seite mit einem Klick anlegen
+ * ------------------------------------------------------------------------- */
+
+function imp_galerie_page() {
+    $page_id = (int) get_option('imp_galerie_page_id', 0);
+    $page = $page_id ? get_post($page_id) : null;
+    return ($page && $page->post_type === 'page' && $page->post_status !== 'trash') ? $page : null;
+}
+
+function imp_galerie_handle_create_page() {
+    if (!current_user_can('publish_pages')) {
+        wp_die('Keine Berechtigung.');
+    }
+    check_admin_referer('imp_galerie_create_page');
+    $back = admin_url('options-general.php?page=${SLUG}');
+    if (imp_galerie_page()) {
+        wp_safe_redirect($back);
+        exit;
+    }
+    $styles = array('wordpress' => 'wordpress', 'katalog' => 'katalog', 'galerie' => 'galerie');
+    $style = isset($_POST['darstellung'], $styles[$_POST['darstellung']]) ? $styles[$_POST['darstellung']] : 'wordpress';
+    $title = isset($_POST['titel']) ? sanitize_text_field(wp_unslash($_POST['titel'])) : '';
+    if ($title === '') {
+        $title = 'Galerie';
+    }
+    if ($style === 'wordpress') {
+        // The WordPress gallery needs images in the media library first.
+        imp_galerie_sync();
+    }
+    $shortcode = '[image_manager_galerie darstellung="' . $style . '"' . ($style === 'katalog' ? ' filter="1"' : '') . ']';
+    $page_id = wp_insert_post(array(
+        'post_type'    => 'page',
+        'post_status'  => 'publish',
+        'post_title'   => $title,
+        'post_content' => '<!-- wp:shortcode -->' . $shortcode . '<!-- /wp:shortcode -->',
+    ), true);
+    if (is_wp_error($page_id)) {
+        wp_safe_redirect(add_query_arg('seite_fehler', rawurlencode($page_id->get_error_message()), $back));
+        exit;
+    }
+    update_option('imp_galerie_page_id', (int) $page_id, false);
+    wp_safe_redirect(add_query_arg('seite', 'neu', $back));
+    exit;
+}
+add_action('admin_post_imp_galerie_create_page', 'imp_galerie_handle_create_page');
+
+// Hinweis nach der Installation, bis die Galerie-Seite angelegt ist.
+function imp_galerie_admin_notice() {
+    if (!current_user_can('publish_pages') || imp_galerie_page()) {
+        return;
+    }
+    $screen = function_exists('get_current_screen') ? get_current_screen() : null;
+    if ($screen && $screen->id === 'settings_page_${SLUG}') {
+        return;
+    }
+    echo '<div class="notice notice-info"><p style="font-size:14px"><strong>🖼️ Image Manager Galerie ist bereit.</strong> '
+        . '<a class="button button-primary" style="margin-left:8px" href="' . esc_url(admin_url('options-general.php?page=${SLUG}')) . '">Galerie-Seite jetzt mit einem Klick anlegen</a></p></div>';
+}
+add_action('admin_notices', 'imp_galerie_admin_notice');
+
+/* ---------------------------------------------------------------------------
  * Shortcode
  * ------------------------------------------------------------------------- */
 
@@ -371,6 +432,36 @@ function imp_galerie_admin_page() {
     <div class="wrap">
         <h1>Image Manager Galerie</h1>
         <p style="font-size:15px">Das Plugin ist fertig eingerichtet. Sie müssen nichts eintragen.</p>
+        <?php $gallery_page = imp_galerie_page(); ?>
+        <div class="card" style="max-width:820px;padding:16px 20px;border-left:4px solid #2271b1">
+            <h2 style="margin-top:0">🌐 Ihre Galerie-Seite</h2>
+            <?php if (!empty($_GET['seite_fehler'])) : ?>
+                <p style="color:#b32d2e">Die Seite konnte nicht angelegt werden: <?php echo esc_html(wp_unslash($_GET['seite_fehler'])); ?></p>
+            <?php endif; ?>
+            <?php if ($gallery_page) : ?>
+                <?php if (!empty($_GET['seite'])) : ?><p style="color:#007017;font-size:14px"><strong>✓ Fertig! Ihre Galerie-Seite ist online.</strong></p><?php endif; ?>
+                <p style="font-size:14px"><a href="<?php echo esc_url(get_permalink($gallery_page)); ?>" target="_blank"><?php echo esc_html(get_permalink($gallery_page)); ?></a></p>
+                <p>
+                    <a class="button button-primary" href="<?php echo esc_url(get_permalink($gallery_page)); ?>" target="_blank">👁️ Seite ansehen</a>
+                    <a class="button" href="<?php echo esc_url(get_edit_post_link($gallery_page->ID)); ?>">✏️ Seite bearbeiten</a>
+                </p>
+                <p style="color:#646970">Damit Besucher die Seite finden, nehmen Sie sie ins Menü auf: <strong>Design → Menüs</strong> (bei Block-Themes: <strong>Design → Editor → Navigation</strong>) und dort die Seite „<?php echo esc_html(get_the_title($gallery_page)); ?>“ hinzufügen.</p>
+            <?php else : ?>
+                <p style="font-size:14px">Mit einem Klick legen wir eine fertige Seite mit Ihren Bildern an. Sie müssen nichts eintragen.</p>
+                <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+                    <input type="hidden" name="action" value="imp_galerie_create_page" />
+                    <?php wp_nonce_field('imp_galerie_create_page'); ?>
+                    <p><label style="font-weight:600">Name der Seite<br /><input type="text" name="titel" value="Galerie" class="regular-text" /></label></p>
+                    <fieldset style="margin:12px 0">
+                        <legend style="font-weight:600;margin-bottom:6px">So sollen die Bilder aussehen</legend>
+                        <label style="display:block;margin:6px 0"><input type="radio" name="darstellung" value="wordpress" checked /> 🖼️ <strong>WordPress-Galerie</strong>, passend zum Design Ihrer Website</label>
+                        <label style="display:block;margin:6px 0"><input type="radio" name="darstellung" value="katalog" /> 🛋️ <strong>Katalog</strong>, Karten mit Beschreibung, Filter-Knöpfen und Anfrage-Knopf</label>
+                        <label style="display:block;margin:6px 0"><input type="radio" name="darstellung" value="galerie" /> 📷 <strong>Bildergalerie</strong> mit Großansicht beim Anklicken</label>
+                    </fieldset>
+                    <?php submit_button('Galerie-Seite jetzt anlegen', 'primary large', 'submit', false); ?>
+                </form>
+            <?php endif; ?>
+        </div>
 
         <div class="card" style="max-width:820px;padding:16px 20px">
             <h2 style="margin-top:0">🖼️ Bilder in der Mediathek</h2>
@@ -445,8 +536,8 @@ Zeigt Ihre Bilder aus Image Manager Pro als Galerie auf Ihrer WordPress-Seite un
 == Installation ==
 1. WordPress → Plugins → Neues Plugin hinzufügen → Plugin hochladen → diese ZIP-Datei auswählen → Jetzt installieren.
 2. Plugin aktivieren.
-3. Unter Einstellungen → Image Manager Galerie auf „Jetzt abgleichen“ klicken.
-4. Auf einer Seite einen Shortcode-Block mit [image_manager_galerie darstellung="wordpress"] einfügen.
+3. Auf „Galerie-Seite jetzt mit einem Klick anlegen“ klicken, Darstellung wählen, fertig.
+   (Alternativ auf einer eigenen Seite einen Shortcode-Block mit [image_manager_galerie] einfügen.)
 `
 
   return createZip([
