@@ -53,6 +53,7 @@ function imp_galerie_shortcode($atts) {
         'bildnamen'  => 'ja',
         'suche'      => '',
         'darstellung' => '',
+        'aussehen'   => 'website',
         'filter'     => '',
     ), $atts, 'image_manager_galerie');
 
@@ -72,6 +73,10 @@ function imp_galerie_shortcode($atts) {
     $darstellung = strtolower($a['darstellung']);
     if ($darstellung === 'katalog' || $darstellung === 'galerie') {
         $html .= ' data-style="' . ($darstellung === 'katalog' ? 'catalog' : 'grid') . '"';
+    }
+    // Default: adopt the theme's font and colours; aussehen="neutral" keeps the own look.
+    if (strtolower($a['aussehen']) !== 'neutral') {
+        $html .= ' data-theme="site"';
     }
     $filter = intval($a['filter']);
     if ($filter >= 1 && $filter <= 4) {
@@ -121,6 +126,7 @@ function imp_galerie_admin_page() {
                 <?php endforeach; ?>
                 <tr><td><strong>Als Katalog</strong></td><td><code>[image_manager_galerie darstellung="katalog"]</code> (Karten mit Name, Beschreibung, Hinweis und Anfrage-Knopf)</td></tr>
                 <tr><td><strong>Filter-Knöpfe</strong></td><td><code>[image_manager_galerie filter="1"]</code> (Knöpfe nach <?php echo esc_html($labels[0]); ?>; 2, 3 oder 4 für die anderen Kategorien)</td></tr>
+                <tr><td><strong>Eigenes Aussehen</strong></td><td><code>[image_manager_galerie aussehen="neutral"]</code> (sonst übernimmt die Galerie Schrift und Farben Ihres Themes)</td></tr>
                 <tr><td><strong>Spalten</strong></td><td><code>[image_manager_galerie spalten="4"]</code></td></tr>
                 <tr><td><strong>Anzahl Bilder</strong></td><td><code>[image_manager_galerie anzahl="12"]</code></td></tr>
                 <tr><td><strong>Ohne Bildnamen</strong></td><td><code>[image_manager_galerie bildnamen="nein"]</code></td></tr>

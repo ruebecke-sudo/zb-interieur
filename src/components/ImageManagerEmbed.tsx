@@ -57,6 +57,7 @@ export function ImageManagerEmbed({ categories, labels, onEnabledChange }: { cat
   const [captions, setCaptions] = useState(true)
   const [style, setStyle] = useState<'grid' | 'catalog'>('grid')
   const [filterSlot, setFilterSlot] = useState(0)
+  const [theme, setTheme] = useState<'site' | 'neutral'>('site')
   const [message, setMessage] = useState('')
   const [workspaceName, setWorkspaceName] = useState('')
   const [slug, setSlug] = useState('')
@@ -88,11 +89,12 @@ export function ImageManagerEmbed({ categories, labels, onEnabledChange }: { cat
     const attrs: Array<[string, string]> = [['data-image-manager-gallery', embedId]]
     for (const slot of [1, 2, 3, 4]) if (filters[slot]) attrs.push([`data-category${slot}`, filters[slot]])
     attrs.push(['data-style', style])
+    if (theme === 'site') attrs.push(['data-theme', 'site'])
     if (filterSlot) attrs.push(['data-filter', String(filterSlot)])
     attrs.push(['data-columns', String(columns)], ['data-limit', String(limit)])
     if (!captions) attrs.push(['data-captions', 'false'])
     return attrs
-  }, [embedId, filters, columns, limit, captions, style, filterSlot])
+  }, [embedId, filters, columns, limit, captions, style, filterSlot, theme])
 
   const snippet = useMemo(() => {
     const attrText = attributes.map(([name, value]) => `${name}="${value.replace(/&/g, '&amp;').replace(/"/g, '&quot;')}"`).join(' ')
@@ -154,12 +156,13 @@ export function ImageManagerEmbed({ categories, labels, onEnabledChange }: { cat
     const parts = ['image_manager_galerie']
     for (const slot of [1, 2, 3, 4]) if (filters[slot]) parts.push(`kategorie${slot}="${filters[slot].replace(/"/g, '')}"`)
     parts.push(style === 'catalog' ? 'darstellung="katalog"' : 'darstellung="galerie"')
+    if (theme === 'neutral') parts.push('aussehen="neutral"')
     if (filterSlot) parts.push(`filter="${filterSlot}"`)
     if (columns !== 3) parts.push(`spalten="${columns}"`)
     if (limit !== 24) parts.push(`anzahl="${limit}"`)
     if (!captions) parts.push('bildnamen="nein"')
     return `[${parts.join(' ')}]`
-  }, [filters, columns, limit, captions, style, filterSlot])
+  }, [filters, columns, limit, captions, style, filterSlot, theme])
 
   const downloadPlugin = () => {
     const zip = buildWordPressPluginZip({
@@ -257,6 +260,12 @@ export function ImageManagerEmbed({ categories, labels, onEnabledChange }: { cat
           </button>)}
       </div>
       <div className="mt-4 grid gap-3 md:grid-cols-4">
+        <div className="text-xs font-semibold text-slate-600 md:col-span-4">Aussehen auf Ihrer Website
+          <div className="mt-1 flex flex-wrap gap-2">
+            {([['site', '🎨 An meine Website anpassen (Schrift und Farben übernehmen)'], ['neutral', '◻️ Eigenständig (klar und neutral)']] as const).map(([id, text]) =>
+              <button key={id} type="button" onClick={() => setTheme(id)} className={`rounded-xl border px-3 py-2 text-sm font-medium ${theme === id ? 'border-[#0E675A] bg-emerald-50 text-[#0E675A]' : 'border-slate-300 bg-white text-slate-700'}`}>{text}</button>)}
+          </div>
+        </div>
         <label className="text-xs font-semibold text-slate-600 md:col-span-4">Filter-Knöpfe für Besucher nach
           <select value={filterSlot} onChange={(e) => setFilterSlot(Number(e.target.value))} className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-normal md:w-80">
             <option value={0}>Keine Filter-Knöpfe</option>

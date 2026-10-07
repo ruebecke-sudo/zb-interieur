@@ -4,7 +4,8 @@
  *   <script src="https://<app-domain>/image-manager-embed.js" async></script>
  * Attributes: data-style grid|catalog (default: workspace setting), data-filter 1-4
  * (filter buttons for that category), data-category1..4, data-search, data-limit,
- * data-columns, data-captions=false, data-gap.
+ * data-columns, data-captions=false, data-gap, data-theme=site (adopt the page's font and
+ * text colour; ignored inside iframes such as Wix, where the page font is not reachable).
  * Reads images from public-gallery and renders a grid or product catalog with a
  * lightbox, isolated from the host page's CSS via Shadow DOM.
  */
@@ -44,7 +45,16 @@ const EMBED_SCRIPT = String.raw`(function () {
     '.box .cap .btn{margin-top:12px}',
     '.box button{position:absolute;background:rgba(255,255,255,.12);color:#fff;border:0;border-radius:999px;width:44px;height:44px;font-size:22px;cursor:pointer}',
     '.box button:hover{background:rgba(255,255,255,.25)}',
-    '.close{top:16px;right:16px}.prev{left:16px;top:50%}.next{right:16px;top:50%}'
+    '.close{top:16px;right:16px}.prev{left:16px;top:50%}.next{right:16px;top:50%}',
+    '.site{font:inherit;color:inherit}',
+    '.site .chip{font:inherit;font-size:.9em;line-height:1;background:transparent;color:inherit;border-color:color-mix(in srgb,currentColor 30%,transparent)}',
+    '.site .chip.on{background:var(--accent);border-color:var(--accent);color:#fff}',
+    '.site figcaption,.site .body,.site .msg{font:inherit;color:inherit}',
+    '.site .card{background:transparent;color:inherit;border-color:color-mix(in srgb,currentColor 15%,transparent)}',
+    '.site .title{font-size:1.15em}',
+    '.site .text{color:inherit;opacity:.8}',
+    '.site .msg{opacity:.7}',
+    '.site .btn{font:inherit;font-weight:600;font-size:.95em;line-height:1}'
   ].join('');
 
   function el(tag, cls, text) {
@@ -82,13 +92,16 @@ const EMBED_SCRIPT = String.raw`(function () {
     function stale() { return host.__imageManagerRender !== token; }
 
     var style = el('style'); style.textContent = STYLE; root.appendChild(style);
-    var filters = el('div', 'filters'); root.appendChild(filters);
+    // Inside an iframe (e.g. Wix) the page font cannot be inherited, so stay neutral there.
+    var siteTheme = host.getAttribute('data-theme') === 'site' && window.self === window.top;
+    var wrap = el('div', siteTheme ? 'wrap site' : 'wrap'); root.appendChild(wrap);
+    var filters = el('div', 'filters'); wrap.appendChild(filters);
     var grid = el('div', 'grid');
     grid.style.setProperty('--cols', String(cols));
     grid.style.setProperty('--cols-m', String(Math.min(cols, 2)));
     if (host.getAttribute('data-gap')) grid.style.setProperty('--gap', host.getAttribute('data-gap') + 'px');
-    root.appendChild(grid);
-    var msg = el('div', 'msg', 'Bilder werden geladen …'); root.appendChild(msg);
+    wrap.appendChild(grid);
+    var msg = el('div', 'msg', 'Bilder werden geladen …'); wrap.appendChild(msg);
 
     var params = new URLSearchParams({ id: id });
     [1, 2, 3, 4].forEach(function (slot) {
@@ -108,7 +121,7 @@ const EMBED_SCRIPT = String.raw`(function () {
         if (settings.primaryColor) root.host.style.setProperty('--accent', settings.primaryColor);
         grid.classList.toggle('catalog', catalog);
         msg.remove();
-        if (!items.length) { root.appendChild(el('div', 'msg', 'Keine Bilder vorhanden.')); return; }
+        if (!items.length) { wrap.appendChild(el('div', 'msg', 'Keine Bilder vorhanden.')); return; }
 
         var labels = settings.categoryLabels || [];
         var kickerSlot = filterSlot >= 1 && filterSlot <= 4 ? filterSlot : 1;
