@@ -2,7 +2,7 @@ import { createZip } from './zip'
 import type { CategoryLabels } from './categoryLabels'
 
 const SLUG = 'image-manager-pro-galerie'
-const VERSION = '2.0.0'
+const VERSION = '2.0.1'
 
 const php = (value: string) => `'${value.replace(/\\/g, '\\\\').replace(/'/g, "\\'")}'`
 
@@ -61,10 +61,17 @@ function imp_galerie_existing_attachments() {
         'meta_query'     => array(array('key' => '_imp_id', 'compare' => 'EXISTS')),
     ));
     $map = array();
+    $duplicates = array();
+    sort($ids);
     foreach ($ids as $attachment_id) {
-        $map[(string) get_post_meta($attachment_id, '_imp_id', true)] = (int) $attachment_id;
+        $key = (string) get_post_meta($attachment_id, '_imp_id', true);
+        if (isset($map[$key])) {
+            $duplicates[] = (int) $attachment_id;
+            continue;
+        }
+        $map[$key] = (int) $attachment_id;
     }
-    return $map;
+    return array($map, $duplicates);
 }
 
 function imp_galerie_apply_meta($attachment_id, $item, $order) {
@@ -115,6 +122,24 @@ function imp_galerie_sideload($item) {
 
 /** Holt die Bildliste, legt neue Bilder an, aktualisiert Texte, blendet entfernte Bilder aus. */
 function imp_galerie_sync() {
+    // Only one sync at a time (cron and button can overlap). add_option is atomic.
+    $lock = get_option('imp_galerie_lock');
+    if ($lock && (time() - (int) $lock) > 10 * MINUTE_IN_SECONDS) {
+        delete_option('imp_galerie_lock');
+    }
+    if (!add_option('imp_galerie_lock', time(), '', 'no')) {
+        $status = get_option('imp_galerie_status', array());
+        $status['busy'] = true;
+        return $status;
+    }
+    try {
+        return imp_galerie_run_sync();
+    } finally {
+        delete_option('imp_galerie_lock');
+    }
+}
+
+function imp_galerie_run_sync() {
     $response = wp_remote_get(imp_galerie_base_url() . '/.netlify/functions/public-gallery?id=' . rawurlencode(IMP_GALERIE_ID) . '&limit=200', array('timeout' => 20));
     if (is_wp_error($response)) {
         return imp_galerie_store_status(array('error' => 'Image Manager nicht erreichbar: ' . $response->get_error_message()));
@@ -125,7 +150,11 @@ function imp_galerie_sync() {
         return imp_galerie_store_status(array('error' => $message));
     }
 
-    $existing = imp_galerie_existing_attachments();
+    list($existing, $duplicates) = imp_galerie_existing_attachments();
+    // Earlier double imports stay in the media library but leave the gallery.
+    foreach ($duplicates as $duplicate_id) {
+        update_post_meta($duplicate_id, '_imp_active', '0');
+    }
     $seen = array();
     $created = 0;
     $updated = 0;
@@ -202,8 +231,8 @@ function imp_galerie_handle_sync_button() {
         wp_die('Keine Berechtigung.');
     }
     check_admin_referer('imp_galerie_sync');
-    imp_galerie_sync();
-    wp_safe_redirect(admin_url('options-general.php?page=${SLUG}&abgleich=1'));
+    $result = imp_galerie_sync();
+    wp_safe_redirect(admin_url('options-general.php?page=${SLUG}&abgleich=1' . (!empty($result['busy']) ? '&busy=1' : '')));
     exit;
 }
 add_action('admin_post_imp_galerie_sync', 'imp_galerie_handle_sync_button');
@@ -327,6 +356,7 @@ function imp_galerie_admin_page() {
             <?php if (!empty($status['error'])) : ?>
                 <p style="color:#b32d2e"><strong>Letzter Abgleich fehlgeschlagen:</strong> <?php echo esc_html($status['error']); ?></p>
             <?php elseif (!empty($status['time'])) : ?>
+                <?php if (!empty($_GET['busy'])) : ?><p style="color:#996800">Ein Abgleich läuft gerade bereits. Bitte in einer Minute die Seite neu laden.</p><?php endif; ?>
                 <p><strong><?php echo intval($status['total']); ?> Bilder</strong> in der Mediathek · zuletzt abgeglichen am <?php echo esc_html(mysql2date('d.m.Y \\u\\m H:i', $status['time'])); ?> Uhr
                 <?php if (!empty($status['created'])) : ?> · <?php echo intval($status['created']); ?> neu<?php endif; ?></p>
                 <?php if (!empty($status['pending'])) : ?>
