@@ -72,9 +72,9 @@ Branch `image-manager-pro-foundation`).
 | 2.12 | **Einbinde-Assistent**: System wählen (WordPress, Wix, Jimdo, Shopify, Anderes) oder „Weiß ich nicht“ → Website-Adresse eingeben, System wird automatisch erkannt (`detect-website-platform`) → drei passende Schritte; WordPress: persönliches Plugin als ZIP-Download (Galerie-ID schon drin, Shortcode `[image_manager_galerie]`). Grundsatz: Kunde schafft alles selbst, ohne Webdesigner | lokal fertig, wartet auf Freigabe |
 | 2.13 | Fertige Galerie-Seite `/g/<slug>` mit Link, QR-Code, WhatsApp/E-Mail; Start-Assistent „In 3 Schritten“; Menü mit Symbolen; Schnittstellen unter „Für Fortgeschrittene“ | fertig |
 | 2.14 | **ZB angebunden:** Marken „Kuratierte Stücke“ (Kategorie 1 = Marke) und Startseite „Inspiration nach Raum“ (Bereich bzw. Produktart) lesen direkt aus Image Manager Pro (`src/lib/imageManagerFeed.ts`); alter Katalog und alte Bibliothek bleiben als Grundstock | fertig |
-| 2.15 | Katalog-Darstellung (Karten mit Name, Kategorie, Beschreibung) zusätzlich zur Galerie; Filter-Knöpfe auch im Einbettungscode | offen |
-| 2.16 | Pro Bild freiwilliger „Hinweis“ (z. B. „ab 1.290 €“, bei ZB leer) und Anfrage-Knopf pro Arbeitsbereich (E-Mail oder Link, Beschriftung frei) | offen, braucht Skript 010 |
-| 2.17 | Einbau für Baukästen (Wix, Jimdo): Schrift und Farben der Seite übernehmen | offen |
+| 2.15 | Katalog-Darstellung (Karten mit Name, Kategorie, Beschreibung) zusätzlich zur Galerie; Filter-Knöpfe auch im Einbettungscode | fertig |
+| 2.16 | Pro Bild freiwilliger „Hinweis“ (z. B. „ab 1.290 €“, bei ZB leer) und Anfrage-Knopf pro Arbeitsbereich (E-Mail oder Link, Beschriftung frei) | fertig (Skript 010 ausgeführt) |
+| 2.17 | Einbau übernimmt Schrift und Textfarbe der Kunden-Website (`data-theme="site"`, Standard), in iframes wie Wix neutral | fertig |
 | 2.18 | WordPress-Plugin Stufe 2: Bilder in die WordPress-Mediathek und eigene Galerien (Design der Seite) | offen |
 | 2.11 | **Einbettungscode für jede Website**: Freigabe pro Arbeitsbereich, Generator unter Websites, Skript `/image-manager-embed.js`, Daten über `public-gallery` | Code fertig – braucht `009_…sql` |
 
