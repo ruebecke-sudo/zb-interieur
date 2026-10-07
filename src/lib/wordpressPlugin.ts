@@ -40,7 +40,7 @@ function imp_galerie_labels() {
 /**
  * Shortcode [image_manager_galerie]
  * Optional: kategorie1="…" kategorie2="…" kategorie3="…" kategorie4="…"
- *           spalten="3" anzahl="24" bildnamen="ja|nein" suche="…"
+ *           darstellung="galerie|katalog" filter="1-4" spalten="3" anzahl="24" bildnamen="ja|nein" suche="…"
  */
 function imp_galerie_shortcode($atts) {
     $a = shortcode_atts(array(
@@ -52,6 +52,8 @@ function imp_galerie_shortcode($atts) {
         'anzahl'     => '24',
         'bildnamen'  => 'ja',
         'suche'      => '',
+        'darstellung' => '',
+        'filter'     => '',
     ), $atts, 'image_manager_galerie');
 
     wp_enqueue_script('image-manager-pro-galerie', IMP_GALERIE_SCRIPT, array(), '1.0.0', true);
@@ -66,6 +68,14 @@ function imp_galerie_shortcode($atts) {
     $html .= ' data-limit="' . esc_attr(max(1, min(200, intval($a['anzahl'])))) . '"';
     if (strtolower($a['bildnamen']) === 'nein') {
         $html .= ' data-captions="false"';
+    }
+    $darstellung = strtolower($a['darstellung']);
+    if ($darstellung === 'katalog' || $darstellung === 'galerie') {
+        $html .= ' data-style="' . ($darstellung === 'katalog' ? 'catalog' : 'grid') . '"';
+    }
+    $filter = intval($a['filter']);
+    if ($filter >= 1 && $filter <= 4) {
+        $html .= ' data-filter="' . $filter . '"';
     }
     if ($a['suche'] !== '') {
         $html .= ' data-search="' . esc_attr($a['suche']) . '"';
@@ -109,6 +119,8 @@ function imp_galerie_admin_page() {
                     <td><code>[image_manager_galerie kategorie<?php echo intval($index) + 1; ?>="…"]</code></td>
                 </tr>
                 <?php endforeach; ?>
+                <tr><td><strong>Als Katalog</strong></td><td><code>[image_manager_galerie darstellung="katalog"]</code> (Karten mit Name, Beschreibung, Hinweis und Anfrage-Knopf)</td></tr>
+                <tr><td><strong>Filter-Knöpfe</strong></td><td><code>[image_manager_galerie filter="1"]</code> (Knöpfe nach <?php echo esc_html($labels[0]); ?>; 2, 3 oder 4 für die anderen Kategorien)</td></tr>
                 <tr><td><strong>Spalten</strong></td><td><code>[image_manager_galerie spalten="4"]</code></td></tr>
                 <tr><td><strong>Anzahl Bilder</strong></td><td><code>[image_manager_galerie anzahl="12"]</code></td></tr>
                 <tr><td><strong>Ohne Bildnamen</strong></td><td><code>[image_manager_galerie bildnamen="nein"]</code></td></tr>

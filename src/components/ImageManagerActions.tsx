@@ -20,6 +20,7 @@ type ImageItem = {
   originalFilename?: string
   storagePath?: string
   websiteId?: string
+  note?: string
 }
 
 type Categories = {
@@ -32,6 +33,7 @@ type Categories = {
 type UploadedPreview = { url: string; name: string; syncStatus: 'synced' | 'error' | 'library'; syncError?: string }
 
 type EditorData = {
+  note: string
   name: string
   text: string
   category1: string
@@ -40,7 +42,7 @@ type EditorData = {
   category4: string
 }
 
-const emptyEditor: EditorData = { name: '', text: '', category1: '', category2: '', category3: '', category4: '' }
+const emptyEditor: EditorData = { note: '', name: '', text: '', category1: '', category2: '', category3: '', category4: '' }
 
 function Field({ label, value, onChange }: { label: string; value: string; onChange: (value: string) => void }) {
   return <label className="block"><span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">{label}</span><input value={value} onChange={(e) => onChange(e.target.value)} className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-[#0E675A]" /></label>
@@ -70,7 +72,7 @@ function Modal({ children }: { children: ReactNode }) {
 
 export function ImageManagerActions({ item, categories, labels = DEFAULT_CATEGORY_LABELS, onChanged, primary = false }: { item?: ImageItem; categories: Categories; labels?: CategoryLabels; onChanged: () => Promise<void>; primary?: boolean }) {
   const [modal, setModal] = useState<'upload' | 'edit' | null>(null)
-  const [editor, setEditor] = useState<EditorData>(item ? { name: item.name, text: item.text, category1: item.category1, category2: item.category2, category3: item.category3, category4: item.category4 } : emptyEditor)
+  const [editor, setEditor] = useState<EditorData>(item ? { name: item.name, text: item.text, note: item.note || '', category1: item.category1, category2: item.category2, category3: item.category3, category4: item.category4 } : emptyEditor)
   const [files, setFiles] = useState<File[]>([])
   const [websites, setWebsites] = useState<Array<{ id: string; name: string; base_url: string; hasKey: boolean }>>([])
   const [websiteId, setWebsiteId] = useState('')
@@ -107,7 +109,7 @@ export function ImageManagerActions({ item, categories, labels = DEFAULT_CATEGOR
         })()
       }
     } else if (item) {
-      setEditor({ name: item.name, text: item.text, category1: item.category1, category2: item.category2, category3: item.category3, category4: item.category4 })
+      setEditor({ name: item.name, text: item.text, note: item.note || '', category1: item.category1, category2: item.category2, category3: item.category3, category4: item.category4 })
     }
     setModal(target)
   }
@@ -152,6 +154,7 @@ export function ImageManagerActions({ item, categories, labels = DEFAULT_CATEGOR
           category2: editor.category2,
           category3: editor.category3,
           category4: editor.category4,
+          ...(editor.note.trim() ? { note: editor.note.trim() } : {}),
           width: dimensions.width,
           height: dimensions.height,
           color_space: 'sRGB',
@@ -206,6 +209,7 @@ export function ImageManagerActions({ item, categories, labels = DEFAULT_CATEGOR
       const { error: updateError } = await supabase.from('images').update({
         name: editor.name, text: editor.text, category1: editor.category1,
         category2: editor.category2, category3: editor.category3, category4: editor.category4,
+        ...(editor.note.trim() || item.note ? { note: editor.note.trim() || null } : {}),
         sync_status: 'pending', sync_error: null,
       }).eq('id', item.id)
       if (updateError) throw new Error(updateError.message)
@@ -322,8 +326,8 @@ export function ImageManagerActions({ item, categories, labels = DEFAULT_CATEGOR
       ))}
     </div>
   )}
-</div><div className="mt-4 grid gap-3 md:grid-cols-2">{websites.length > 0 && <label className="block md:col-span-2"><span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">Website</span><select value={websiteId} onChange={(e) => setWebsiteId(e.target.value)} className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-[#0E675A]"><option value="">Keine Übertragung, nur Bibliothek und Galerie</option>{websites.map((site) => <option key={site.id} value={site.id}>{site.name} · {site.base_url}{site.hasKey ? '' : ' (ohne API-Schlüssel)'}</option>)}</select></label>}<Field label="Bildname" value={editor.name} onChange={(v) => setEditor({ ...editor, name: v })} /><Field label="Bildtext" value={editor.text} onChange={(v) => setEditor({ ...editor, text: v })} /><CategoryField label={`Kat.1 · ${labels[0]}`} value={editor.category1} values={categories.category1} onChange={(v) => setEditor({ ...editor, category1: v })} /><CategoryField label={`Kat.2 · ${labels[1]}`} value={editor.category2} values={categories.category2} onChange={(v) => setEditor({ ...editor, category2: v })} /><CategoryField label={`Kat.3 · ${labels[2]}`} value={editor.category3} values={categories.category3} onChange={(v) => setEditor({ ...editor, category3: v })} /><CategoryField label={`Kat.4 · ${labels[3]}`} value={editor.category4} values={categories.category4} onChange={(v) => setEditor({ ...editor, category4: v })} /></div>{error && <div className="mt-4 text-sm text-red-600">{error}</div>}<div className="mt-4 flex justify-end gap-2"><button type="button" onClick={() => { setModal(null); clearSelectedPreviews() }} className="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-semibold">Abbrechen</button><button disabled={busy || !files.length} className="rounded-xl bg-[#0E675A] px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-50">{busy ? 'Hochladen läuft …' : 'Hochladen'}</button></div></form>}</Modal>}
+</div><div className="mt-4 grid gap-3 md:grid-cols-2">{websites.length > 0 && <label className="block md:col-span-2"><span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">Website</span><select value={websiteId} onChange={(e) => setWebsiteId(e.target.value)} className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-[#0E675A]"><option value="">Keine Übertragung, nur Bibliothek und Galerie</option>{websites.map((site) => <option key={site.id} value={site.id}>{site.name} · {site.base_url}{site.hasKey ? '' : ' (ohne API-Schlüssel)'}</option>)}</select></label>}<Field label="Bildname" value={editor.name} onChange={(v) => setEditor({ ...editor, name: v })} /><Field label="Bildtext" value={editor.text} onChange={(v) => setEditor({ ...editor, text: v })} /><CategoryField label={`Kat.1 · ${labels[0]}`} value={editor.category1} values={categories.category1} onChange={(v) => setEditor({ ...editor, category1: v })} /><CategoryField label={`Kat.2 · ${labels[1]}`} value={editor.category2} values={categories.category2} onChange={(v) => setEditor({ ...editor, category2: v })} /><CategoryField label={`Kat.3 · ${labels[2]}`} value={editor.category3} values={categories.category3} onChange={(v) => setEditor({ ...editor, category3: v })} /><CategoryField label={`Kat.4 · ${labels[3]}`} value={editor.category4} values={categories.category4} onChange={(v) => setEditor({ ...editor, category4: v })} /><Field label="Hinweis (freiwillig, z. B. „ab 1.290 €“ oder „Neu“)" value={editor.note} onChange={(v) => setEditor({ ...editor, note: v })} /></div>{error && <div className="mt-4 text-sm text-red-600">{error}</div>}<div className="mt-4 flex justify-end gap-2"><button type="button" onClick={() => { setModal(null); clearSelectedPreviews() }} className="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-semibold">Abbrechen</button><button disabled={busy || !files.length} className="rounded-xl bg-[#0E675A] px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-50">{busy ? 'Hochladen läuft …' : 'Hochladen'}</button></div></form>}</Modal>}
 
-    {modal === 'edit' && item && <Modal><form onSubmit={update} className="w-full max-w-2xl rounded-2xl bg-white p-6 shadow-2xl"><h2 className="text-xl font-bold">Bild bearbeiten</h2><div className="mt-5 flex gap-4 rounded-xl bg-slate-50 p-3"><img src={item.url} alt="" className="h-20 w-20 rounded-xl object-cover" /><div className="text-xs text-slate-500">{item.width} × {item.height}px<br />{item.format}</div></div><div className="mt-5 grid gap-4 md:grid-cols-2"><Field label="Bildname" value={editor.name} onChange={(v) => setEditor({ ...editor, name: v })} /><Field label="Bildtext" value={editor.text} onChange={(v) => setEditor({ ...editor, text: v })} /><CategoryField label={`Kat.1 · ${labels[0]}`} value={editor.category1} values={categories.category1} onChange={(v) => setEditor({ ...editor, category1: v })} /><CategoryField label={`Kat.2 · ${labels[1]}`} value={editor.category2} values={categories.category2} onChange={(v) => setEditor({ ...editor, category2: v })} /><CategoryField label={`Kat.3 · ${labels[2]}`} value={editor.category3} values={categories.category3} onChange={(v) => setEditor({ ...editor, category3: v })} /><CategoryField label={`Kat.4 · ${labels[3]}`} value={editor.category4} values={categories.category4} onChange={(v) => setEditor({ ...editor, category4: v })} /></div>{error && <div className="mt-4 text-sm text-red-600">{error}</div>}<div className="mt-6 flex justify-end gap-2"><button type="button" onClick={() => setModal(null)} className="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-semibold">Abbrechen</button><button disabled={busy} className="rounded-xl bg-[#0E675A] px-5 py-2.5 text-sm font-semibold text-white">{busy ? 'Speichern …' : 'Änderungen speichern'}</button></div></form></Modal>}
+    {modal === 'edit' && item && <Modal><form onSubmit={update} className="w-full max-w-2xl rounded-2xl bg-white p-6 shadow-2xl"><h2 className="text-xl font-bold">Bild bearbeiten</h2><div className="mt-5 flex gap-4 rounded-xl bg-slate-50 p-3"><img src={item.url} alt="" className="h-20 w-20 rounded-xl object-cover" /><div className="text-xs text-slate-500">{item.width} × {item.height}px<br />{item.format}</div></div><div className="mt-5 grid gap-4 md:grid-cols-2"><Field label="Bildname" value={editor.name} onChange={(v) => setEditor({ ...editor, name: v })} /><Field label="Bildtext" value={editor.text} onChange={(v) => setEditor({ ...editor, text: v })} /><CategoryField label={`Kat.1 · ${labels[0]}`} value={editor.category1} values={categories.category1} onChange={(v) => setEditor({ ...editor, category1: v })} /><CategoryField label={`Kat.2 · ${labels[1]}`} value={editor.category2} values={categories.category2} onChange={(v) => setEditor({ ...editor, category2: v })} /><CategoryField label={`Kat.3 · ${labels[2]}`} value={editor.category3} values={categories.category3} onChange={(v) => setEditor({ ...editor, category3: v })} /><CategoryField label={`Kat.4 · ${labels[3]}`} value={editor.category4} values={categories.category4} onChange={(v) => setEditor({ ...editor, category4: v })} /><Field label="Hinweis (freiwillig, z. B. „ab 1.290 €“ oder „Neu“)" value={editor.note} onChange={(v) => setEditor({ ...editor, note: v })} /></div>{error && <div className="mt-4 text-sm text-red-600">{error}</div>}<div className="mt-6 flex justify-end gap-2"><button type="button" onClick={() => setModal(null)} className="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-semibold">Abbrechen</button><button disabled={busy} className="rounded-xl bg-[#0E675A] px-5 py-2.5 text-sm font-semibold text-white">{busy ? 'Speichern …' : 'Änderungen speichern'}</button></div></form></Modal>}
   </>
 }

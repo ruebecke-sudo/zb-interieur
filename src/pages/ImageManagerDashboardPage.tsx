@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { ImageManagerActions } from '../components/ImageManagerActions'
 import { ImageManagerWebsites } from '../components/ImageManagerWebsites'
 import { ImageManagerEmbed } from '../components/ImageManagerEmbed'
+import { ImageManagerInquiry } from '../components/ImageManagerInquiry'
 import { ImageManagerCategories } from '../components/ImageManagerCategories'
 import { ImageManagerMembers } from '../components/ImageManagerMembers'
 import { ImageManagerBranding } from '../components/ImageManagerBranding'
@@ -26,6 +27,7 @@ type ImageItem = {
   height: number
   status?: 'Aktiv' | 'Entwurf' | 'Fehler' | 'Synchronisiert' | 'Ausstehend' | 'In Bibliothek'
   websiteId?: string
+  note?: string
   storagePath?: string
 }
 
@@ -91,7 +93,7 @@ export function ImageManagerDashboardPage() {
           id: row.id, name: row.name || row.filename || 'Ohne Namen', text: row.text || '',
           category1: row.category1 || '', category2: row.category2 || '', category3: row.category3 || '', category4: row.category4 || '',
           format: row.format || '–', fileSize: Number(row.file_size || 0), url: row.url || '', updatedAt: row.updated_at,
-          width: Number(row.width || 0), height: Number(row.height || 0), storagePath: row.storage_path || undefined, websiteId: row.website_id || undefined, status: !row.website_id ? 'In Bibliothek' : row.sync_status === 'error' ? 'Fehler' : row.sync_status === 'synced' ? 'Synchronisiert' : row.status === 'active' ? 'Ausstehend' : 'Entwurf',
+          width: Number(row.width || 0), height: Number(row.height || 0), storagePath: row.storage_path || undefined, websiteId: row.website_id || undefined, note: row.note || undefined, status: !row.website_id ? 'In Bibliothek' : row.sync_status === 'error' ? 'Fehler' : row.sync_status === 'synced' ? 'Synchronisiert' : row.status === 'active' ? 'Ausstehend' : 'Entwurf',
         }))
         setImages(mapped)
         setCategories({
@@ -283,6 +285,7 @@ export function ImageManagerDashboardPage() {
                 setLogoUrl(settings.logoUrl)
                 setPrimaryColor(settings.primaryColor)
               }} /></div>
+              <div className="mt-6"><ImageManagerInquiry /></div>
             </>
           ) : (
             <>

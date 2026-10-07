@@ -55,6 +55,8 @@ export function ImageManagerEmbed({ categories, labels, onEnabledChange }: { cat
   const [columns, setColumns] = useState(3)
   const [limit, setLimit] = useState(24)
   const [captions, setCaptions] = useState(true)
+  const [style, setStyle] = useState<'grid' | 'catalog'>('grid')
+  const [filterSlot, setFilterSlot] = useState(0)
   const [message, setMessage] = useState('')
   const [workspaceName, setWorkspaceName] = useState('')
   const [slug, setSlug] = useState('')
@@ -78,15 +80,19 @@ export function ImageManagerEmbed({ categories, labels, onEnabledChange }: { cat
     setEnabled(Boolean(data.embed_enabled))
     setWorkspaceName(data.name || '')
     setSlug(data.slug || '')
+    const { data: styleRow } = await supabase.from('tenants').select('gallery_style').eq('id', membership.tenant_id).maybeSingle()
+    if (styleRow?.gallery_style === 'catalog') { setStyle('catalog'); setFilterSlot(1) }
   })() }, [])
 
   const attributes = useMemo(() => {
     const attrs: Array<[string, string]> = [['data-image-manager-gallery', embedId]]
     for (const slot of [1, 2, 3, 4]) if (filters[slot]) attrs.push([`data-category${slot}`, filters[slot]])
+    attrs.push(['data-style', style])
+    if (filterSlot) attrs.push(['data-filter', String(filterSlot)])
     attrs.push(['data-columns', String(columns)], ['data-limit', String(limit)])
     if (!captions) attrs.push(['data-captions', 'false'])
     return attrs
-  }, [embedId, filters, columns, limit, captions])
+  }, [embedId, filters, columns, limit, captions, style, filterSlot])
 
   const snippet = useMemo(() => {
     const attrText = attributes.map(([name, value]) => `${name}="${value.replace(/&/g, '&amp;').replace(/"/g, '&quot;')}"`).join(' ')
@@ -130,6 +136,14 @@ export function ImageManagerEmbed({ categories, labels, onEnabledChange }: { cat
     link.remove()
   }
 
+  const chooseStyle = async (next: 'grid' | 'catalog') => {
+    setStyle(next)
+    if (next === 'catalog' && !filterSlot) setFilterSlot(1)
+    if (!supabase || !tenantId || !canManage) return
+    const { error } = await supabase.from('tenants').update({ gallery_style: next }).eq('id', tenantId)
+    if (error && error.message.includes('gallery_style')) setMessage('Hinweis: Damit die Galerie-Seite diese Darstellung übernimmt, bitte das Datenbank-Update 010 ausführen.')
+  }
+
   const copyText = async (text: string, done: string) => {
     try { await navigator.clipboard.writeText(text); setMessage(done) }
     catch { setMessage('Kopieren nicht möglich. Bitte den Text markieren und mit Strg+C kopieren.') }
@@ -139,11 +153,13 @@ export function ImageManagerEmbed({ categories, labels, onEnabledChange }: { cat
   const shortcode = useMemo(() => {
     const parts = ['image_manager_galerie']
     for (const slot of [1, 2, 3, 4]) if (filters[slot]) parts.push(`kategorie${slot}="${filters[slot].replace(/"/g, '')}"`)
+    parts.push(style === 'catalog' ? 'darstellung="katalog"' : 'darstellung="galerie"')
+    if (filterSlot) parts.push(`filter="${filterSlot}"`)
     if (columns !== 3) parts.push(`spalten="${columns}"`)
     if (limit !== 24) parts.push(`anzahl="${limit}"`)
     if (!captions) parts.push('bildnamen="nein"')
     return `[${parts.join(' ')}]`
-  }, [filters, columns, limit, captions])
+  }, [filters, columns, limit, captions, style, filterSlot])
 
   const downloadPlugin = () => {
     const zip = buildWordPressPluginZip({
@@ -233,7 +249,20 @@ export function ImageManagerEmbed({ categories, labels, onEnabledChange }: { cat
 
       <div className="mt-8 text-base font-bold">Oder: Galerie direkt in Ihre Website einbauen</div>
       <p className="mt-1 text-sm text-slate-500">Dann erscheinen die Bilder mitten auf Ihrer Seite. Zuerst auswählen, was gezeigt werden soll:</p>
+      <div className="mt-4 grid gap-3 sm:grid-cols-2">
+        {([['grid', '🖼️', 'Galerie', 'Nur Bilder, Klick öffnet die Großansicht.'], ['catalog', '🛋️', 'Katalog', 'Karten mit Name, Beschreibung, Hinweis und Anfrage-Knopf.']] as const).map(([id, icon, title, text]) =>
+          <button key={id} type="button" onClick={() => void chooseStyle(id)} className={`flex items-start gap-3 rounded-2xl border-2 p-4 text-left ${style === id ? 'border-[#0E675A] bg-emerald-50' : 'border-slate-200 bg-white'}`}>
+            <span className="text-3xl" aria-hidden="true">{icon}</span>
+            <span><span className="block font-bold">{title}</span><span className="block text-sm text-slate-600">{text}</span></span>
+          </button>)}
+      </div>
       <div className="mt-4 grid gap-3 md:grid-cols-4">
+        <label className="text-xs font-semibold text-slate-600 md:col-span-4">Filter-Knöpfe für Besucher nach
+          <select value={filterSlot} onChange={(e) => setFilterSlot(Number(e.target.value))} className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-normal md:w-80">
+            <option value={0}>Keine Filter-Knöpfe</option>
+            {[1, 2, 3, 4].map((slot) => <option key={slot} value={slot}>{labels[slot - 1]}</option>)}
+          </select>
+        </label>
         {[1, 2, 3, 4].map((slot) => <label key={slot} className="text-xs font-semibold text-slate-600">{labels[slot - 1]}
           <select value={filters[slot] || ''} onChange={(e) => setFilters({ ...filters, [slot]: e.target.value })} className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-normal">
             <option value="">Alle</option>

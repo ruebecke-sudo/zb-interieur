@@ -15,6 +15,7 @@ type GalleryMeta = {
 export function ImageManagerGalleryPage() {
   const { slug = '' } = useParams()
   const [meta, setMeta] = useState<GalleryMeta | null>(null)
+  const [style, setStyle] = useState<'grid' | 'catalog'>('grid')
   const [error, setError] = useState('')
   const [filters, setFilters] = useState<Record<number, string>>({})
   const [search, setSearch] = useState('')
@@ -25,9 +26,10 @@ export function ImageManagerGalleryPage() {
   useEffect(() => {
     void fetch(`/.netlify/functions/public-gallery?slug=${encodeURIComponent(slug)}&meta=1&limit=1`)
       .then(async (response) => {
-        const data = await response.json() as { meta?: GalleryMeta; error?: string }
+        const data = await response.json() as { meta?: GalleryMeta; settings?: { style?: string }; error?: string }
         if (!response.ok || !data.meta) throw new Error(data.error || 'Galerie nicht gefunden.')
         setMeta(data.meta)
+        if (data.settings?.style === 'catalog') setStyle('catalog')
         document.title = data.meta.name
       })
       .catch((err: Error) => setError(err.message))
@@ -38,12 +40,13 @@ export function ImageManagerGalleryPage() {
     if (!element || !meta) return
     for (const attr of Array.from(element.attributes)) if (attr.name.startsWith('data-')) element.removeAttribute(attr.name)
     element.setAttribute('data-image-manager-gallery', meta.embedId)
-    element.setAttribute('data-columns', '4')
+    element.setAttribute('data-columns', style === 'catalog' ? '3' : '4')
+    element.setAttribute('data-style', style)
     element.setAttribute('data-limit', '200')
     for (const slot of [1, 2, 3, 4]) if (filters[slot]) element.setAttribute(`data-category${slot}`, filters[slot])
     if (appliedSearch) element.setAttribute('data-search', appliedSearch)
     void loadEmbedScript().then((api) => api?.render(element))
-  }, [meta, filters, appliedSearch])
+  }, [meta, filters, appliedSearch, style])
 
   if (error) return <div className="flex min-h-screen items-center justify-center bg-slate-50 p-6 text-center text-slate-600">
     <div><div className="text-5xl">🖼️</div><p className="mt-4 text-lg font-semibold">Diese Galerie ist nicht verfügbar.</p><p className="mt-1 text-sm">{error}</p></div>
