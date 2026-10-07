@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom'
-import { blogPosts } from '../data/blog'
+import { useBlogPosts } from '../lib/blogFeed'
 
 export function BlogPage() {
-  const [featured, ...rest] = blogPosts
+  // Fixed posts plus posts written in Image Manager Pro, newest first.
+  const { posts } = useBlogPosts()
+  const [featured, ...rest] = posts
 
   return (
     <>

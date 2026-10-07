@@ -3,6 +3,7 @@ import { ImageManagerActions } from '../components/ImageManagerActions'
 import { ImageManagerWebsites } from '../components/ImageManagerWebsites'
 import { ImageManagerEmbed } from '../components/ImageManagerEmbed'
 import { ImageManagerInquiry } from '../components/ImageManagerInquiry'
+import { ImageManagerBlog } from '../components/ImageManagerBlog'
 import { ImageManagerCategories } from '../components/ImageManagerCategories'
 import { ImageManagerMembers } from '../components/ImageManagerMembers'
 import { ImageManagerBranding } from '../components/ImageManagerBranding'
@@ -198,6 +199,7 @@ export function ImageManagerDashboardPage() {
   const isSettings = active === 'Einstellungen'
   const isPlans = active === 'Tarif'
   const isLibrary = active === 'Bildverwaltung'
+  const isBlog = active === 'Blog'
 
   const roleLabel = userRole === 'owner' ? 'Inhaber' : userRole === 'admin' ? 'Administrator' : userRole === 'member' ? 'Mitarbeiter' : 'Nur Lesen'
 
@@ -210,6 +212,7 @@ export function ImageManagerDashboardPage() {
   const nav = [
     ['Übersicht', '🏠'],
     ['Bildverwaltung', '🖼️'],
+    ['Blog', '📝'],
     [GALLERY_TAB, '🌐'],
     ['Kategorien', '🏷️'],
     ['Einstellungen', '⚙️'],
@@ -271,7 +274,7 @@ export function ImageManagerDashboardPage() {
         </header>
 
         <div className="mx-auto max-w-7xl space-y-7 p-5 md:p-8">
-          {isWebsites ? <>
+          {isBlog ? <ImageManagerBlog libraryImages={images.map((item) => ({ id: item.id, url: item.url, name: item.name }))} /> : isWebsites ? <>
             <ImageManagerEmbed categories={categories} labels={categoryLabels} onEnabledChange={setGalleryEnabled} />
             <details className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
               <summary className="cursor-pointer text-sm font-semibold text-slate-600">🔧 Für Fortgeschrittene: Bilder per Schnittstelle automatisch an eine Website übertragen</summary>
