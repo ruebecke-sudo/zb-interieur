@@ -54,6 +54,9 @@ const EMBED_SCRIPT = String.raw`(function () {
     '.site .title{font-size:1.15em}',
     '.site .text{color:inherit;opacity:.8}',
     '.site .msg{opacity:.7}',
+    '.site .kicker{color:inherit;opacity:.65}',
+    '.site .note{color:inherit}',
+    '.site .box .cap .note{color:#fff}',
     '.site .btn{font:inherit;font-weight:600;font-size:.95em;line-height:1}'
   ].join('');
 
