@@ -67,10 +67,26 @@ export function MarkenPage() {
     [allProdukte],
   )
 
-  const filtered = useMemo(() => {
+  // Remembers for which filter "Mehr anzeigen" was clicked; another filter starts collapsed again.
+  const [expandedFor, setExpandedFor] = useState<string | null>(null)
+  const showAll = expandedFor === active
+
+  const brandFiltered = useMemo(() => {
     if (active === 'alle') return allProdukte
     return allProdukte.filter((p) => p.brandSlug === active)
   }, [active, allProdukte])
+
+  // "Alle": at most two pieces per brand until the visitor asks for more.
+  const filtered = useMemo(() => {
+    if (active !== 'alle' || showAll) return brandFiltered
+    const perBrand = new Map<string, number>()
+    return brandFiltered.filter((p) => {
+      const count = perBrand.get(p.brandSlug) ?? 0
+      perBrand.set(p.brandSlug, count + 1)
+      return count < 2
+    })
+  }, [active, showAll, brandFiltered])
+  const hiddenCount = brandFiltered.length - filtered.length
 
   const activeBrand = marken.find((m) => m.slug === active)
   const featured = filtered[0]
@@ -196,7 +212,7 @@ export function MarkenPage() {
                   : activeBrand?.name ?? 'Produkte'}
               </h2>
               <p className="mt-2 text-sm text-muted">
-                {filtered.length} {filtered.length === 1 ? 'Produkt' : 'Produkte'}
+                {brandFiltered.length} {brandFiltered.length === 1 ? 'Produkt' : 'Produkte'}
                 {active !== 'alle'
                   ? ` · ${activeBrand?.name}`
                   : ` · ${brandsWithProducts.length} Marken mit Exponaten`}
@@ -253,6 +269,18 @@ export function MarkenPage() {
               <ProductCard key={p.stilpunkteUrl} product={p} index={i} />
             ))}
           </div>
+
+          {hiddenCount > 0 ? (
+            <div className="mt-10 text-center">
+              <button
+                type="button"
+                onClick={() => setExpandedFor(active)}
+                className="inline-flex items-center bg-brand px-6 py-3 text-[12px] font-bold tracking-[0.12em] text-white uppercase transition hover:brightness-110"
+              >
+                Mehr anzeigen ({hiddenCount} weitere)
+              </button>
+            </div>
+          ) : null}
 
           {filtered.length === 0 ? (
             <p className="py-16 text-center text-muted">

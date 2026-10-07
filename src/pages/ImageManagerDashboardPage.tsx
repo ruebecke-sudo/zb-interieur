@@ -197,6 +197,7 @@ export function ImageManagerDashboardPage() {
   const isCategories = active === 'Kategorien'
   const isSettings = active === 'Einstellungen'
   const isPlans = active === 'Tarif'
+  const isLibrary = active === 'Bildverwaltung'
 
   const roleLabel = userRole === 'owner' ? 'Inhaber' : userRole === 'admin' ? 'Administrator' : userRole === 'member' ? 'Mitarbeiter' : 'Nur Lesen'
 
@@ -289,6 +290,7 @@ export function ImageManagerDashboardPage() {
             </>
           ) : (
             <>
+          {!isLibrary && <>
           {!loading && userRole !== 'viewer' && !(logoUrl && images.length && galleryEnabled) && (() => {
             const steps = [
               { icon: '🎨', title: 'Logo und Farbe', text: 'Damit Ihre Galerie nach Ihrer Firma aussieht.', done: Boolean(logoUrl), action: <button type="button" onClick={() => setActive('Einstellungen')} className="rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-slate-800 ring-1 ring-slate-300">Logo hochladen</button> },
@@ -322,7 +324,25 @@ export function ImageManagerDashboardPage() {
               [`${(planUsage?.websiteCount ?? 0).toLocaleString('de-DE')}`, planUsage?.websiteCount === 1 ? 'Website' : 'Websites', planUsage ? `Verbunden · max. ${planUsage.maxWebsites.toLocaleString('de-DE')}` : 'Verbunden', '⌘'],
             ].map(([value,label,sub,icon]) => <div key={label} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"><div className="flex items-start justify-between"><div><div className="text-3xl font-bold">{value}</div><div className="mt-1 font-semibold">{label}</div><div className="mt-1 text-xs text-slate-500">{sub}</div></div><div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-600">{icon}</div></div></div>)}
           </section>
+          {/* Overview: newest images at a glance; the full library lives under "Bildverwaltung". */}
+          <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+              <div><h2 className="text-lg font-bold">Neueste Bilder</h2><p className="text-sm text-slate-500">Die zuletzt hochgeladenen oder geänderten Bilder.</p></div>
+              <button type="button" onClick={() => setActive('Bildverwaltung')} className="self-start rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 md:self-auto">🖼️ Alle Bilder verwalten →</button>
+            </div>
+            {loading && <div className="py-8 text-center text-sm text-slate-500">Bilder werden geladen …</div>}
+            {!loading && error && <div className="py-8 text-center text-sm text-red-600">{error}</div>}
+            {!loading && !error && images.length === 0 && <div className="py-8 text-center text-sm text-slate-500">Noch keine Bilder. Laden Sie oben rechts Ihr erstes Bild hoch.</div>}
+            {!loading && images.length > 0 && <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
+              {images.slice(0, 8).map((item) => <button key={item.id} type="button" onClick={() => setActive('Bildverwaltung')} title={item.name} className="group text-left">
+                <img src={item.url} alt={item.name} loading="lazy" className="aspect-square w-full rounded-xl bg-slate-100 object-cover ring-1 ring-slate-200" />
+                <div className="mt-1 truncate text-xs text-slate-600">{item.name}</div>
+              </button>)}
+            </div>}
+          </section>
+          </>}
 
+          {isLibrary && (
           <section className="rounded-2xl border border-slate-200 bg-white shadow-sm">
             <div className="flex flex-col gap-4 border-b border-slate-200 p-5 md:flex-row md:items-center md:justify-between">
               <div><h2 className="text-lg font-bold">Bildbibliothek</h2><p className="text-sm text-slate-500">Bilder zentral verwalten, kategorisieren und an Websites ausspielen.</p></div>
@@ -353,6 +373,7 @@ export function ImageManagerDashboardPage() {
               </div>)}
             </div>
           </section>
+          )}
             </>
           )}
         </div>
