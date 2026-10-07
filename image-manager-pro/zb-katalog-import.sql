@@ -1,9 +1,9 @@
 -- Übernahme der bisherigen ZB-Markenseite (fester Katalog + alte Bildverwaltung) in Image Manager Pro.
--- Arbeitsbereich "Digitale Medien" (2a6da538-…). 85 Produkte. Bilder bleiben auf der ZB-Website gespeichert.
+-- Arbeitsbereich "Digitale Medien" (Kurzname digitale-medien-319ef552). 85 Produkte. Bilder bleiben auf der ZB-Website gespeichert.
 -- Überspringt bereits übernommene Produkte (external_id), löscht und überschreibt nichts. Mehrfach ausführbar.
 insert into public.images (tenant_id, website_id, filename, name, text, category1, category2, category3, category4, url, format, status, sync_status, external_id, updated_at)
 select
-  '2a6da538-ddcc-43c0-8b8c-2c434632e36c'::uuid, null, p.filename, p.name, p.text, p.brand, '', '', '', p.url, p.format,
+  (select id from public.tenants where slug = 'digitale-medien-319ef552'), null, p.filename, p.name, p.text, p.brand, '', '', '', p.url, p.format,
   'active', 'pending', p.key,
   now() - make_interval(secs => p.ord)   -- erhält die bisherige Reihenfolge (neueste zuerst)
 from (values
@@ -95,9 +95,9 @@ from (values
 ) as p(ord, key, brand, name, text, url, filename, format)
 where not exists (
   select 1 from public.images i
-  where i.tenant_id = '2a6da538-ddcc-43c0-8b8c-2c434632e36c'::uuid and i.external_id = p.key
+  where i.tenant_id = (select id from public.tenants where slug = 'digitale-medien-319ef552') and i.external_id = p.key
 );
 
 -- Kontrolle
 select count(*) as uebernommene_produkte from public.images
-where tenant_id = '2a6da538-ddcc-43c0-8b8c-2c434632e36c'::uuid and external_id like 'zb-%';
+where tenant_id = (select id from public.tenants where slug = 'digitale-medien-319ef552') and external_id like 'zb-%';
