@@ -1,13 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import QRCode from 'qrcode'
 import type { ReactNode } from 'react'
 import { supabase } from '../lib/supabase'
 import type { CategoryLabels } from '../lib/categoryLabels'
 import { buildWordPressPluginZip } from '../lib/wordpressPlugin'
+import { EMBED_SCRIPT_PATH, galleryPageUrl, loadEmbedScript } from '../lib/embedScript'
 
 type Categories = { category1: string[]; category2: string[]; category3: string[]; category4: string[] }
-type EmbedApi = { render: (host: Element) => void }
 
-const SCRIPT_PATH = '/image-manager-embed.js'
+const SCRIPT_PATH = EMBED_SCRIPT_PATH
 
 type Platform = 'wordpress' | 'wix' | 'jimdo' | 'shopify' | 'other' | 'unknown'
 const PLATFORMS: Array<{ id: Platform; label: string }> = [
@@ -42,18 +43,6 @@ function CopyBlock({ text, onCopy }: { text: string; onCopy: () => void }) {
   </div>
 }
 
-function loadEmbedScript(): Promise<EmbedApi | null> {
-  const existing = (window as unknown as { ImageManagerEmbed?: EmbedApi }).ImageManagerEmbed
-  if (existing) return Promise.resolve(existing)
-  return new Promise((resolve) => {
-    const script = document.createElement('script')
-    script.src = SCRIPT_PATH
-    script.async = true
-    script.onload = () => resolve((window as unknown as { ImageManagerEmbed?: EmbedApi }).ImageManagerEmbed || null)
-    script.onerror = () => resolve(null)
-    document.body.appendChild(script)
-  })
-}
 
 /** Generator for the copy-paste gallery code customers put on any website. */
 export function ImageManagerEmbed({ categories, labels }: { categories: Categories; labels: CategoryLabels }) {
@@ -68,6 +57,8 @@ export function ImageManagerEmbed({ categories, labels }: { categories: Categori
   const [captions, setCaptions] = useState(true)
   const [message, setMessage] = useState('')
   const [workspaceName, setWorkspaceName] = useState('')
+  const [slug, setSlug] = useState('')
+  const [qrCode, setQrCode] = useState('')
   const [platform, setPlatform] = useState<Platform | null>(null)
   const [siteUrl, setSiteUrl] = useState('')
   const [detecting, setDetecting] = useState(false)
@@ -81,11 +72,12 @@ export function ImageManagerEmbed({ categories, labels }: { categories: Categori
     if (!membership?.tenant_id) return
     setTenantId(membership.tenant_id)
     setCanManage(['owner', 'admin'].includes(membership.role))
-    const { data, error } = await supabase.from('tenants').select('embed_id,embed_enabled,name').eq('id', membership.tenant_id).maybeSingle()
+    const { data, error } = await supabase.from('tenants').select('embed_id,embed_enabled,name,slug').eq('id', membership.tenant_id).maybeSingle()
     if (error || !data) { setUnavailable(true); return }
     setEmbedId(data.embed_id)
     setEnabled(Boolean(data.embed_enabled))
     setWorkspaceName(data.name || '')
+    setSlug(data.slug || '')
   })() }, [])
 
   const attributes = useMemo(() => {
@@ -119,6 +111,22 @@ export function ImageManagerEmbed({ categories, labels }: { categories: Categori
     if (error) return setMessage(error.message)
     setEnabled(!enabled)
     setMessage(!enabled ? 'Galerie freigegeben. Bilder dieses Arbeitsbereichs können jetzt über den Code angezeigt werden.' : 'Galerie gesperrt. Eingebundene Galerien zeigen keine Bilder mehr.')
+  }
+
+  const pageUrl = slug ? galleryPageUrl(slug) : ''
+
+  useEffect(() => {
+    if (!pageUrl) return
+    void QRCode.toDataURL(pageUrl, { width: 640, margin: 2 }).then(setQrCode).catch(() => setQrCode(''))
+  }, [pageUrl])
+
+  const downloadQr = () => {
+    const link = document.createElement('a')
+    link.href = qrCode
+    link.download = 'galerie-qr-code.png'
+    document.body.appendChild(link)
+    link.click()
+    link.remove()
   }
 
   const copyText = async (text: string, done: string) => {
@@ -196,7 +204,29 @@ export function ImageManagerEmbed({ categories, labels }: { categories: Categori
     {!unavailable && !enabled && <div className="mt-4 rounded-xl border border-dashed border-slate-300 p-4 text-sm text-slate-500">Solange die Galerie nicht freigegeben ist, sind Ihre Bilder nicht öffentlich abrufbar.</div>}
 
     {!unavailable && enabled && <>
-      <div className="mt-6 grid gap-3 md:grid-cols-4">
+      {pageUrl && <div className="mt-6 rounded-2xl border-2 border-[#0E675A]/30 bg-emerald-50/40 p-5">
+        <div className="flex items-center gap-2 text-base font-bold"><span className="text-2xl">🔗</span> Ihre fertige Galerie-Seite</div>
+        <p className="mt-1 text-sm text-slate-600">Am einfachsten: Diese Seite ist schon fertig, mit Ihrem Logo und Ihrer Farbe. Setzen Sie auf Ihrer Website einfach einen Link darauf, teilen Sie sie oder drucken Sie den QR-Code aus.</p>
+        <div className="mt-4 flex flex-col gap-5 md:flex-row">
+          <div className="min-w-0 flex-1">
+            <code className="block break-all rounded-lg bg-white px-3 py-2.5 font-mono text-sm ring-1 ring-slate-200">{pageUrl}</code>
+            <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
+              <button type="button" onClick={() => void copyText(pageUrl, 'Link kopiert. Fügen Sie ihn auf Ihrer Website als Link ein, zum Beispiel im Menü.')} className="rounded-xl bg-[#0E675A] px-3 py-2.5 text-sm font-semibold text-white">📋 Link kopieren</button>
+              <a href={pageUrl} target="_blank" rel="noopener noreferrer" className="rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-center text-sm font-semibold text-slate-700">👁️ Ansehen</a>
+              <a href={`https://wa.me/?text=${encodeURIComponent('Unsere Bildergalerie: ' + pageUrl)}`} target="_blank" rel="noopener noreferrer" className="rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-center text-sm font-semibold text-slate-700">💬 WhatsApp</a>
+              <a href={`mailto:?subject=${encodeURIComponent('Unsere Bildergalerie')}&body=${encodeURIComponent(pageUrl)}`} className="rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-center text-sm font-semibold text-slate-700">✉️ E-Mail</a>
+            </div>
+          </div>
+          {qrCode && <div className="flex shrink-0 flex-col items-center">
+            <img src={qrCode} alt="QR-Code zur Galerie" className="h-36 w-36 rounded-lg bg-white p-1 ring-1 ring-slate-200" />
+            <button type="button" onClick={downloadQr} className="mt-2 rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700">⬇️ QR-Code herunterladen</button>
+          </div>}
+        </div>
+      </div>}
+
+      <div className="mt-8 text-base font-bold">Oder: Galerie direkt in Ihre Website einbauen</div>
+      <p className="mt-1 text-sm text-slate-500">Dann erscheinen die Bilder mitten auf Ihrer Seite. Zuerst auswählen, was gezeigt werden soll:</p>
+      <div className="mt-4 grid gap-3 md:grid-cols-4">
         {[1, 2, 3, 4].map((slot) => <label key={slot} className="text-xs font-semibold text-slate-600">{labels[slot - 1]}
           <select value={filters[slot] || ''} onChange={(e) => setFilters({ ...filters, [slot]: e.target.value })} className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-normal">
             <option value="">Alle</option>

@@ -3,6 +3,7 @@ import { ImageManagerLayout } from './components/ImageManagerLayout'
 import { ImageManagerAuthPage } from './pages/ImageManagerAuthPage'
 import { ImageManagerDashboardPage } from './pages/ImageManagerDashboardPage'
 import { ImageManagerLandingPage } from './pages/ImageManagerLandingPage'
+import { ImageManagerGalleryPage } from './pages/ImageManagerGalleryPage'
 
 /** Image Manager Pro routes, shared by the ZB site and the neutral SaaS site. */
 export const imageManagerRoute: RouteObject = {
@@ -13,5 +14,6 @@ export const imageManagerRoute: RouteObject = {
     { index: true, element: <ImageManagerLandingPage /> },
     { path: 'login', element: <ImageManagerAuthPage /> },
     { path: 'app', element: <ImageManagerDashboardPage /> },
+    { path: 'galerie/:slug', element: <ImageManagerGalleryPage /> },
   ],
 }
