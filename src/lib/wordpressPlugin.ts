@@ -2,7 +2,7 @@ import { createZip } from './zip'
 import type { CategoryLabels } from './categoryLabels'
 
 const SLUG = 'image-manager-pro-galerie'
-const VERSION = '2.1.0'
+const VERSION = '2.1.1'
 
 const php = (value: string) => `'${value.replace(/\\/g, '\\\\').replace(/'/g, "\\'")}'`
 
@@ -37,7 +37,7 @@ define('IMP_GALERIE_ID', ${php(embedId)});
 define('IMP_GALERIE_SCRIPT', ${php(scriptUrl)});
 define('IMP_GALERIE_VERSION', '${VERSION}');
 // Höchstens so viele neue Bilder pro Abgleich herunterladen (verhindert Zeitüberschreitungen).
-define('IMP_GALERIE_BATCH', 10);
+define('IMP_GALERIE_BATCH', 20);
 
 function imp_galerie_labels() {
     return array(${labels.map(php).join(', ')});
@@ -195,6 +195,10 @@ function imp_galerie_run_sync() {
         }
     }
 
+    if ($pending > 0 && !wp_next_scheduled('imp_galerie_sync_continue')) {
+        wp_schedule_single_event(time() + 20, 'imp_galerie_sync_continue');
+    }
+
     return imp_galerie_store_status(array(
         'created' => $created,
         'updated' => $updated,
@@ -212,6 +216,7 @@ function imp_galerie_store_status($status) {
 }
 
 add_action('imp_galerie_sync_event', 'imp_galerie_sync');
+add_action('imp_galerie_sync_continue', 'imp_galerie_sync');
 
 function imp_galerie_schedule() {
     if (!wp_next_scheduled('imp_galerie_sync_event')) {
@@ -223,6 +228,7 @@ add_action('init', 'imp_galerie_schedule');
 
 function imp_galerie_unschedule() {
     wp_clear_scheduled_hook('imp_galerie_sync_event');
+    wp_clear_scheduled_hook('imp_galerie_sync_continue');
 }
 register_deactivation_hook(__FILE__, 'imp_galerie_unschedule');
 
@@ -324,8 +330,9 @@ function imp_galerie_shortcode($atts) {
     ), $atts, 'image_manager_galerie');
 
     $columns = max(1, min(6, intval($a['spalten'])));
-    $limit = max(1, min(200, intval($a['anzahl'])));
     $darstellung = strtolower($a['darstellung']);
+    // The media library gallery shows everything unless anzahl="…" is set explicitly.
+    $limit = ($darstellung === 'wordpress' && !isset($atts['anzahl'])) ? 500 : max(1, min(200, intval($a['anzahl'])));
 
     // Bilder aus der Mediathek als echte WordPress-Galerie (Design des Themes).
     if ($darstellung === 'wordpress') {
@@ -472,7 +479,7 @@ function imp_galerie_admin_page() {
                 <p><strong><?php echo intval($status['total']); ?> Bilder</strong> in der Mediathek · zuletzt abgeglichen am <?php echo esc_html(mysql2date('d.m.Y \\u\\m H:i', $status['time'])); ?> Uhr
                 <?php if (!empty($status['created'])) : ?> · <?php echo intval($status['created']); ?> neu<?php endif; ?></p>
                 <?php if (!empty($status['pending'])) : ?>
-                    <p style="color:#996800"><strong>Noch <?php echo intval($status['pending']); ?> Bilder ausstehend.</strong> Bitte noch einmal auf „Jetzt abgleichen“ klicken, oder sie kommen beim nächsten automatischen Abgleich.</p>
+                    <p style="color:#996800"><strong>Noch <?php echo intval($status['pending']); ?> Bilder werden übernommen.</strong> Das läuft automatisch weiter, Sie müssen nichts tun. Laden Sie diese Seite in ein bis zwei Minuten neu.</p>
                 <?php endif; ?>
                 <?php if (!empty($status['errors'])) : ?>
                     <p style="color:#b32d2e">Nicht übernommen: <?php echo esc_html(implode(' · ', $status['errors'])); ?></p>
