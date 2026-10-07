@@ -52,8 +52,11 @@ export function ImageManagerCategories({ onLabelsChanged }: { onLabelsChanged?: 
 
   const removeValue = async (slot: number, name: string) => {
     if (!supabase || !tenantId || !window.confirm(`„${name}“ aus der Auswahl entfernen? Bereits zugeordnete Bilder behalten den Wert.`)) return
-    const { error } = await supabase.from('categories').delete().eq('tenant_id', tenantId).eq('slot', slot).eq('name', name)
-    setMessage(error ? error.message : `„${name}“ entfernt.`)
+    // .select() returns the deleted rows, so a silent refusal (no rights) becomes visible.
+    const { data, error } = await supabase.from('categories').delete().eq('tenant_id', tenantId).eq('slot', slot).eq('name', name).select('name')
+    if (error) setMessage(`„${name}“ konnte nicht entfernt werden: ${error.message}`)
+    else if (!data?.length) setMessage(`„${name}“ konnte nicht entfernt werden. Nur Inhaber und Administratoren dürfen Kategorien ändern.`)
+    else setMessage(`„${name}“ entfernt.`)
     await load()
   }
 
