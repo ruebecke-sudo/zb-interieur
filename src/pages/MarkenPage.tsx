@@ -7,7 +7,8 @@ import {
   mergeMarkenProdukte,
   type MarkenProdukt,
 } from '../data/marken'
-import { listMediaPublic } from '../lib/mediaApi'
+import { listMediaPublic, type MediaImage } from '../lib/mediaApi'
+import { galleryItemToMediaImage, loadImageManagerItems, withoutLibraryDuplicates } from '../lib/imageManagerFeed'
 import { mediaImagesToMarkenProdukte } from '../lib/mediaToMarkenProdukt'
 import {
   getUploadedAltText,
@@ -27,13 +28,17 @@ export function MarkenPage() {
     void Promise.all([
       hydrateUploadedProducts().catch(() => [] as MarkenProdukt[]),
       listMediaPublic()
-        .then((res) => mediaImagesToMarkenProdukte(res.items))
-        .catch(() => ({
-          products: [] as MarkenProdukt[],
-          overridesByCatalogImage: new Map<string, MarkenProdukt>(),
-        })),
-    ]).then(([localUploads, libraryResult]) => {
+        .then((res) => res.items)
+        .catch(() => [] as MediaImage[]),
+      // Image Manager Pro: new images appear here automatically (brand = Kategorie 1).
+      loadImageManagerItems(),
+    ]).then(([localUploads, libraryItems, managerItems]) => {
       if (cancelled) return
+      const libraryIds = new Set(libraryItems.map((item) => item.id))
+      const libraryResult = mediaImagesToMarkenProdukte([
+        ...withoutLibraryDuplicates(managerItems, libraryIds).map(galleryItemToMediaImage),
+        ...libraryItems,
+      ])
       setUploaded(localUploads)
       setLibrary(libraryResult.products)
       setCatalogOverrides(libraryResult.overridesByCatalogImage)

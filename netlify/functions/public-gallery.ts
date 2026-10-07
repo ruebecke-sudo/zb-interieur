@@ -52,7 +52,8 @@ export default async (req: Request) => {
 
   const limit = Math.min(Math.max(Number(params.get('limit')) || 60, 1), 200)
   let query = admin.from('images')
-    .select('id,name,text,category1,category2,category3,category4,url,width,height')
+    // external_id: id of the copy on a connected website, lets that site skip duplicates.
+    .select('id,name,text,category1,category2,category3,category4,url,width,height,external_id')
     .eq('tenant_id', tenant.id)
     .not('url', 'is', null)
     .order('updated_at', { ascending: false })

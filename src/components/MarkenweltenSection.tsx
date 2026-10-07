@@ -1,12 +1,52 @@
-import { useEffect, useId, useRef, useState } from 'react'
+import { useEffect, useId, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { Link } from 'react-router-dom'
-import { markenwelten, type MarkenweltCategory } from '../data/markenwelten'
+import { markenwelten, type MarkenweltCategory, type MarkenweltItem } from '../data/markenwelten'
 import { useFocusTrap } from '../hooks/useFocusTrap'
+import { loadImageManagerItems, type GalleryItem } from '../lib/imageManagerFeed'
+
+/**
+ * Which Image Manager Pro images belong to which room tile:
+ * Kategorie 3 (Bereich) or Kategorie 2 (Produktart), compared case-insensitively.
+ */
+const ROOM_MATCH: Record<string, { category2?: string[]; category3?: string[] }> = {
+  wohnen: { category3: ['Wohnzimmer'] },
+  essen: { category3: ['Esszimmer'] },
+  stauraum: { category2: ['Schrank', 'Sideboard', 'Regal'] },
+  licht: { category2: ['Leuchte'] },
+  schlafen: { category3: ['Schlafzimmer'] },
+  outdoor: { category3: ['Outdoor'], category2: ['Outdoor'] },
+}
+
+function matchesRoom(item: GalleryItem, roomId: string): boolean {
+  const rule = ROOM_MATCH[roomId]
+  if (!rule) return false
+  const is = (value: string | null, list?: string[]) => Boolean(value && list?.some((entry) => entry.toLowerCase() === value.trim().toLowerCase()))
+  return is(item.category3, rule.category3) || is(item.category2, rule.category2)
+}
+
+function toMarkenweltItem(item: GalleryItem): MarkenweltItem {
+  const title = item.name || 'Motiv'
+  return { brand: item.category1 || 'ZB Interieur', title, caption: item.text || title, image: item.url }
+}
 
 export function MarkenweltenSection() {
   const [activeId, setActiveId] = useState<string | null>(null)
-  const active = markenwelten.find((c) => c.id === activeId) ?? null
+  const [managerItems, setManagerItems] = useState<GalleryItem[]>([])
+
+  useEffect(() => {
+    let cancelled = false
+    void loadImageManagerItems().then((items) => { if (!cancelled) setManagerItems(items) })
+    return () => { cancelled = true }
+  }, [])
+
+  // New images from Image Manager Pro first, the existing motifs stay behind them.
+  const categories = useMemo<MarkenweltCategory[]>(() => markenwelten.map((cat) => ({
+    ...cat,
+    items: [...managerItems.filter((item) => matchesRoom(item, cat.id)).map(toMarkenweltItem), ...cat.items],
+  })), [managerItems])
+
+  const active = categories.find((c) => c.id === activeId) ?? null
 
   return (
     <section className="bg-fog" aria-labelledby="markenwelten-heading">
@@ -28,7 +68,7 @@ export function MarkenweltenSection() {
         </div>
 
         <ul className="m-0 grid list-none gap-3 p-0 sm:grid-cols-2 lg:grid-cols-3">
-          {markenwelten.map((cat, i) => {
+          {categories.map((cat, i) => {
             const span =
               i === 0
                 ? 'sm:col-span-2 lg:col-span-2 lg:row-span-2 min-h-[280px] lg:min-h-[540px]'
