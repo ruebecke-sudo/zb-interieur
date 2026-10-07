@@ -2,7 +2,7 @@ import { createZip } from './zip'
 import type { CategoryLabels } from './categoryLabels'
 
 const SLUG = 'image-manager-pro-galerie'
-const VERSION = '2.0.1'
+const VERSION = '2.0.2'
 
 const php = (value: string) => `'${value.replace(/\\/g, '\\\\').replace(/'/g, "\\'")}'`
 
@@ -289,12 +289,7 @@ function imp_galerie_shortcode($atts) {
                 ? '<p><em>Noch keine Bilder in der Mediathek. Unter Einstellungen → Image Manager Galerie auf „Jetzt abgleichen“ klicken.</em></p>'
                 : '';
         }
-        return gallery_shortcode(array(
-            'ids'     => implode(',', $ids),
-            'columns' => $columns,
-            'size'    => 'large',
-            'link'    => 'file',
-        ));
+        return imp_galerie_block_gallery($ids, $columns, strtolower($a['bildnamen']) !== 'nein');
     }
 
     wp_enqueue_script('image-manager-pro-galerie', IMP_GALERIE_SCRIPT, array(), IMP_GALERIE_VERSION, true);
@@ -327,6 +322,32 @@ function imp_galerie_shortcode($atts) {
     return $html . '></div>';
 }
 add_shortcode('image_manager_galerie', 'imp_galerie_shortcode');
+
+/**
+ * Core gallery block (not the classic [gallery] markup): block themes such as
+ * Twenty Twenty-Five only style the block, classic themes style both.
+ */
+function imp_galerie_block_gallery($ids, $columns, $captions) {
+    $inner = '';
+    foreach ($ids as $attachment_id) {
+        $large = wp_get_attachment_image_url($attachment_id, 'large');
+        $full = wp_get_attachment_url($attachment_id);
+        if (!$large || !$full) {
+            continue;
+        }
+        $alt = (string) get_post_meta($attachment_id, '_wp_attachment_image_alt', true);
+        $caption = $captions ? (string) wp_get_attachment_caption($attachment_id) : '';
+        $inner .= '<!-- wp:image {"id":' . intval($attachment_id) . ',"sizeSlug":"large","linkDestination":"media"} -->'
+            . '<figure class="wp-block-image size-large"><a href="' . esc_url($full) . '">'
+            . '<img src="' . esc_url($large) . '" alt="' . esc_attr($alt) . '" class="wp-image-' . intval($attachment_id) . '"/></a>'
+            . ($caption !== '' ? '<figcaption class="wp-element-caption">' . esc_html($caption) . '</figcaption>' : '')
+            . '</figure><!-- /wp:image -->';
+    }
+    $markup = '<!-- wp:gallery {"columns":' . intval($columns) . ',"linkTo":"media"} -->'
+        . '<figure class="wp-block-gallery has-nested-images columns-' . intval($columns) . ' is-cropped">' . $inner . '</figure>'
+        . '<!-- /wp:gallery -->';
+    return do_blocks($markup);
+}
 
 /* ---------------------------------------------------------------------------
  * Anleitung unter Einstellungen → Image Manager Galerie
