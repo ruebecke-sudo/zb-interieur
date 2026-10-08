@@ -25,6 +25,24 @@ function matchesRoom(item: GalleryItem, roomId: string): boolean {
   return is(item.category3, rule.category3) || is(item.category2, rule.category2)
 }
 
+/** How many motifs a room overlay shows; the rest is on the Marken page. */
+const OVERLAY_LIMIT = 24
+
+/** Alternate between brands so the newest upload does not fill the whole overlay. */
+function mixBrands(items: GalleryItem[]): GalleryItem[] {
+  const groups = new Map<string, GalleryItem[]>()
+  for (const item of items) {
+    const key = item.category1 || ''
+    groups.set(key, [...(groups.get(key) || []), item])
+  }
+  const lists = [...groups.values()]
+  const mixed: GalleryItem[] = []
+  for (let i = 0; mixed.length < items.length; i++) {
+    for (const list of lists) if (list[i]) mixed.push(list[i])
+  }
+  return mixed
+}
+
 function toMarkenweltItem(item: GalleryItem): MarkenweltItem {
   const title = item.name || 'Motiv'
   return { brand: item.category1 || 'ZB Interieur', title, caption: item.text || title, image: item.url }
@@ -43,7 +61,7 @@ export function MarkenweltenSection() {
   // New images from Image Manager Pro first, the existing motifs stay behind them.
   const categories = useMemo<MarkenweltCategory[]>(() => markenwelten.map((cat) => ({
     ...cat,
-    items: [...managerItems.filter((item) => matchesRoom(item, cat.id)).map(toMarkenweltItem), ...cat.items],
+    items: [...mixBrands(managerItems.filter((item) => matchesRoom(item, cat.id))).map(toMarkenweltItem), ...cat.items],
   })), [managerItems])
 
   const active = categories.find((c) => c.id === activeId) ?? null
@@ -122,6 +140,8 @@ function CategoryOverlay({
 }) {
   const titleId = useId()
   const dialogRef = useRef<HTMLDivElement>(null)
+  const shown = category.items.slice(0, OVERLAY_LIMIT)
+  const more = category.items.length - shown.length
   useFocusTrap(dialogRef, true)
 
   useEffect(() => {
@@ -173,7 +193,7 @@ function CategoryOverlay({
 
         <div className="min-h-0 flex-1 overflow-y-auto px-5 py-6 md:px-8 md:py-8">
           <ul className="grid list-none gap-5 p-0 sm:grid-cols-2 lg:grid-cols-3">
-            {category.items.map((item) => (
+            {shown.map((item) => (
               <li key={`${item.brand}-${item.title}-${item.image}`}>
                 <article className="group flex flex-col">
                   <div className="relative overflow-hidden bg-white/5">
@@ -194,12 +214,23 @@ function CategoryOverlay({
                       {item.brand}
                     </p>
                     <h3 className="mt-1 font-sans text-lg font-bold leading-snug">{item.title}</h3>
-                    <p className="mt-1.5 text-sm leading-relaxed text-white/75">{item.caption}</p>
+                    <p className="mt-1.5 line-clamp-3 text-sm leading-relaxed text-white/75">{item.caption}</p>
                   </div>
                 </article>
               </li>
             ))}
           </ul>
+          {more > 0 ? (
+            <div className="mt-8 text-center">
+              <Link
+                to="/marken"
+                className="inline-flex border border-white/40 px-6 py-3 text-[11px] font-semibold tracking-[0.1em] text-white uppercase hover:border-white"
+                onClick={onClose}
+              >
+                Alle Produkte auf der Marken-Seite ansehen ({more} weitere)
+              </Link>
+            </div>
+          ) : null}
         </div>
 
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/10 px-5 py-4 md:px-8">
