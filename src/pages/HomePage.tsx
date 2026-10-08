@@ -5,7 +5,7 @@ import { MarkenweltenSection } from '../components/MarkenweltenSection'
 import { StilpunkteRichSnippet } from '../components/StilpunkteRichSnippet'
 import { TestimonialsSection } from '../components/TestimonialsSection'
 import { WhatsAppIcon } from '../components/WhatsAppButton'
-import { showroomImages, whatsappHref } from '../data/site'
+import { whatsappHref } from '../data/site'
 
 export function HomePage() {
   return (
@@ -87,38 +87,6 @@ export function HomePage() {
       </section>
 
       <TestimonialsSection />
-
-      <section className="bg-white">
-        <div className="mx-auto max-w-6xl px-4 py-16 md:py-20">
-          <div className="mb-8 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-            <div>
-              <p className="text-xs font-semibold tracking-[0.16em] text-brand uppercase">Showroom</p>
-              <h2 className="mt-2 font-serif text-3xl font-bold md:text-4xl">
-                Einblicke aus Homburg
-              </h2>
-              <p className="mt-3 max-w-xl text-muted">
-                Designmöbel und Raumstimmungen – am besten live im Showroom erleben.
-              </p>
-            </div>
-            <Link
-              to="/termin"
-              className="text-sm font-semibold tracking-wide text-brand uppercase hover:underline"
-            >
-              Besuchstermin →
-            </Link>
-          </div>
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
-            {showroomImages.map((src, i) => (
-              <img
-                key={src}
-                src={src}
-                alt={`Showroom ZB Interieur Homburg, Motiv ${i + 1}`}
-                className="aspect-square w-full object-cover"
-              />
-            ))}
-          </div>
-        </div>
-      </section>
 
       <section className="relative overflow-hidden">
         <div
