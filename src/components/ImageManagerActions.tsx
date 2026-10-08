@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { supabase } from '../lib/supabase'
 import { DEFAULT_CATEGORY_LABELS, type CategoryLabels } from '../lib/categoryLabels'
+import { folderOf, isImageFile, nameFromFilename, shrinkImage } from '../lib/imageImport'
 import type { FormEvent, ReactNode } from 'react'
 
 type ImageItem = {
@@ -29,6 +30,8 @@ type Categories = {
   category3: string[]
   category4: string[]
 }
+
+type SelectedPreview = { file: File; url: string; name: string; folder: string }
 
 type UploadedPreview = { url: string; name: string; syncStatus: 'synced' | 'error' | 'library'; syncError?: string }
 
@@ -79,8 +82,21 @@ export function ImageManagerActions({ item, categories, labels = DEFAULT_CATEGOR
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const [uploadedPreviews, setUploadedPreviews] = useState<UploadedPreview[]>([])
-  const [selectedPreviews, setSelectedPreviews] = useState<Array<{ file: File; url: string }>>([])
+  const [selectedPreviews, setSelectedPreviews] = useState<SelectedPreview[]>([])
+  const [progress, setProgress] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
+  const folderRef = useRef<HTMLInputElement>(null)
+
+  // Images picked one by one or as a whole folder (folder name = category 1, file name = image name).
+  const addFiles = (list: FileList | null) => {
+    const nextFiles = Array.from(list || []).filter(isImageFile)
+    if (!nextFiles.length) return
+    setFiles((current) => [...current, ...nextFiles])
+    setSelectedPreviews((current) => [
+      ...current,
+      ...nextFiles.map((file) => ({ file, url: URL.createObjectURL(file), name: nameFromFilename(file.name), folder: folderOf(file) })),
+    ])
+  }
 
   const clearSelectedPreviews = () => {
     setSelectedPreviews((current) => {
@@ -117,7 +133,7 @@ export function ImageManagerActions({ item, categories, labels = DEFAULT_CATEGOR
 
   const upload = async (event: FormEvent) => {
     event.preventDefault()
-    if (!files.length) return setError('Bitte mindestens ein Bild auswählen.')
+    if (!selectedPreviews.length) return setError('Bitte mindestens ein Bild auswählen.')
     setBusy(true)
     setError('')
     try {
@@ -129,13 +145,15 @@ export function ImageManagerActions({ item, categories, labels = DEFAULT_CATEGOR
       if (!['owner','admin','member'].includes(membership.role)) throw new Error('Keine Berechtigung zum Hochladen.')
 
       const previews: UploadedPreview[] = []
-      for (const file of files) {
+      for (const [index, selected] of selectedPreviews.entries()) {
+        setProgress(`Bild ${index + 1} von ${selectedPreviews.length} wird hochgeladen …`)
+        const file = await shrinkImage(selected.file)
         const safeName = file.name.toLowerCase().replace(/[^a-z0-9._-]+/g, '-')
         const path = `${membership.tenant_id}/${crypto.randomUUID()}-${safeName}`
         const { error: storageError } = await supabase.storage.from('image-manager-media').upload(path, file, { contentType: file.type, upsert: false })
         if (storageError) throw new Error(storageError.message)
         const { data: publicUrl } = supabase.storage.from('image-manager-media').getPublicUrl(path)
-        previews.push({ url: publicUrl.publicUrl, name: file.name, syncStatus: websiteId ? 'error' : 'library' })
+        previews.push({ url: publicUrl.publicUrl, name: selected.file.name, syncStatus: websiteId ? 'error' : 'library' })
         setUploadedPreviews([...previews])
         const image = new Image()
         const dimensions = await new Promise<{ width: number; height: number }>((resolve) => {
@@ -147,10 +165,10 @@ export function ImageManagerActions({ item, categories, labels = DEFAULT_CATEGOR
         const { data: inserted, error: insertError } = await supabase.from('images').insert({
           tenant_id: membership.tenant_id,
           website_id: websiteId || null,
-          filename: file.name,
-          name: editor.name || file.name.replace(/\.[^.]+$/, ''),
+          filename: selected.file.name,
+          name: editor.name || selected.name,
           text: editor.text,
-          category1: editor.category1,
+          category1: editor.category1 || selected.folder,
           category2: editor.category2,
           category3: editor.category3,
           category4: editor.category4,
@@ -197,6 +215,7 @@ export function ImageManagerActions({ item, categories, labels = DEFAULT_CATEGOR
       setError(err instanceof Error ? err.message : 'Upload fehlgeschlagen.')
     } finally {
       setBusy(false)
+      setProgress('')
     }
   }
 
@@ -272,31 +291,35 @@ export function ImageManagerActions({ item, categories, labels = DEFAULT_CATEGOR
       <div className="mt-6 flex justify-end">
         <button type="button" onClick={() => { setModal(null); setUploadedPreviews([]); clearSelectedPreviews() }} className="rounded-xl bg-[#0E675A] px-5 py-2.5 text-sm font-semibold text-white">Schließen</button>
       </div>
-    </div> : <form onSubmit={upload} className="max-h-[calc(100dvh-2rem)] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white p-5 shadow-2xl"><h2 className="text-xl font-bold">Bilder hochladen</h2><p className="mt-1 text-sm text-slate-500">Mehrere Bilder können mit denselben Metadaten hochgeladen werden.</p><div className="mt-4 rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50 p-4">
+    </div> : <form onSubmit={upload} className="max-h-[calc(100dvh-2rem)] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white p-5 shadow-2xl"><h2 className="text-xl font-bold">Bilder hochladen</h2><p className="mt-1 text-sm text-slate-500">Die Felder unten gelten für alle ausgewählten Bilder. Leer gelassen, werden Bildname und „{labels[0]}“ aus Datei- bzw. Ordnernamen übernommen.</p><div className="mt-4 rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50 p-4">
   <input
     ref={inputRef}
     type="file"
     accept="image/jpeg,image/png,image/webp,image/gif,image/avif"
     multiple
-    onChange={(e) => {
-      const nextFiles = Array.from(e.target.files || [])
-      if (!nextFiles.length) return
-      setFiles((current) => [...current, ...nextFiles])
-      setSelectedPreviews((current) => [
-        ...current,
-        ...nextFiles.map((file) => ({ file, url: URL.createObjectURL(file) })),
-      ])
-      e.currentTarget.value = ''
-    }}
+    onChange={(e) => { addFiles(e.target.files); e.currentTarget.value = '' }}
+    className="hidden"
+  />
+  <input
+    ref={(el) => { folderRef.current = el; el?.setAttribute('webkitdirectory', '') }}
+    type="file"
+    multiple
+    onChange={(e) => { addFiles(e.target.files); e.currentTarget.value = '' }}
     className="hidden"
   />
   <div className="text-center">
-    <button type="button" onClick={() => inputRef.current?.click()} className="rounded-xl bg-white px-4 py-2.5 text-sm font-semibold shadow-sm ring-1 ring-slate-200">
-      {files.length ? 'Weitere Bilder auswählen' : 'Bilder auswählen'}
-    </button>
-    <div className="mt-2 text-sm text-slate-500">
-      {files.length ? `${files.length} ${files.length === 1 ? 'Bild' : 'Bilder'} ausgewählt` : 'JPG, PNG, WebP, GIF oder AVIF'}
+    <div className="flex flex-wrap justify-center gap-2">
+      <button type="button" onClick={() => inputRef.current?.click()} className="rounded-xl bg-white px-4 py-2.5 text-sm font-semibold shadow-sm ring-1 ring-slate-200">
+        {files.length ? 'Weitere Bilder auswählen' : 'Bilder auswählen'}
+      </button>
+      <button type="button" onClick={() => folderRef.current?.click()} className="rounded-xl bg-white px-4 py-2.5 text-sm font-semibold shadow-sm ring-1 ring-slate-200">
+        Ganzen Ordner auswählen
+      </button>
     </div>
+    <div className="mt-2 text-sm text-slate-500">
+      {files.length ? `${files.length} ${files.length === 1 ? 'Bild' : 'Bilder'} ausgewählt` : 'JPG, PNG, WebP, GIF oder AVIF – große Fotos werden automatisch verkleinert'}
+    </div>
+    {!files.length && <p className="mx-auto mt-3 max-w-md text-xs leading-relaxed text-slate-500">Tipp: Beim Ordner wird der <strong>Ordnername</strong> zu „{labels[0]}“ und der <strong>Dateiname</strong> zum Bildnamen. Ein Ordner mit Unterordnern geht auch – z. B. ein Unterordner pro Marke.</p>}
   </div>
   {selectedPreviews.length > 0 && (
     <div className="mt-4 grid gap-3 sm:grid-cols-2">
@@ -306,8 +329,9 @@ export function ImageManagerActions({ item, categories, labels = DEFAULT_CATEGOR
             <img src={preview.url} alt={preview.file.name} className="h-full w-full object-contain" />
           </div>
           <div className="flex items-center gap-2 border-t border-slate-200 px-3 py-2">
-            <div className="min-w-0 flex-1 truncate text-xs font-medium text-slate-600" title={preview.file.name}>
-              {preview.file.name}
+            <div className="min-w-0 flex-1 text-xs" title={preview.file.name}>
+              <div className="truncate font-semibold text-slate-700">{editor.name || preview.name}</div>
+              {(editor.category1 || preview.folder) && <div className="truncate text-slate-500">{labels[0]}: {editor.category1 || preview.folder}</div>}
             </div>
             <button
               type="button"
@@ -326,7 +350,7 @@ export function ImageManagerActions({ item, categories, labels = DEFAULT_CATEGOR
       ))}
     </div>
   )}
-</div><div className="mt-4 grid gap-3 md:grid-cols-2">{websites.length > 0 && <label className="block md:col-span-2"><span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">Website</span><select value={websiteId} onChange={(e) => setWebsiteId(e.target.value)} className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-[#0E675A]"><option value="">Keine Übertragung, nur Bibliothek und Galerie</option>{websites.map((site) => <option key={site.id} value={site.id}>{site.name} · {site.base_url}{site.hasKey ? '' : ' (ohne API-Schlüssel)'}</option>)}</select></label>}<Field label="Bildname" value={editor.name} onChange={(v) => setEditor({ ...editor, name: v })} /><Field label="Bildtext" value={editor.text} onChange={(v) => setEditor({ ...editor, text: v })} /><CategoryField label={`Kat.1 · ${labels[0]}`} value={editor.category1} values={categories.category1} onChange={(v) => setEditor({ ...editor, category1: v })} /><CategoryField label={`Kat.2 · ${labels[1]}`} value={editor.category2} values={categories.category2} onChange={(v) => setEditor({ ...editor, category2: v })} /><CategoryField label={`Kat.3 · ${labels[2]}`} value={editor.category3} values={categories.category3} onChange={(v) => setEditor({ ...editor, category3: v })} /><CategoryField label={`Kat.4 · ${labels[3]}`} value={editor.category4} values={categories.category4} onChange={(v) => setEditor({ ...editor, category4: v })} /><Field label="Hinweis (freiwillig, z. B. „ab 1.290 €“ oder „Neu“)" value={editor.note} onChange={(v) => setEditor({ ...editor, note: v })} /></div>{error && <div className="mt-4 text-sm text-red-600">{error}</div>}<div className="mt-4 flex justify-end gap-2"><button type="button" onClick={() => { setModal(null); clearSelectedPreviews() }} className="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-semibold">Abbrechen</button><button disabled={busy || !files.length} className="rounded-xl bg-[#0E675A] px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-50">{busy ? 'Hochladen läuft …' : 'Hochladen'}</button></div></form>}</Modal>}
+</div><div className="mt-4 grid gap-3 md:grid-cols-2">{websites.length > 0 && <label className="block md:col-span-2"><span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">Website</span><select value={websiteId} onChange={(e) => setWebsiteId(e.target.value)} className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-[#0E675A]"><option value="">Keine Übertragung, nur Bibliothek und Galerie</option>{websites.map((site) => <option key={site.id} value={site.id}>{site.name} · {site.base_url}{site.hasKey ? '' : ' (ohne API-Schlüssel)'}</option>)}</select></label>}<Field label="Bildname" value={editor.name} onChange={(v) => setEditor({ ...editor, name: v })} /><Field label="Bildtext" value={editor.text} onChange={(v) => setEditor({ ...editor, text: v })} /><CategoryField label={`Kat.1 · ${labels[0]}`} value={editor.category1} values={categories.category1} onChange={(v) => setEditor({ ...editor, category1: v })} /><CategoryField label={`Kat.2 · ${labels[1]}`} value={editor.category2} values={categories.category2} onChange={(v) => setEditor({ ...editor, category2: v })} /><CategoryField label={`Kat.3 · ${labels[2]}`} value={editor.category3} values={categories.category3} onChange={(v) => setEditor({ ...editor, category3: v })} /><CategoryField label={`Kat.4 · ${labels[3]}`} value={editor.category4} values={categories.category4} onChange={(v) => setEditor({ ...editor, category4: v })} /><Field label="Hinweis (freiwillig, z. B. „ab 1.290 €“ oder „Neu“)" value={editor.note} onChange={(v) => setEditor({ ...editor, note: v })} /></div>{error && <div className="mt-4 text-sm text-red-600">{error}</div>}{progress && <div className="mt-4 text-sm font-semibold text-[#0E675A]" role="status">{progress}</div>}<div className="mt-4 flex justify-end gap-2"><button type="button" onClick={() => { setModal(null); clearSelectedPreviews() }} className="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-semibold">Abbrechen</button><button disabled={busy || !files.length} className="rounded-xl bg-[#0E675A] px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-50">{busy ? 'Hochladen läuft …' : 'Hochladen'}</button></div></form>}</Modal>}
 
     {modal === 'edit' && item && <Modal><form onSubmit={update} className="w-full max-w-2xl rounded-2xl bg-white p-6 shadow-2xl"><h2 className="text-xl font-bold">Bild bearbeiten</h2><div className="mt-5 flex gap-4 rounded-xl bg-slate-50 p-3"><img src={item.url} alt="" className="h-20 w-20 rounded-xl object-cover" /><div className="text-xs text-slate-500">{item.width} × {item.height}px<br />{item.format}</div></div><div className="mt-5 grid gap-4 md:grid-cols-2"><Field label="Bildname" value={editor.name} onChange={(v) => setEditor({ ...editor, name: v })} /><Field label="Bildtext" value={editor.text} onChange={(v) => setEditor({ ...editor, text: v })} /><CategoryField label={`Kat.1 · ${labels[0]}`} value={editor.category1} values={categories.category1} onChange={(v) => setEditor({ ...editor, category1: v })} /><CategoryField label={`Kat.2 · ${labels[1]}`} value={editor.category2} values={categories.category2} onChange={(v) => setEditor({ ...editor, category2: v })} /><CategoryField label={`Kat.3 · ${labels[2]}`} value={editor.category3} values={categories.category3} onChange={(v) => setEditor({ ...editor, category3: v })} /><CategoryField label={`Kat.4 · ${labels[3]}`} value={editor.category4} values={categories.category4} onChange={(v) => setEditor({ ...editor, category4: v })} /><Field label="Hinweis (freiwillig, z. B. „ab 1.290 €“ oder „Neu“)" value={editor.note} onChange={(v) => setEditor({ ...editor, note: v })} /></div>{error && <div className="mt-4 text-sm text-red-600">{error}</div>}<div className="mt-6 flex justify-end gap-2"><button type="button" onClick={() => setModal(null)} className="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-semibold">Abbrechen</button><button disabled={busy} className="rounded-xl bg-[#0E675A] px-5 py-2.5 text-sm font-semibold text-white">{busy ? 'Speichern …' : 'Änderungen speichern'}</button></div></form></Modal>}
   </>

@@ -77,6 +77,7 @@ Branch `image-manager-pro-foundation`).
 | 2.16 | Pro Bild freiwilliger „Hinweis“ (z. B. „ab 1.290 €“, bei ZB leer) und Anfrage-Knopf pro Arbeitsbereich (E-Mail oder Link, Beschriftung frei) | fertig (Skript 010 ausgeführt) |
 | 2.17 | Einbau übernimmt Schrift und Textfarbe der Kunden-Website (`data-theme="site"`, Standard), in iframes wie Wix neutral | fertig |
 | 2.18 | WordPress-Plugin 2.0.2: stündlicher Abgleich in die Mediathek (Titel, Beschreibung, Alt-Text, Kategorien), `darstellung="wordpress"` als WordPress-Galerie-Block im Theme-Design; getestet auf test.my-digital-world.de (WP 7.1.3, Twenty Twenty-Five) | fertig |
+| 2.20 | **Ordner-Import** im Upload-Fenster: „Ganzen Ordner auswählen“, Ordnername → Kategorie 1, Dateiname → Bildname (ohne Bildnummer), große Fotos werden im Browser auf 2400 px WebP verkleinert, Fortschritt „Bild x von y“. Betriebshandbuch `BETRIEB.md` mit Neukunden-Checkliste | fertig |
 | 2.11 | **Einbettungscode für jede Website**: Freigabe pro Arbeitsbereich, Generator unter Websites, Skript `/image-manager-embed.js`, Daten über `public-gallery` | Code fertig – braucht `009_…sql` |
 
 Neutrale SaaS-Site: Netlify-Projekt `image-manager-pro`, gleiches Repo und
