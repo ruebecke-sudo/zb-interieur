@@ -34,8 +34,8 @@ Datenschutz-Abschnitt dazu erscheint auch nicht.
 | 2 | Läuft die Seite vorerst unter einer anderen Adresse (z. B. `kunde.netlify.app`), dafür ein **eigenes** Dashboard anlegen. Ein Code gilt immer nur für die Domain seines Dashboards | Pirsch |
 | 3 | **Identifikationscode** kopieren: Einstellungen → **Integration** → Wert bei `data-code="…"`. Achtung: nicht die Dashboard-ID und nicht das Feld „Benutzerdefinierte Domain“ verwenden | Pirsch |
 | 4 | Code eintragen (öffentlicher Wert, darf ins Repo): Vorlage → `site.ts` `statistik.pirschCode`, ZB → `src/lib/analytics.ts` | Code |
-| 5 | Interne Seiten ausschließen: `EXCLUDED_PATHS` in derselben Datei anpassen | Code |
-| 6 | Absatz „Cookies & Webanalyse“ in die Datenschutzerklärung übernehmen (Vorlage: `src/pages/LegalPages.tsx`, Funktion `DatenschutzPage`) und Firmennamen anpassen | Code |
+| 5 | Nur ZB-Projekt: interne Seiten ausschließen über `EXCLUDED_PATHS` in `src/lib/analytics.ts` | Code |
+| 6 | Datenschutz: in der Vorlage automatisch. Im ZB-Projekt Absatz „Cookies & Webanalyse“ übernehmen (`src/pages/LegalPages.tsx`, Funktion `DatenschutzPage`) und Firmennamen anpassen | Code |
 | 7 | Veröffentlichen, eine Seite aufrufen, im Dashboard muss „1 aktiver Besucher“ erscheinen | Pirsch |
 | 8 | **Monatsbericht** einrichten: Einstellungen → **Berichte** → „Berichte hinzufügen“ → Empfänger eintragen und mit Enter bestätigen, Intervall **Monatlich**, Startdatum = 1. des nächsten Monats, Häkchen zusätzlich bei **Events** | Pirsch |
 | 9 | **Traffic-Warnung** einschalten: gleiche Seite, „Traffic-Warnungen aktivieren“, Schwellenwert **3 Tage**. Meldet, wenn die Seite keine Besucher mehr hat, z. B. bei einem Ausfall | Pirsch |
