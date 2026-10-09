@@ -8,6 +8,10 @@ Die Seite **Marken** (`/marken`) zeigt Logos, Produktheadlines und Produktbilder
 
 Über **Produktverwaltung** (`/verwaltung/produkte`) können neue Produktbilder hochgeladen werden: Produktname und Marke werden aus dem Dateinamen abgeleitet (z. B. `FINE_Aria_Sofa_3-Sitzer.jpg` → „FINE Aria Sofa 3-Sitzer“ / Marke Fine), vor dem Speichern kontrolliert und lokal (IndexedDB + localStorage) an die Produktauswahl angehängt. Bestehende Katalogprodukte bleiben unverändert.
 
+## Besucherstatistik (Pirsch)
+
+Cookielose Statistik mit [Pirsch](https://pirsch.io), Ziele für Anruf, E-Mail, WhatsApp und Formulare. Einrichtung pro Kunde, Monatsbericht und Domainwechsel: [docs/WEBSEITEN-PAKET.md](docs/WEBSEITEN-PAKET.md). Anleitung für Kunden: [docs/KUNDENINFO-STATISTIK.md](docs/KUNDENINFO-STATISTIK.md).
+
 ## Bildverwaltung (Media Library)
 
 Zentrale Bildverwaltung unter [`/verwaltung/bilder`](http://127.0.0.1:43127/verwaltung/bilder):
