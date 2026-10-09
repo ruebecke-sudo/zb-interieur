@@ -1,4 +1,5 @@
 import { Outlet, ScrollRestoration } from 'react-router-dom'
+import { Analytics } from './Analytics'
 import { ContactModal } from './ContactModal'
 import { Footer } from './Footer'
 import { Header } from './Header'
@@ -28,6 +29,7 @@ export function Layout() {
           <ScrollToTopButton />
           <WhatsAppButton />
           <ContactModal />
+          <Analytics />
           <ScrollRestoration />
         </div>
       </ImageZoomRoot>

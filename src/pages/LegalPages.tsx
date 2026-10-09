@@ -86,9 +86,20 @@ export function DatenschutzPage() {
       </p>
       <h2>Cookies & Webanalyse</h2>
       <p>
-        Diese Netlify-Version setzt keine Tracking-Cookies von Drittanbietern (kein Stetic/Google
-        Analytics in der Standardkonfiguration). Technisch notwendige Cookies von Netlify können
+        Diese Website setzt keine Tracking-Cookies. Technisch notwendige Cookies von Netlify können
         beim Hosting anfallen.
+      </p>
+      <p>
+        Für eine anonyme Besucherstatistik nutzen wir Pirsch Analytics der Emvi Software GmbH,
+        Deutschland (pirsch.io). Pirsch arbeitet ohne Cookies und speichert keine Informationen auf
+        Ihrem Endgerät. Erfasst werden aufgerufene Seiten, die verweisende Website, Browser,
+        Betriebssystem, Gerätetyp, Bildschirmgröße und das Land sowie Klicks auf Telefon-, E-Mail- und
+        WhatsApp-Links und das Absenden von Formularen. Ihre IP-Adresse wird nicht gespeichert; aus
+        ihr wird zusammen mit weiteren Merkmalen nur eine täglich wechselnde, nicht rückführbare
+        Kennung gebildet. Die Daten werden auf Servern in Deutschland verarbeitet. Rechtsgrundlage
+        ist unser berechtigtes Interesse an der Verbesserung unseres Angebots (Art. 6 Abs. 1 lit. f
+        DSGVO). Sie können der Verarbeitung jederzeit widersprechen, z. B. indem Sie in Ihrem
+        Browser „Do Not Track“ aktivieren.
       </p>
       <h2>Ihre Rechte</h2>
       <p>

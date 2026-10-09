@@ -1,3 +1,5 @@
+import { trackEvent } from './analytics'
+
 /** Encode FormData for Netlify Forms (application/x-www-form-urlencoded). */
 export function encodeFormData(data: FormData): string {
   const params = new URLSearchParams()
@@ -48,6 +50,7 @@ export async function submitNetlifyForm(data: FormData): Promise<'ok' | 'dev-ok'
     }
 
     if (!res.ok) throw new Error(`HTTP ${res.status}`)
+    trackEvent('Formular gesendet', { formular: String(data.get('form-name')) })
     return 'ok'
   } catch (err) {
     console.error('[form] Absenden fehlgeschlagen', err)
