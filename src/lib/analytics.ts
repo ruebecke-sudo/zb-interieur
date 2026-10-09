@@ -5,7 +5,8 @@
  * Reusable for other websites: only PIRSCH_CODE changes (Pirsch → domain settings →
  * "Identification Code"). The code is public; it ends up in the page source anyway.
  */
-export const PIRSCH_CODE = 'NpWIFaB8Roymlf9KQAhHCzGOpPuySpVr'
+// Dashboard "zb-interieur.netlify.app". When the site moves to zb-interieur.de, use that dashboard's code.
+export const PIRSCH_CODE = 'MHvZY7xEg8xVjDDYIPFZTLTIjsKbno3J'
 
 /** Internal pages that should not appear in the statistics. */
 const EXCLUDED_PATHS = ['/image-manager.*', '/verwaltung.*']
