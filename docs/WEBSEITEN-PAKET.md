@@ -16,6 +16,16 @@ Alle Kunden laufen über **ein** Pirsch-Konto von My Digital World. Jede Website
 ein eigenes Dashboard. Die Kosten richten sich nach den Seitenaufrufen aller Websites
 zusammen und gehören in den Paketpreis.
 
+**Standard in allen Paketen.** Möchte ein Kunde keine Statistik, wird für seine Seite kein
+Pirsch-Dashboard angelegt und der Code bleibt leer. Dann lädt die Seite nichts, und der
+Datenschutz-Abschnitt dazu erscheint auch nicht.
+
+**Wo der Code eingetragen wird:**
+- Neue Kunden-Webseiten aus der Vorlage (`Desktop/webseiten-baukasten/vorlage`):
+  `src/config/site.ts` → `statistik.pirschCode`. Der Datenschutz-Abschnitt wird dort
+  automatisch angehängt, `npm run pruefen` warnt bei leerem oder falschem Code.
+- Die ZB-Website (dieses Projekt): `src/lib/analytics.ts` → `PIRSCH_CODE`.
+
 ### Einrichtung (ca. 15 Minuten)
 
 | # | Schritt | Wo |
@@ -23,7 +33,7 @@ zusammen und gehören in den Paketpreis.
 | 1 | Neues Dashboard anlegen: „+“ oben → Domain des Kunden, z. B. `kunde.de` | Pirsch |
 | 2 | Läuft die Seite vorerst unter einer anderen Adresse (z. B. `kunde.netlify.app`), dafür ein **eigenes** Dashboard anlegen. Ein Code gilt immer nur für die Domain seines Dashboards | Pirsch |
 | 3 | **Identifikationscode** kopieren: Einstellungen → **Integration** → Wert bei `data-code="…"`. Achtung: nicht die Dashboard-ID und nicht das Feld „Benutzerdefinierte Domain“ verwenden | Pirsch |
-| 4 | Code in `src/lib/analytics.ts` bei `PIRSCH_CODE` eintragen (öffentlicher Wert, darf ins Repo) | Code |
+| 4 | Code eintragen (öffentlicher Wert, darf ins Repo): Vorlage → `site.ts` `statistik.pirschCode`, ZB → `src/lib/analytics.ts` | Code |
 | 5 | Interne Seiten ausschließen: `EXCLUDED_PATHS` in derselben Datei anpassen | Code |
 | 6 | Absatz „Cookies & Webanalyse“ in die Datenschutzerklärung übernehmen (Vorlage: `src/pages/LegalPages.tsx`, Funktion `DatenschutzPage`) und Firmennamen anpassen | Code |
 | 7 | Veröffentlichen, eine Seite aufrufen, im Dashboard muss „1 aktiver Besucher“ erscheinen | Pirsch |
