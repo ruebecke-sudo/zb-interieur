@@ -15,7 +15,9 @@ export function ImageManagerAuthPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [companyName, setCompanyName] = useState('')
-  const [mode, setMode] = useState<'login' | 'signup'>('login')
+  // Partner programme: a link like …/login?partner=MUELLER pre-fills the code and opens sign-up.
+  const [partnerCode, setPartnerCode] = useState(() => new URLSearchParams(window.location.search).get('partner')?.toUpperCase() || '')
+  const [mode, setMode] = useState<'login' | 'signup'>(() => (new URLSearchParams(window.location.search).get('partner') ? 'signup' : 'login'))
   const [message, setMessage] = useState(linkError)
   const [busy, setBusy] = useState(false)
 
@@ -50,7 +52,7 @@ export function ImageManagerAuthPage() {
     setMessage('')
     const result = mode === 'login'
       ? await supabase.auth.signInWithPassword({ email, password })
-      : await supabase.auth.signUp({ email, password, options: { emailRedirectTo, data: { company_name: companyName } } })
+      : await supabase.auth.signUp({ email, password, options: { emailRedirectTo, data: { company_name: companyName, ...(partnerCode.trim() ? { partner_code: partnerCode.trim().toUpperCase() } : {}) } } })
     if (result.error) setMessage(result.error.message)
     else if (mode === 'signup') { setMessage('Konto erstellt. Bitte bestätige deine E-Mail-Adresse über den Link in der E-Mail.'); setShowResend(true) }
     else window.location.href = '/image-manager/app'
@@ -64,7 +66,7 @@ export function ImageManagerAuthPage() {
         <h1 className="text-xl font-bold">{mode === 'login' ? 'Anmelden' : 'Konto erstellen'}</h1>
         <div className="mt-5 space-y-4">
           <label className="block"><span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">E-Mail</span><input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className="w-full rounded-xl border border-slate-300 px-3 py-2.5 outline-none focus:border-[#0E675A]" /></label>
-          {mode === 'signup' && <label className="block"><span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">Unternehmen</span><input required value={companyName} onChange={(e) => setCompanyName(e.target.value)} placeholder="z. B. Muster GmbH" className="w-full rounded-xl border border-slate-300 px-3 py-2.5 outline-none focus:border-[#0E675A]" /></label>}<label className="block"><span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">Passwort</span><input type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} className="w-full rounded-xl border border-slate-300 px-3 py-2.5 outline-none focus:border-[#0E675A]" /></label>
+          {mode === 'signup' && <label className="block"><span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">Unternehmen</span><input required value={companyName} onChange={(e) => setCompanyName(e.target.value)} placeholder="z. B. Muster GmbH" className="w-full rounded-xl border border-slate-300 px-3 py-2.5 outline-none focus:border-[#0E675A]" /></label>}{mode === 'signup' && <label className="block"><span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">Partnercode (optional)</span><input value={partnerCode} onChange={(e) => setPartnerCode(e.target.value.toUpperCase())} placeholder="falls Sie uns empfohlen wurden" className="w-full rounded-xl border border-slate-300 px-3 py-2.5 uppercase outline-none focus:border-[#0E675A]" /></label>}<label className="block"><span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">Passwort</span><input type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} className="w-full rounded-xl border border-slate-300 px-3 py-2.5 outline-none focus:border-[#0E675A]" /></label>
         </div>
         {!supabaseConfigured && <div className="mt-4 rounded-xl bg-amber-50 p-3 text-xs text-amber-800">Anmeldung noch nicht konfiguriert.</div>}
         {message && <div className="mt-4 rounded-xl bg-slate-100 p-3 text-sm">{message}</div>}
